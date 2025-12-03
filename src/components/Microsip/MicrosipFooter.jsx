@@ -74,7 +74,7 @@ const MicrosipFooter = ({
                 className="flex flex-col items-center opacity-0 animate-fade-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                <h4 className="text-[12px] font-semibold text-oran uppercase tracking-wide mb-4"> Maximiza el potencial </h4>
+                <h4 className="text-[12px] font-semibold text-oran uppercase tracking-wide mb-4 "> Maximiza el potencial </h4>
               </div>
             )}
           </div>  

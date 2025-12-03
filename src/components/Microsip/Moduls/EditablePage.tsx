@@ -189,29 +189,61 @@ const EditablePage: React.FC = () => {
 
                 {/* Integraciones */}
                 <section className="bg-zinc-100 p-8 rounded-lg w-full shadow-md">
-                    <h3 className="text-3xl text-gray-500 font-bold mb-6 w-full">Integraciones</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"> 
-                        <div className="bg-white border border-gray-300 p-6 rounded-lg text-center">
-                        <h4 className="text-lg font-bold">NÓMINA</h4>
-                        <p className="text-sm">Los pagos de nómina realizados con cheque generan el retiro correspondiente en el módulo de Bancos.</p>
+                <h3 className="text-3xl text-gray-500 font-bold mb-6 w-full">Integraciones</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    
+                    <div className="bg-white border border-gray-300 p-6 rounded-lg">
+                        <div className="border border-pink-300 rounded-2xl bg-pink-50 border-1 w-fit p-0.5">
+                            <img
+                                src="/Modulos/banc6.svg"
+                                alt="logo"
+                                className="h-10 sm:h-10 object-contain m-2 rounded-lg"
+                            />
                         </div>
-
-                        <div className="bg-white border border-gray-300 p-6 rounded-lg text-center">
-                        <h4 className="text-lg font-bold">CUENTAS POR COBRAR</h4>
-                        <p className="text-sm">Consulta los pagos de los clientes y realiza el retiro correspondiente en el módulo de Bancos.</p>
-                        </div>
-
-                        <div className="bg-white border border-gray-300 p-6 rounded-lg text-center">
-                        <h4 className="text-lg font-bold">CUENTAS POR PAGAR</h4>
-                        <p className="text-sm">Genera los retiros correspondientes realizados por medio del módulo Cuentas por Pagar.</p>
-                        </div>
-
-                        <div className="bg-white p-6 border border-gray-300 rounded-lg text-center">
-                        <h4 className="text-lg font-bold">CONTABILIDAD</h4>
-                        <p className="text-sm">Automatiza el proceso contable y genera los movimientos correspondientes en el módulo de Bancos.</p>
-                        </div>
+                    <h4 className="text-lg ">NÓMINA</h4>
+                    <p className="text-sm mb-2">Los pagos de nómina realizados con cheque generan el retiro correspondiente en el módulo de Bancos</p>
+                    <p className="text-sm">En la carpeta de pagos por liberar del módulo Bancos, se consultan los pagos de Nómina</p>
                     </div>
+
+                    <div className="bg-white border border-gray-300 p-6 rounded-lg text-center">
+                        <div className="border border-red-400 rounded-2xl bg-red-50 border-1 w-fit p-0.5">
+                            <img
+                                src="/Modulos/banc7.svg"
+                                alt="logo"
+                                className="h-10 sm:h-10 object-contain m-2 rounded-lg"
+                            />
+                        </div>
+                    <h4 className="text-lg">CUENTAS POR COBRAR</h4>
+                    <p className="text-sm">Los cobros o depósitos en este módulo, generan a su vez, depósitos en el módulo de Bancos.</p>
+                    </div>
+
+                    <div className="bg-white border border-gray-300 p-6 rounded-lg text-center">
+                        <div className="border border-green-400 rounded-2xl bg-green-50 border-1 w-fit p-0.5">
+                            <img
+                                src="/Modulos/banc8.svg"
+                                alt="logo"
+                                className="h-10 sm:h-10 object-contain m-2 rounded-lg"
+                            />
+                        </div>
+                    <h4 className="text-lg">CUENTAS POR PAGAR</h4>
+                    <p className="text-sm">Se generan los retiros correspondientes realizados por medio del módulo Cuentas por Pagar.</p>
+                    </div>
+
+                    <div className="bg-white p-6 border border-gray-300 rounded-lg">
+                        <div className="border border-blue-300 rounded-2xl bg-cyan-100 border-1 w-fit p-0.5">
+                            <img
+                                src="/Modulos/banc9.svg"
+                                alt="logo"
+                                className="h-10 sm:h-10 object-contain m-2 rounded-lg"
+                            />
+                        </div>
+                    <h4 className="text-lg">CONTABILIDAD</h4>
+                    <p className="text-sm">Al crear depósitos y retiros en Bancos, se crean las pólizas contables.</p>
+                    </div>
+
+                </div>
                 </section>
+
             </div>
 
             <MicrosipFooter />

@@ -49,11 +49,21 @@ export default function EquipoPage() {
       email: "carlos@blacksheep.com",
     },
     {
-      name: "Daniel Garcia",
-      role: "Lead UX Designer",
+      name: "Jon Gallardo",
+      role: "Programador",
       description:
-        "Diseñadora de experiencias que humaniza la tecnología compleja. Creadora de interfaces intuitivas para operadores de almacén.",
-      image: "/Team/ivonne.png",
+        "Experto en procesos almacenados",
+      image: "/Team/jon.jpg",
+      linkedin: "#",
+      github: "#",
+      email: "sofia@blacksheep.com",
+    },
+    {
+      name: "Diego Ramos",
+      role: "Programador",
+      description:
+        "Experto en valorar las cosas ajenas",
+      image: "/Team/diego.jpg",
       linkedin: "#",
       github: "#",
       email: "sofia@blacksheep.com",
