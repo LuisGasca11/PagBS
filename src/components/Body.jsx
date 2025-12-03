@@ -31,7 +31,7 @@ const Body = () => {
   }, []);
 
   return (
-    <section id="inicio" className="flex flex-col items-center text-center relative mx-0 rounded-0 my-0 py-0 px-0 w-screen h-[400px] md:h-[600px] lg:h-[810px] mb-60 md:mb-80 lg:mb-[500px] bg-black">
+    <section id="inicio" className="flex flex-col items-center text-center relative mx-0 rounded-2xl my-0 py-0 px-0 w-screen h-[400px] md:h-[600px] lg:h-[810px] mb-60 md:mb-80 lg:mb-[500px] bg-black">
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <svg
           width="100%"
@@ -279,7 +279,7 @@ const Body = () => {
       </div>
 
       <div className="absolute bottom-[-220px] md:bottom-[-430px] lg:bottom-[-440px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-6xl px-4">
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-3 shadow-2xl border border-gray-700">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-3">
           <img 
             alt="AI Dashboard preview" 
             loading="lazy" 

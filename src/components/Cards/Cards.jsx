@@ -9,8 +9,9 @@ const Carousel = () => {
       id: 1,
       title: "Microsip",
       features: [],
-      image: "Msp Partner 2 blanco.png",
-      link: "/MicroPage" 
+      image: "Mspbla.png",
+      link: "/MicroPage",
+      target: "_blank"
     },
     {
       id: 2,
@@ -67,7 +68,7 @@ const Carousel = () => {
   }, [isAutoPlaying]);
 
   return (
-    <section id='proyects' className="py-20">
+    <section id='proyects' className="py-20 relative z-10">
       <div className="max-w-7xl mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-14">
@@ -75,14 +76,14 @@ const Carousel = () => {
             NUESTROS <span className="text-white">PROYECTOS</span>
           </h2>
 
-        <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Accelerate your development workflow with intelligent AI agents that write, review, and optimize your code.
-        </p>
+          <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            Accelerate your development workflow with intelligent AI agents that write, review, and optimize your code.
+          </p>
         </div>
 
         {/* Cards Grid Container */}
         <div 
-          className="relative"
+          className="relative z-10"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
@@ -120,17 +121,11 @@ const Card = ({ card }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const isExternalLink = (link) => {
-    return link.startsWith('http://') || link.startsWith('https://');
-  };
-
-  const handleCardClick = (e) => {
-    if (isExternalLink(card.link)) {
-      return;
-    }
+    return link.startsWith('http://') || link.startsWith('https://') || card.target === "_blank";
   };
 
   const CardContent = () => (
-    <div className="relative h-full bg-gradient-to-br from-gray-700 to-gray-800 flex flex-col items-center justify-center p-6 cursor-pointer">
+    <div className="relative h-full flex flex-col items-center justify-center p-6">
       {/* Image Container */}
       <div className="relative w-40 h-40 mb-6">
         <img 
@@ -146,7 +141,7 @@ const Card = ({ card }) => {
           }}
         />
         
-        <div className="image-fallback hidden w-full h-full flex-col items-center justify-center text-center p-4 bg-gray-600 rounded-lg">
+        <div className="image-fallback hidden w-full h-full flex-col items-center justify-center text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2">
             <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -161,45 +156,50 @@ const Card = ({ card }) => {
         {card.title}
       </h3>
 
-      <div className={`transition-all duration-300 ${
-        isHovered ? 'opacity-100 translate-y-0' : 'opacity-80 translate-y-1'
-      }`}>
-        <span className="text-white font-semibold text-sm inline-flex items-center">
-          {card.cta}
-          <svg className="w-4 h-4 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </span>
-      </div>
-      
-      <div className="absolute top-4 right-4 bg-white/20 rounded-full w-4 h-4 animate-pulse"></div>
-      <div className="absolute bottom-4 left-4 bg-gray-400/20 rounded-full w-6 h-6 animate-pulse"></div>
+      {/* CTA Text */}
+      {card.cta && (
+        <div className={`transition-all duration-300 ${
+          isHovered ? 'opacity-100 translate-y-0' : 'opacity-80 translate-y-1'
+        }`}>
+          <span className="text-white font-semibold text-sm inline-flex items-center">
+            {card.cta}
+            <svg className="w-4 h-4 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </span>
+        </div>
+      )}
 
-      <div className={`absolute inset-0 bg-white/5 rounded-2xl transition-opacity duration-300 ${
+      {/* Overlay de hover - REMOVIDO absolute inset-0 que bloqueaba clicks */}
+      <div className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/2 rounded-2xl transition-all duration-300 pointer-events-none ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`}></div>
     </div>
   );
 
+  const cardContainerClasses = `
+    relative w-full h-full rounded-2xl overflow-hidden 
+    bg-gradient-to-br from-white/10 to-white/5 
+    backdrop-blur-md border
+    transition-all duration-500
+    ${isHovered ? 'transform scale-105 shadow-xl' : 'shadow-lg'}
+    border-white/20 hover:border-white/40
+  `;
+
   if (isExternalLink(card.link)) {
     return (
       <div 
-        className="h-96 perspective-1000 group"
+        className="h-96 group relative z-10"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <a 
           href={card.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full h-full"
-          onClick={handleCardClick}
+          target={card.target || "_blank"}
+          rel={card.target ? "noopener noreferrer" : ""}
+          className="block w-full h-full cursor-pointer"
         >
-          <div className={`
-            relative w-full h-full bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700
-            transition-all duration-300 group-hover:border-white/30 group-hover:shadow-2xl
-            ${isHovered ? 'transform scale-105' : ''}
-          `}>
+          <div className={cardContainerClasses}>
             <CardContent />
           </div>
         </a>
@@ -209,20 +209,15 @@ const Card = ({ card }) => {
 
   return (
     <div 
-      className="h-96 perspective-1000 group"
+      className="h-96 group relative z-10"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link 
         to={card.link}
-        className="block w-full h-full"
-        onClick={handleCardClick}
+        className="block w-full h-full cursor-pointer"
       >
-        <div className={`
-          relative w-full h-full bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700
-          transition-all duration-300 group-hover:border-white/30 group-hover:shadow-2xl
-          ${isHovered ? 'transform scale-105' : ''}
-        `}>
+        <div className={cardContainerClasses}>
           <CardContent />
         </div>
       </Link>

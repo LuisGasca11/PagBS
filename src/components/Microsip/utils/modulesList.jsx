@@ -1,0 +1,100 @@
+import {
+  Calculator,
+  Banknote,
+  Boxes,
+  CircleDollarSign,
+  ShoppingBag,
+  Store,
+  BarChart3,
+  Bus,
+  RefreshCw,
+  Smartphone,
+  Users,
+} from "lucide-react";
+
+export default [
+  {
+    id: 1,
+    name: "Contabilidad",
+    color: "#4BA3FF",
+    icon: <img src="/icons/cont_elect.png" className="w-6 h-6" />,
+  },
+  {
+    id: 2,
+    name: "Bancos",
+    color: "#28C76F",
+    icon: <img src="/icons/bancos.png" className="w-6 h-6" />,
+  },
+  {
+    id: 3,
+    name: "Nomina",
+    color: "#F472B6",
+    icon: <img src="/icons/nomina.png" className="w-6 h-6" />,
+  },
+  {
+    id: 4,
+    name: "Inventarios",
+    color: "#A855F7",
+    icon: <img src="/icons/inventarios.png" className="w-6 h-6" />,
+  },
+  {
+    id: 5,
+    name: "Cuentas por Cobrar",
+    color: "#4ADE80",
+    icon: <img src="/icons/cuentas_cobrar.png" className="w-6 h-6" />,
+  },
+  {
+    id: 6,
+    name: "Compras",
+    color: "#FBBF24",
+    icon: <img src="/icons/compras.png" className="w-6 h-6" />,
+  },
+  {
+    id: 7,
+    name: "Cuentas por Pagar",
+    color: "#F87171",
+    icon: <img src="/icons/cuentas_pagar.png" className="w-6 h-6" />,
+  },
+  {
+    id: 8,
+    name: "Punto de Venta",
+    color: "#FCA311",
+    icon: <img src="/icons/punto-venta.png" className="w-6 h-6" />,
+  },
+  {
+    id: 9,
+    name: "Ventas",
+    color: "#FF6B00",
+    icon: <img src="/icons/ventas.png" className="w-6 h-6" />,
+  },
+  {
+    id: 10,
+    name: "En Ruta",
+    color: "#3B82F6",
+    icon: <img src="/icons/en-ruta.png" className="w-6 h-6" />,
+  },
+  {
+    id: 11,
+    name: "Sync E",
+    color: "#C084FC",
+    icon: <img src="/icons/synce.png" className="w-6 h-6" />,
+  },
+  {
+    id: 12,
+    name: "CEO Movil",
+    color: "#22A699",
+    icon: <img src="/icons/ceo_movil.png" className="w-6 h-6" />,
+  },
+  {
+    id: 13,
+    name: "AS",
+    color: "#64748B",
+    icon: <img src="/icons/admin_suc.png" className="w-6 h-6" />,
+  },
+  {
+    id: 14,
+    name: "PDAS",
+    color: "#0EA5E9",
+    icon: <img src="/icons/sics.png" className="w-6 h-6" />,
+  },
+];

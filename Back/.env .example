@@ -1,0 +1,14 @@
+# Configuración del servidor
+PORT=8000
+NODE_ENV=development
+
+# Configuración de PostgreSQL
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASSWORD=YOUR_PASSWORD
+DB_NAME=YOUR_DB
+DB_PORT=5432
+
+# JWT
+JWT_SECRET=//SECRET
+JWT_EXPIRES_IN=8h

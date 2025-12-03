@@ -2,11 +2,9 @@ import LogoLoop from "../ReactBits/LogoLoop";
 
 export function SocialProof() {
   const companyLogos = [
-    { src: "/mcsp.png", alt: "Microsip", href: "https://openai.com" },
-    { src: "/krkn.png", alt: "KRKN", href: "https://stripe.com" },
-    { src: "/fyttsaTalent.png", alt: "FYTTSA", href: "https://wise.com" },
-    { src: "/stick.png", alt: "STICK", href: "https://loom.com" },
-    { src: "/Sheep Icon.png", alt: "Linear", href: "https://linear.app" },
+    { src: "/fyttg.png", alt: "FYTTSA", href: "https://stripe.com", height: "h-[120px]" },  
+    { src: "/gmn.png", alt: "Gouman", href: "https://linear.app", height: "h-[150px]" }, 
+    { src: "/ely.png", alt: "ELYSSIA", href: "https://linear.app", height: "h-[50px]" },  
   ];
 
   const formatted = companyLogos.map((logo) => ({
@@ -14,7 +12,7 @@ export function SocialProof() {
       <img
         src={logo.src}
         alt={logo.alt}
-        className="h-16 w-auto object-contain black hover:opacity-100 transition"
+        className={`${logo.height} w-auto object-contain filter grayscale hover:grayscale-0 transition-all duration-300 opacity-80 hover:opacity-100`} 
       />
     ),
     title: logo.alt,
@@ -22,13 +20,13 @@ export function SocialProof() {
   }));
 
   return (
-    <section className="h-32 w-full bg-gradient-to-r from-black via-gray-800/40 to-black flex items-center">
+    <section className="h-32 w-full flex items-center">
       <div className="w-full">
         <LogoLoop
           logos={formatted}
           speed={120}
           direction="left"
-          logoHeight={48}
+          logoHeight={48}  
           gap={60}
           hoverSpeed={0}
           fadeOut
@@ -37,6 +35,5 @@ export function SocialProof() {
         />
       </div>
     </section>
-
   );
 }

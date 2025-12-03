@@ -16,26 +16,34 @@ const Form = () => {
                 <Link 
                     to="/"
                     className="
-                        inline-flex items-center gap-2 
-                        text-white hover:text-gray-300 
-                        transition-all duration-300 
-                        font-medium
+                        inline-flex items-center gap-3 
+                        text-white hover:text-gray-100 
+                        transition-all duration-500 
+                        font-semibold
                         group
-                        bg-white/5 hover:bg-white/10 
-                        px-6 py-3 rounded-xl
-                        border border-white/10 hover:border-white/20
-                        backdrop-blur-sm
+                        bg-black/20 hover:bg-black/30 
+                        backdrop-blur-2xl
+                        px-6 py-3 rounded-2xl
+                        border border-white/10
+                        shadow-2xl
+                        relative overflow-hidden
+                        hover:scale-105
+                        before:absolute before:inset-0 before:rounded-2xl before:p-[1px] before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:opacity-0 before:transition-opacity before:duration-500 hover:before:opacity-100
                     "
                 >
-                    <svg 
-                        className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Regresar al Inicio
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-transparent to-white/5 transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                    
+                    <div className="relative z-10 flex items-center gap-2">
+                        <svg 
+                            className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Regresar al Inicio
+                    </div>
                 </Link>
             </div>
 
@@ -43,8 +51,6 @@ const Form = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Contact Form */}
                     <div>
-                        <h2 className="text-3xl font-bold text-white mb-2">Solicita tu demo</h2>
-                        <p className="text-gray-400 mb-8">Comienza tu transformación digital hoy mismo</p>
                         <form className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -155,7 +161,7 @@ const Form = () => {
                             <div className="mb-8">
                                 <div className="bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl p-4">
                                     <img 
-                                        src="BS Horizontal 1.png" 
+                                        src="BS Hori.png" 
                                         alt="Black Sheep Logo"
                                         className="w-full h-48 object-contain rounded-lg"
                                     />

@@ -58,12 +58,12 @@ export default function BmktPage() {
           </div>
         </div>
 
-        <div className="max-w-3xl md:ml-65 mt-4 md:ml-40">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 tracking-widest">
+        <div className="max-w-3xl mt-4">
+          <h2 className="text-4xl md:text-5xl md:ml-60 font-bold mb-6 text-gray-900 tracking-widest">
             Retos
           </h2>
 
-          <ul className="space-y-3 text-base md:text-lg text-gray-600 leading-relaxed">
+          <ul className="space-y-3 text-base md:text-lg text-gray-600 leading-relaxed md:ml-50">
             <li className="flex items-start">
               <span className="mr-2">•</span>
               <span>
