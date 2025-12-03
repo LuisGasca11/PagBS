@@ -68,15 +68,15 @@ const Carousel = () => {
   }, [isAutoPlaying]);
 
   return (
-    <section id='proyects' className="py-20 relative z-10">
-      <div className="max-w-7xl mx-auto px-4">
+    <section id='proyects' className="py-12 md:py-16 lg:py-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="text-center mb-8 md:mb-12 lg:mb-14">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
             NUESTROS <span className="text-white">PROYECTOS</span>
           </h2>
 
-          <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-4">
             Accelerate your development workflow with intelligent AI agents that write, review, and optimize your code.
           </p>
         </div>
@@ -88,24 +88,24 @@ const Carousel = () => {
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
           {/* Fila Superior */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
             {topRow.map((card) => (
               <Card key={card.id} card={card} />
             ))}
           </div>
 
           {/* Fila Inferior */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {bottomRow.map((card) => (
               <Card key={card.id} card={card} />
             ))}
           </div>
 
-          <div className="flex justify-center mt-8 space-x-3">
+          <div className="flex justify-center mt-6 md:mt-8 space-x-3">
             {[0, 1].map((index) => (
               <button
                 key={index}
-                className={`w-3 h-3 rounded-full transition duration-300 ${
+                className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition duration-300 ${
                   index === 0 ? 'bg-white scale-125' : 'bg-gray-600 hover:bg-gray-500'
                 }`}
               />
@@ -125,9 +125,9 @@ const Card = ({ card }) => {
   };
 
   const CardContent = () => (
-    <div className="relative h-full flex flex-col items-center justify-center p-6">
+    <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-5 md:p-6">
       {/* Image Container */}
-      <div className="relative w-40 h-40 mb-6">
+      <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mb-4 sm:mb-5 md:mb-6">
         <img 
           src={card.image} 
           alt={card.title}
@@ -142,17 +142,17 @@ const Card = ({ card }) => {
         />
         
         <div className="image-fallback hidden w-full h-full flex-col items-center justify-center text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-2">
-            <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center mb-2">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h4 className="text-sm font-bold text-white">{card.title}</h4>
+          <h4 className="text-xs sm:text-sm font-bold text-white">{card.title}</h4>
         </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-2xl font-bold text-white mb-4 text-center">
+      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 text-center">
         {card.title}
       </h3>
 
@@ -161,16 +161,16 @@ const Card = ({ card }) => {
         <div className={`transition-all duration-300 ${
           isHovered ? 'opacity-100 translate-y-0' : 'opacity-80 translate-y-1'
         }`}>
-          <span className="text-white font-semibold text-sm inline-flex items-center">
+          <span className="text-white font-semibold text-xs sm:text-sm inline-flex items-center">
             {card.cta}
-            <svg className="w-4 h-4 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </span>
         </div>
       )}
 
-      {/* Overlay de hover - REMOVIDO absolute inset-0 que bloqueaba clicks */}
+      {/* Overlay de hover */}
       <div className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/2 rounded-2xl transition-all duration-300 pointer-events-none ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`}></div>
@@ -178,7 +178,7 @@ const Card = ({ card }) => {
   );
 
   const cardContainerClasses = `
-    relative w-full h-full rounded-2xl overflow-hidden 
+    relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden 
     bg-gradient-to-br from-white/10 to-white/5 
     backdrop-blur-md border
     transition-all duration-500
@@ -189,7 +189,7 @@ const Card = ({ card }) => {
   if (isExternalLink(card.link)) {
     return (
       <div 
-        className="h-96 group relative z-10"
+        className="h-72 sm:h-80 md:h-88 lg:h-96 group relative z-10"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -209,7 +209,7 @@ const Card = ({ card }) => {
 
   return (
     <div 
-      className="h-96 group relative z-10"
+      className="h-72 sm:h-80 md:h-88 lg:h-96 group relative z-10"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
