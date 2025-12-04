@@ -71,7 +71,7 @@ export default function AdminPricingPanel({ pricesDB, onClose, onPriceUpdate }) 
     try {
       for (const { modulo, plan, value } of changes) {
         await fetch(
-          `http://localhost:3001/api/precios/${modulo}/${plan.toLowerCase()}`,
+          `/api/precios/${modulo}/${plan.toLowerCase()}`,
           {
             method: "PUT",
             headers: {

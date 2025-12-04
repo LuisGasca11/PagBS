@@ -238,41 +238,10 @@ const Body = () => {
       <div className="relative z-10 space-y-6 md:space-y-8 lg:space-y-10 max-w-4xl mt-16 md:mt-[120px] lg:mt-[160px] px-6">
         <div className="space-y-2">
           <h1 className="text-foreground text-4xl md:text-6xl lg:text-7xl font-semibold text-white leading-tight">
-            <span className="block">Unleash the Power</span>
-            <span className="block bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              of AI Agents
-            </span>
+            <span className="block">Conecta</span> con tu empresa y <span style={{color: '#ff8623'}}>maximiza el potencial</span> con un sistema ERP a tu medida.
           </h1>
         </div>
 
-        <p className="text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Accelerate your development workflow with intelligent AI agents that write, review, and optimize your code.
-        </p>
-
-        <div className="pt-4">
-          <button
-            onClick={handleForm} 
-            className="group bg-white hover:bg-gray-100 text-gray-900 px-8 py-4 rounded-full font-semibold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl border-2 border-white relative overflow-hidden"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            <span className="relative z-10 flex items-center justify-center">
-              Conoce más
-              <svg 
-                className={`w-5 h-5 ml-3 transition-transform duration-300 ${
-                  isHovered ? 'translate-x-1' : ''
-                }`} 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-            
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-          </button>
-        </div>
       </div>
 
       <div className="relative z-10 space-y-6 md:space-y-8 lg:space-y-10 max-w-4xl mt-16 md:mt-[120px] lg:mt-[160px] px-6 mb-20 md:mb-32 lg:mb-40">

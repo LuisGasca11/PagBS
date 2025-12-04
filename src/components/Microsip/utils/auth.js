@@ -47,7 +47,7 @@ export function getSessionExpiration() {
 
 export async function loginUser(username, password) {
   try {
-    const response = await fetch("http://localhost:3001/api/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -65,7 +65,7 @@ export async function loginUser(username, password) {
 
 export async function verifyToken(token, setAuth, setUsername) {
   try {
-    const response = await fetch("http://localhost:3001/api/verify", {
+    const response = await fetch("/api/verify", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

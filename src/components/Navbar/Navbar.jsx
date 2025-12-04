@@ -75,11 +75,11 @@ const Navbar = () => {
               to="/#inicio"
               className="group flex items-center space-x-3 transition-transform duration-300 hover:scale-105"
             >
-              <div className="w-40 h-10 aspect-video rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300 group-hover:from-gray-700 group-hover:to-gray-800">
+              <div className="w-40 h-10 aspect-video rounded-lg flex items-center justify-center shadow-md transition-all duration-300 ">
                 <img 
-                  src="/BS Hori.png" 
+                  src="/black_sheep_white.png" 
                   alt="Black Sheep Logo"
-                  className="w-full transition-transform duration-300 bg-white group-hover:rotate-12 object-contain"
+                  className="w-full transition-transform duration-300 object-contain"
                 />
               </div>
             </Link>

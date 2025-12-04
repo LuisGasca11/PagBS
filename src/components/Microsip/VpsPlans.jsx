@@ -8,7 +8,7 @@ export default function VpsPlans() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/vps")
+    fetch("/api/vps")
       .then((res) => res.json())
       .then(setPlans)
       .catch(() => setPlans([]));

@@ -13,7 +13,7 @@ export default function AdminVpsPanel({ onClose }) {
   const modalRef = useRef();
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/vps")
+    fetch("/api/vps")
       .then((res) => res.json())
       .then((data) => {
         setPlans(data);
@@ -80,7 +80,7 @@ export default function AdminVpsPanel({ onClose }) {
       for (const { id } of items) {
         const plan = plans.find((p) => p.id === id);
 
-        await fetch(`http://localhost:3001/api/vps/${id}`, {
+        await fetch(`/api/vps/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -93,7 +93,7 @@ export default function AdminVpsPanel({ onClose }) {
       setChanges({});
       setConfirmData(null);
 
-      const refreshed = await fetch("http://localhost:3001/api/vps").then(r => r.json());
+      const refreshed = await fetch("/api/vps").then(r => r.json());
       setPlans(refreshed);
 
       setShowToast(true);

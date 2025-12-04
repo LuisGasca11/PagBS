@@ -63,7 +63,7 @@ export default function AdminHourlyPanel({ onClose, hourlyPricesDB }) {
 
     try {
       for (const [modulo, value] of items) {
-        await fetch(`http://localhost:3001/api/precios_hora/${modulo}`, {
+        await fetch(`/api/precios_hora/${modulo}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ costo_hora: value }),

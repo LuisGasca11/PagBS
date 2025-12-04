@@ -27,12 +27,12 @@ export default function ModulesList({
   );
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl shadow-lg p-6 overflow-visible">
       <h3 className="text-xl font-bold text-black mb-6">
         Módulos en suscripción
       </h3>
 
-      <div className="space-y-4">
+      <div className="space-y-4 overflow-visible">
         {visibleModules.map((m, i) => (
           <ModuleCard
             key={i}
