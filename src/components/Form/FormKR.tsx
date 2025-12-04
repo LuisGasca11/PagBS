@@ -1,10 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
-import { ArrowRight, CheckCircle, Shield, Zap } from "lucide-react"
-
+import { ArrowRight, CheckCircle, Shield, Zap, ArrowUp } from "lucide-react"
 
 export function ContactSection() {
+  const scrollToTop = () => {
+    window.scrollTo({ behavior: 'smooth', top: 0 });
+  };
+
   return (
     <section
       id="contact-section"
@@ -123,17 +125,35 @@ export function ContactSection() {
           {/* ITEMS BELOW */}
           <div className="flex flex-wrap justify-center items-center gap-8 mt-12 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-[oklch(45%_.15_280)]." />
+              <CheckCircle className="h-4 w-4 text-[oklch(45%_.15_280)]" />
               <span>Demo en 15 minutos</span>
             </div>
             <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-[oklch(45%_.15_280)]." />
+              <Shield className="h-4 w-4 text-[oklch(45%_.15_280)]" />
               <span>Sin compromiso</span>
             </div>
             <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-[oklch(45%_.15_280)]." />
+              <Zap className="h-4 w-4 text-[oklch(45%_.15_280)]" />
               <span>Respuesta en 24h</span>
             </div>
+          </div>
+
+          <div className="mt-12">
+            <button
+              onClick={scrollToTop}
+              className="
+                mx-auto flex items-center gap-2 px-6 py-3 rounded-xl
+                bg-white/5 hover:bg-white/10
+                border border-white/10 hover:border-white/20
+                text-white/80 hover:text-white
+                transition-all duration-300
+                hover:scale-105 active:scale-95
+                shadow-lg hover:shadow-xl
+              "
+            >
+              <ArrowUp className="h-4 w-4" />
+              <span className="font-medium">Regresar al inicio</span>
+            </button>
           </div>
         </div>
       </div>

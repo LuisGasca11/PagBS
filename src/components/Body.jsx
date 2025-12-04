@@ -3,8 +3,11 @@ import React, { useState, useMemo } from 'react';
 const Body = () => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleForm = () => {
-    window.location.href = '/form';
+  const scrollToTop = () => {
+    window.scrollTo({ 
+      top: 0, 
+      behavior: 'smooth' 
+    });
   };
 
   const gridRects = useMemo(() => {
@@ -241,13 +244,12 @@ const Body = () => {
             <span className="block">Conecta</span> con tu empresa y <span style={{color: '#ff8623'}}>maximiza el potencial</span> con un sistema ERP a tu medida.
           </h1>
         </div>
-
       </div>
 
       <div className="relative z-10 space-y-6 md:space-y-8 lg:space-y-10 max-w-4xl mt-16 md:mt-[120px] lg:mt-[160px] px-6 mb-20 md:mb-32 lg:mb-40">
       </div>
 
-      <div className="absolute bottom-[-220px] md:bottom-[-430px] lg:bottom-[-440px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-6xl px-4">
+      <div className="absolute bottom-[-160px] md:bottom-[-430px] lg:bottom-[-440px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-6xl px-4">
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-3">
           <img 
             alt="AI Dashboard preview" 
