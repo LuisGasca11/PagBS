@@ -23,7 +23,7 @@ import Sat from './components/Microsip/SAT';
 import Prices from './components/Microsip/Prices';
 
 //Modules
-import EditablePage from './components/Microsip/Moduls/EditablePage';
+import EditablePage from './components/Microsip/Moduls/1';
 
 function AppContent() {
   const location = useLocation();

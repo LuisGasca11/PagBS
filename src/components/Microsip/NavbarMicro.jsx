@@ -39,21 +39,42 @@ export default function NavBar({
     };
   }, [showMobileMenu]);
 
-  const isLoginPage = location.pathname === "/Prices" || location.pathname === "/EditablePage";
+  // Solo en /Prices se permite usar el panel de administración
+  const canUseAdmin = location.pathname === "/Prices";
+
+  const requirePricesForAdmin = () => {
+    alert("Para utilizar el panel de administración dirígete a la página de Precios (/Prices).");
+  };
+
+  const handleAdminClick = () => {
+    if (!canUseAdmin) return requirePricesForAdmin();
+    onOpenAdmin && onOpenAdmin();
+  };
+
+  const handleVpsClick = () => {
+    if (!canUseAdmin) return requirePricesForAdmin();
+    onOpenVpsAdmin && onOpenVpsAdmin();
+  };
+
+  const handleHourlyClick = () => {
+    if (!canUseAdmin) return requirePricesForAdmin();
+    onOpenHourlyAdmin && onOpenHourlyAdmin();
+  };
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-xl border-b ${
-          scrollY > 80 ? "bg-white/80 shadow-md border-gray-300" : "bg-white/40 border-transparent"
-        }`}
+        className={`fixed top-0 left-0 w-full z-50 
+        transition-all duration-300 backdrop-blur-xl
+        border-b border-transparent
+        ${scrollY > 80 ? "bg-white/80 shadow-md border-gray-300" : "bg-white/40"}
+      `}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex justify-between items-center">
-            {/* Logo o espacio vacío */}
             <div className="w-10"></div>
 
-            {/* Links - Desktop */}
+            {/* LINKS DESKTOP */}
             <div className="hidden md:flex justify-center gap-6 lg:gap-10 font-semibold text-gray-600 text-base lg:text-lg">
               {links.map((link, i) => (
                 <a
@@ -66,9 +87,10 @@ export default function NavBar({
               ))}
             </div>
 
-            {/* Botones de autenticación - Desktop */}
+            {/* LOGIN + ADMIN (DESKTOP) */}
             <div className="hidden md:flex items-center relative">
-              {isLoginPage && !isAuthenticated && (
+              {/* Botón de login SIEMPRE visible cuando no está autenticado */}
+              {!isAuthenticated && (
                 <button
                   onClick={onLoginClick}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-white backdrop-blur-xl transition shadow hover:bg-orange-600"
@@ -87,26 +109,28 @@ export default function NavBar({
                     <User className="w-4 h-4 text-black" />
                     <span className="text-sm text-black">{username}</span>
                     <ChevronDown
-                      className={`w-4 h-4 transition text-black ${showAdminMenu ? "rotate-180" : ""}`}
+                      className={`w-4 h-4 transition text-black ${
+                        showAdminMenu ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
 
                   {showAdminMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border flex flex-col py-2">
                       <button
-                        onClick={onOpenAdmin}
+                        onClick={handleAdminClick}
                         className="px-4 py-2 text-sm flex gap-2 items-center text-black hover:bg-gray-100"
                       >
                         <Settings className="w-4 h-4" /> Admin Precios
                       </button>
                       <button
-                        onClick={onOpenVpsAdmin}
+                        onClick={handleVpsClick}
                         className="px-4 py-2 text-sm flex gap-2 items-center text-black hover:bg-gray-100"
                       >
                         <Settings className="w-4 h-4" /> Admin VPS
                       </button>
                       <button
-                        onClick={onOpenHourlyAdmin}
+                        onClick={handleHourlyClick}
                         className="px-4 py-2 text-sm flex gap-2 items-center text-black hover:bg-gray-100"
                       >
                         <Settings className="w-4 h-4" /> Admin Hora
@@ -126,7 +150,7 @@ export default function NavBar({
               )}
             </div>
 
-            {/* Menú hamburguesa - Mobile */}
+            {/* BOTÓN MENÚ MOBILE */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
@@ -141,13 +165,15 @@ export default function NavBar({
         </div>
       </nav>
 
-      {/* Menú móvil */}
+      {/* MENÚ MOBILE */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowMobileMenu(false)}></div>
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowMobileMenu(false)}
+          ></div>
           <div className="fixed top-16 right-0 bottom-0 w-72 bg-white shadow-2xl overflow-y-auto">
             <div className="flex flex-col p-6 gap-4">
-              {/* Links móviles */}
               <div className="flex flex-col gap-3">
                 {links.map((link, i) => (
                   <a
@@ -161,9 +187,9 @@ export default function NavBar({
                 ))}
               </div>
 
-              {/* Botones de autenticación móvil */}
               <div className="mt-4 pt-4 border-t border-gray-200">
-                {isLoginPage && !isAuthenticated && (
+                {/* Login siempre disponible en mobile también */}
+                {!isAuthenticated && (
                   <button
                     onClick={() => {
                       onLoginClick();
@@ -185,7 +211,7 @@ export default function NavBar({
 
                     <button
                       onClick={() => {
-                        onOpenAdmin();
+                        handleAdminClick();
                         setShowMobileMenu(false);
                       }}
                       className="w-full px-4 py-2 text-left flex gap-2 items-center text-gray-700 hover:bg-gray-100 rounded-lg transition"
@@ -194,7 +220,7 @@ export default function NavBar({
                     </button>
                     <button
                       onClick={() => {
-                        onOpenVpsAdmin();
+                        handleVpsClick();
                         setShowMobileMenu(false);
                       }}
                       className="w-full px-4 py-2 text-left flex gap-2 items-center text-gray-700 hover:bg-gray-100 rounded-lg transition"
@@ -203,7 +229,7 @@ export default function NavBar({
                     </button>
                     <button
                       onClick={() => {
-                        onOpenHourlyAdmin();
+                        handleHourlyClick();
                         setShowMobileMenu(false);
                       }}
                       className="w-full px-4 py-2 text-left flex gap-2 items-center text-gray-700 hover:bg-gray-100 rounded-lg transition"

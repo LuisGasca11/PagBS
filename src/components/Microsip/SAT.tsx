@@ -1,8 +1,21 @@
-import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import MicrosipFooter from "./MicrosipFooter";
+import { useState, useEffect } from "react";
+import NavBar from "./NavbarMicro";
 
 export default function SatCompliance() {
+
+  const [scrollY, setScrollY] = useState(0);
+  
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     document.title = "Microsip | SAT";
@@ -13,55 +26,30 @@ export default function SatCompliance() {
     <>
     <div className="min-h-screen bg-white pt-24 pb-24 px-6">
 
-      <nav className={`fixed top-0  w-full z-50 nav-blur ${scrollY > 50 ? 'scrolled' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1 flex items-center justify-between">
-          
-          <div className="flex flex-col items-center gap-3">
-            <img 
-              src="/msppart.webp"
-              alt="black_sheep"
-              className="h-12 sm:h-14 object-contain"
-            />
-          </div>
-
-          <div className="hidden md:flex items-center gap-6 lg:gap-8 font-semibold text-gray-500 animate-slide-right">
-            <a 
-              href="/SistemaERP" 
-              className="hover:text-orange-500 transition-all duration-300 hover:scale-110 text-sm lg:text-base"
-            >
-              Sistema ERP
-            </a>
-
-            <a 
-              href="/Prices" 
-              className="hover:text-orange-500 transition-all duration-300 hover:scale-110 text-sm lg:text-base"
-            >
-              Precios
-            </a>
-
-            <a 
-              href="/form" 
-              className="hover:text-orange-500 transition-all duration-300 hover:scale-110 text-sm lg:text-base"
-            >
-              Contáctanos
-            </a>
-          </div>
-
-          {/* MOBILE MENU BUTTON */}
-          <div className="md:hidden">
-            <button className="text-gray-600 hover:text-orange-500 transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 6h16M4 12h16M4 18h16" 
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
+      <div className="relative w-full">
+        <a
+          href="/MicroPage"
+          className={`fixed top-4 left-4 z-[60] transition-all duration-300 
+            ${scrollY > 80 ? "scale-75 translate-y-[-10px]" : "scale-100"}
+          `}
+        >
+          <img
+            src="/msppart.webp"
+            alt="logo"
+            className="h-12 sm:h-12 object-contain"
+          />
+        </a>
+      
+        <NavBar
+          isAuthenticated={isAuthenticated}
+          username={username}
+          onLoginClick={() => {}}
+          onLogoutClick={() => {}}
+          onOpenAdmin={() => {}}
+          onOpenVpsAdmin={() => {}}
+          onOpenHourlyAdmin={() => {}}
+        />
+      </div>
       
       <div className="max-w-4xl mx-auto">
 
