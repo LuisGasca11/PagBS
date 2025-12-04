@@ -35,7 +35,7 @@ export default function VpsPlans() {
               <p className="text-4xl font-bold">${formatNumber(p.precio_mensual_nube)}</p>
               <p className="opacity-80 text-sm">/mes en la nube</p>
 
-              <button className="mt-4 bg-black text-white font-semibold px-8 py-3 rounded-full hover:bg-cyan-300 transition">
+              <button className="mt-4 bg-black text-white font-semibold px-8 py-3 rounded-full hover:bg-gray-400 transition">
                 Seleccionar
               </button>
             </div>

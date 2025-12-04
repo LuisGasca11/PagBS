@@ -39,7 +39,6 @@ export default function NavBar({
     };
   }, [showMobileMenu]);
 
-  // Solo en /Prices se permite usar el panel de administración
   const canUseAdmin = location.pathname === "/Prices";
 
   const requirePricesForAdmin = () => {
@@ -74,7 +73,6 @@ export default function NavBar({
           <div className="flex justify-between items-center">
             <div className="w-10"></div>
 
-            {/* LINKS DESKTOP */}
             <div className="hidden md:flex justify-center gap-6 lg:gap-10 font-semibold text-gray-600 text-base lg:text-lg">
               {links.map((link, i) => (
                 <a
@@ -87,9 +85,7 @@ export default function NavBar({
               ))}
             </div>
 
-            {/* LOGIN + ADMIN (DESKTOP) */}
             <div className="hidden md:flex items-center relative">
-              {/* Botón de login SIEMPRE visible cuando no está autenticado */}
               {!isAuthenticated && (
                 <button
                   onClick={onLoginClick}
@@ -150,7 +146,6 @@ export default function NavBar({
               )}
             </div>
 
-            {/* BOTÓN MENÚ MOBILE */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
@@ -165,7 +160,6 @@ export default function NavBar({
         </div>
       </nav>
 
-      {/* MENÚ MOBILE */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div
@@ -188,7 +182,6 @@ export default function NavBar({
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-200">
-                {/* Login siempre disponible en mobile también */}
                 {!isAuthenticated && (
                   <button
                     onClick={() => {

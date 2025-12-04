@@ -5,8 +5,9 @@ export default function calculateTotals({
   pricesDB,
   paymentFrequency,
 }) {
+
   const subtotalModulos = Object.entries(moduleSelections).reduce(
-    (sum, [moduleName, { plan }]) => sum + (pricesDB[moduleName]?.[plan] || 0),
+    (sum, [moduleName, { plan }]) => sum + (pricesDB[moduleName]?.[plan]?.costo || 0),
     0
   );
 
@@ -20,8 +21,9 @@ export default function calculateTotals({
   );
 
   const subtotalForDiscount = modulesForDiscount.reduce((sum, [name, { plan }]) => {
-    return sum + (pricesDB[name]?.[plan] || 0);
+    return sum + (pricesDB[name]?.[plan]?.costo || 0);
   }, 0);
+
 
   const freqDiscount =
     paymentFrequency === "Semestral"

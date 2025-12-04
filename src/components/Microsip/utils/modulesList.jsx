@@ -96,5 +96,6 @@ export default [
     name: "PDAS",
     color: "#0EA5E9",
     icon: <img src="/icons/sics.png" className="w-6 h-6" />,
+    requiresAuth: true,
   },
 ];

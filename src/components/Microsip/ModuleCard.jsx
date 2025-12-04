@@ -15,6 +15,7 @@ export default function ModuleCard({
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
   const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const planLabels = {
     basico: "Básico (1 usuario)",
@@ -27,6 +28,7 @@ export default function ModuleCard({
 
   const planKeys = Object.keys(planLabels);
 
+  /** 📌 Posicionamiento del dropdown */
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -43,47 +45,59 @@ export default function ModuleCard({
     }
   }, [isOpen]);
 
-  // Cerrar al hacer click afuera
+  /** 📌 Click fuera del selector (SOLO si no es botón ni dropdown) */
   useEffect(() => {
     if (!isOpen) return;
+
     const handleClickOutside = (e) => {
-      if (buttonRef.current && !buttonRef.current.contains(e.target)) {
+      const clickedButton = buttonRef.current?.contains(e.target);
+      const clickedDropdown = dropdownRef.current?.contains(e.target);
+
+      if (!clickedButton && !clickedDropdown) {
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
+  /** 📌 Selección del plan */
   const handleSelect = (key) => {
+    const costo = prices[key]?.costo;
+    if (!costo || costo <= 0) return;
+
     setSelectedPlan(key);
     setIsOpen(false);
-    onSelect(name, key, prices[key]);
-    onSelect(name, key, prices[key]?.costo); 
+    onSelect(name, key, costo);
   };
 
-  const dropdown = isOpen && ReactDOM.createPortal(
-    <div
-      style={dropdownStyle}
-      className="z-[99999] bg-white border border-gray-200 rounded-lg shadow-2xl max-h-60 overflow-y-auto"
-    >
-      {planKeys.map((key) => (
-        <button
-          key={key}
-          onClick={() => handleSelect(key)}
-          disabled={prices[key]?.costo <= 0}
-          className={`w-full px-4 py-2.5 text-left ${
-            prices[key]?.costo > 0
-              ? "text-black hover:bg-orange-50"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
+  /** 📌 Dropdown montado como portal */
+  const dropdown = isOpen
+    ? ReactDOM.createPortal(
+        <div
+          ref={dropdownRef}
+          style={dropdownStyle}
+          className="z-[99999] bg-white border border-gray-200 rounded-lg shadow-2xl max-h-60 overflow-y-auto"
         >
-          {planLabels[key]} — ${prices[key]?.costo}
-        </button>
-      ))}
-    </div>,
-    document.body
-  );
+          {planKeys.map((key) => (
+            <button
+              key={key}
+              onClick={() => handleSelect(key)}
+              disabled={prices[key]?.costo <= 0}
+              className={`w-full px-4 py-2.5 text-left ${
+                prices[key]?.costo > 0
+                  ? "text-black hover:bg-orange-50"
+                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {planLabels[key]} — ${prices[key]?.costo || 0}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )
+    : null;
 
   return (
     <div
@@ -103,7 +117,7 @@ export default function ModuleCard({
         {isSelected ? (
           <div className="flex items-center gap-2">
             <span className="font-bold text-orange-600">
-              ${prices[selectedPlan]?.costo}
+              ${prices[selectedPlan]?.costo || 0}
             </span>
             <button
               onClick={() => {

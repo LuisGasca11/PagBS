@@ -7,7 +7,7 @@ const modules = [
     category: "Administra",
     items: [
       { name: "Bancos", image: "/icons/bancos.png", link: "/EditablePage" },
-      { name: "Contabilidad", image: "/icons/cont_elect.png", link: "https://www.microsip.com/modulos/contabilidad" },
+      { name: "Contabilidad", image: "/icons/cont_elect.png", link: "/Contabilidad" },
       { name: "Nómina", image: "/icons/nomina.png", link: "https://www.microsip.com/modulos/nomina" },
     ],
   },

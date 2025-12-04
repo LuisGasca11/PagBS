@@ -24,6 +24,7 @@ import Prices from './components/Microsip/Prices';
 
 //Modules
 import EditablePage from './components/Microsip/Moduls/1';
+import Contabilidad from './components/Microsip/Moduls/2';
 
 function AppContent() {
   const location = useLocation();
@@ -34,7 +35,8 @@ function AppContent() {
     "/SistemaMicrosip",
     "/FormMicro",
     "/sat",
-    "/EditablePage"
+    "/EditablePage",
+    "/Contabilidad",
   ];
 
   const hideUI = hiddenUIRoutes.includes(location.pathname);
@@ -68,6 +70,7 @@ function AppContent() {
         <Route path="/SistemaMicrosip" element={<SistemaMicrosip />} />
 
         <Route path="/EditablePage" element={<EditablePage />} />
+        <Route path="/Contabilidad" element={<Contabilidad />} />
       </Routes>
 
       {!hideUI && <FooterSection />}

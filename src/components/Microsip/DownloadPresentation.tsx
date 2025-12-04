@@ -375,7 +375,6 @@ export default function DownloadPresentation({
 
   return (
     <>
-      {/* Botón para abrir el modal */}
       <div className="flex justify-center mt-10">
         <button
           onClick={() => setIsModalOpen(true)}
@@ -386,7 +385,7 @@ export default function DownloadPresentation({
             font-semibold 
             rounded-xl 
             shadow-md 
-            hover:bg-cyan-300
+            hover:bg-gray-400
             hover:shadow-lg 
             active:scale-95
             transition-all 

@@ -122,12 +122,13 @@ export default function MicrosipPricing() {
   }, []);
 
   const totals = calculateTotals({
-    moduleSelections,
-    hourRentals,
+    moduleSelections: JSON.parse(JSON.stringify(moduleSelections)),
+    hourRentals: JSON.parse(JSON.stringify(hourRentals)),
     modulesList,
     pricesDB,
     paymentFrequency,
   });
+
 
   const handleLogout = () => {
     setShowLogoutAnimation(true);
