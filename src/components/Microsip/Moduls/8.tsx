@@ -51,6 +51,12 @@ const CuentasCobrar: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Controla el saldo de tus clientes con crédito y plazos de pago
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img

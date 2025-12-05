@@ -50,6 +50,12 @@ const Ventas: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Registra y controla el ciclo de ventas, desde la cotización hasta la entrega del producto
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -405,15 +411,15 @@ const Ventas: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">INVENTARIOS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">INVENTARIOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Registra las entradas y salidas de forma automática de las ventas y devoluciones de ventas
+                                        • Registra las entradas y salidas de forma automática de las ventas y devoluciones de ventas
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Verifica las existencias
+                                        • Verifica las existencias
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Maneja las unidades comprometidas en los pedidos
+                                        • Maneja las unidades comprometidas en los pedidos
                                     </p>
                                 </div>
                             </div>
@@ -429,10 +435,10 @@ const Ventas: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Registra los cargos y créditos a los clientes
-                                        -Genera las pólizas contables de las ventas y devoluciones
+                                        • Registra los cargos y créditos a los clientes
+                                        • Genera las pólizas contables de las ventas y devoluciones
                                     </p>
                                 </div>
                             </div>    
@@ -448,9 +454,9 @@ const Ventas: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR COBRAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR COBRAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Genera los cargos por ventas y los créditos por devoluciones
+                                        • Genera los cargos por ventas y los créditos por devoluciones
                                     </p>
                                 </div>
                             </div>

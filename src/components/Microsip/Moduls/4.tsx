@@ -51,6 +51,12 @@ const CeoMovil: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Visualiza en cualquier momento la información más importante de tu empresa desde la comodidad de un dispositivo móvil
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -98,7 +104,7 @@ const CeoMovil: React.FC = () => {
                                 Valor de:
                             </h3>
                             <p className="font-medium text-gray-600 mb-2">Inventario:</p>
-                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside ml-7">
                                 <li>Periodo</li>
                                 <li>Artículos</li>
                                 <li>Línea de artículo</li>
@@ -107,7 +113,7 @@ const CeoMovil: React.FC = () => {
                             </ul>
 
                             <p className="font-medium text-gray-600 mb-2">Compras:</p>
-                            <ul className="text-gray-600 space-y-1 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 list-disc list-inside ml-7">
                                 <li>Por artículo</li>
                                 <li>Por proveedor</li>
                             </ul>
@@ -119,14 +125,14 @@ const CeoMovil: React.FC = () => {
                             </h3>
 
                             <p className="font-medium text-gray-600 mb-2">Saldo de tus clientes:</p>
-                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside ml-7">
                                 <li>Vencido</li>
                                 <li>Por vencer</li>
                                 <li>Cobros por depositar</li>
                             </ul>
 
                             <p className="font-medium text-gray-600 mb-2">Cuentas por cobrar:</p>
-                            <ul className="text-gray-600 space-y-1 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 list-disc list-inside ml-7">
                                 <li>Periodo</li>
                                 <li>Artículos</li>
                                 <li>Línea de artículo</li>
@@ -143,13 +149,13 @@ const CeoMovil: React.FC = () => {
                             </h3>
 
                             <p className="font-medium text-gray-600 mb-2">Saldo de tus proveedores:</p>
-                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 mb-4 list-disc list-inside ml-7">
                                 <li>Vencido</li>
                                 <li>Por vencer</li>
                             </ul>
 
                             <p className="font-medium text-gray-600 mb-2">Cuentas por pagar:</p>
-                            <ul className="text-gray-600 space-y-1 list-disc list-inside">
+                            <ul className="text-gray-600 space-y-1 list-disc list-inside ml-7">
                                 <li>Periodo</li>
                                 <li>Artículos</li>
                                 <li>Línea de artículo</li>

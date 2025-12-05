@@ -28,7 +28,6 @@ export default function ModuleCard({
 
   const planKeys = Object.keys(planLabels);
 
-  /** 📌 Posicionamiento del dropdown */
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -45,7 +44,6 @@ export default function ModuleCard({
     }
   }, [isOpen]);
 
-  /** 📌 Click fuera del selector (SOLO si no es botón ni dropdown) */
   useEffect(() => {
     if (!isOpen) return;
 
@@ -62,7 +60,6 @@ export default function ModuleCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  /** 📌 Selección del plan */
   const handleSelect = (key) => {
     const costo = prices[key]?.costo;
     if (!costo || costo <= 0) return;
@@ -72,7 +69,6 @@ export default function ModuleCard({
     onSelect(name, key, costo);
   };
 
-  /** 📌 Dropdown montado como portal */
   const dropdown = isOpen
     ? ReactDOM.createPortal(
         <div

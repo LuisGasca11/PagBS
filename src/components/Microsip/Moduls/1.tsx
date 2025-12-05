@@ -42,16 +42,22 @@ const Bancos: React.FC = () => {
                 />
             </div>
 
-
             <section className="bg-emerald-50 text-emerald-400 w-full py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 lg:py-16">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                         <div className="flex-1 text-center sm:text-left">
                             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Bancos</h1>
-                            <p className="text-base sm:text-lg text-gray-600">
+                            <p className="text-base sm:text-lg text-gray-600 mb-8">
                                 Lleva el control de las diferentes cuentas bancarias y el detalle de los movimientos.
                             </p>
+                            
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
+                        
                         <div className="flex-shrink-0">
                             <img
                                 src="/icons/bancos.png"

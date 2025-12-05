@@ -51,6 +51,12 @@ const CuentasPagar: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Domina tus pasivos, sus fechas de pago y dirige una empresa sana.
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -204,7 +210,7 @@ const CuentasPagar: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">BANCOS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">BANCOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
                                         Registra automáticamente el retiro y la póliza correspondientes de los pagos a proveedores
                                     </p>
@@ -222,7 +228,7 @@ const CuentasPagar: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">COMPRAS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">COMPRAS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
                                         Registra los cargos a los proveedores por las compras realizadas
                                     </p>
@@ -240,7 +246,7 @@ const CuentasPagar: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
                                         Genera las pólizas de los cargos y créditos de los proveedores
                                     </p>

@@ -50,6 +50,12 @@ const Compras: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Optimiza tu presupuesto y haz rentable tu negocio organizando tu proceso de compras
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -312,7 +318,7 @@ const Compras: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">INVENTARIOS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">INVENTARIOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
                                         Registra las entradas y salidas del inventarios
                                     </p>
@@ -336,7 +342,7 @@ const Compras: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR PAGAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR PAGAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
                                         Genera los cargos a los proveedores por compras
                                     </p>
@@ -357,7 +363,7 @@ const Compras: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
                                         Genera las pólizas correspondientes a las compras y a las devoluciones a proveedores
                                     </p>

@@ -14,7 +14,7 @@ export default function SubscriptionInfo() {
     <div className="w-full flex flex-col mb-16">
 
         <div className="w-full max-w-6xl mb-14">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-black">
+          <h1 className="text-4xl md:text-4xl lg:text-7xl font-bold leading-tight text-black">
             Conoce el precio estimado de{" "}
             <span className="text-orange-500 whitespace-nowrap">Microsip</span>{" "}
             <span className="whitespace-nowrap">para tu empresa</span>

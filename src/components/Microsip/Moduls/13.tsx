@@ -50,6 +50,12 @@ const AdminSuc: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Sincroniza tus pedidos y existencias con Shopify o MercadoLibre
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -141,7 +147,7 @@ const AdminSuc: React.FC = () => {
 
                             <p className="font-medium mb-2">Por sucursal:</p>
 
-                            <ul className="list-disc list-inside ml-4 text-sm space-y-1">
+                            <ul className="list-disc list-inside ml-7 text-sm space-y-1">
                                 <li>Permisos y restricciones por usuario</li>
                                 <li>Vendedores</li>
                                 <li>Cobradores</li>
@@ -170,10 +176,10 @@ const AdminSuc: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR PAGAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Controla la información de los pagos en cada sucursal
+                                        • Controla la información de los pagos en cada sucursal
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Visualiza reportes por sucursal
+                                        • Visualiza reportes por sucursal
                                     </p>
                                 </div>
                             </div>
@@ -191,7 +197,7 @@ const AdminSuc: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR COBRAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Se reflejan los pagos de los clientes que reciben los vendedores en ruta
+                                        • Se reflejan los pagos de los clientes que reciben los vendedores en ruta
                                     </p>
                                 </div>
                             </div>
@@ -207,15 +213,15 @@ const AdminSuc: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">INVENTARIOS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">INVENTARIOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Concentra la información, los movimientos y las existencias de tus sucursales
+                                        • Concentra la información, los movimientos y las existencias de tus sucursales
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Visualiza reportes por sucursal
+                                        • Visualiza reportes por sucursal
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Realiza traspasos entre sucursales
+                                        • Realiza traspasos entre sucursales
                                     </p>
                                 </div>
                             </div>
@@ -233,7 +239,7 @@ const AdminSuc: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">VENTAS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Genera los pedidos de los clientes realizados durante la visita del vendedor
+                                        • Genera los pedidos de los clientes realizados durante la visita del vendedor
                                     </p>
                                 </div>
                             </div>
@@ -251,10 +257,10 @@ const AdminSuc: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">COMPRAS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Gestiona la información de las compras realizadas para cada sucursal
+                                        • Gestiona la información de las compras realizadas para cada sucursal
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Visualiza reportes por sucursal
+                                        • Visualiza reportes por sucursal
                                     </p>
                                 </div>
                             </div>
@@ -274,10 +280,10 @@ const AdminSuc: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">PUNTO DE VENTA</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Gestiona reportes
+                                        • Gestiona reportes
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Consulta existencias entre sucursales
+                                        • Consulta existencias entre sucursales
                                     </p>
                                 </div>
                             </div>

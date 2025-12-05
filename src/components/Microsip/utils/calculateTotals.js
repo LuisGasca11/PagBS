@@ -1,13 +1,14 @@
 export default function calculateTotals({
   moduleSelections,
   hourRentals,
-  modulesList,
   pricesDB,
   paymentFrequency,
+  userPlan,
+  userCount
 }) {
-
   const subtotalModulos = Object.entries(moduleSelections).reduce(
-    (sum, [moduleName, { plan }]) => sum + (pricesDB[moduleName]?.[plan]?.costo || 0),
+    (sum, [moduleName, { plan }]) =>
+      sum + (pricesDB[moduleName]?.[plan]?.costo || 0),
     0
   );
 
@@ -20,32 +21,39 @@ export default function calculateTotals({
     ([name]) => name !== "PDAS"
   );
 
-  const subtotalForDiscount = modulesForDiscount.reduce((sum, [name, { plan }]) => {
-    return sum + (pricesDB[name]?.[plan]?.costo || 0);
-  }, 0);
-
+  const subtotalForDiscount = modulesForDiscount.reduce(
+    (sum, [name, { plan }]) =>
+      sum + (pricesDB[name]?.[plan]?.costo || 0),
+    0
+  );
 
   const freqDiscount =
-    paymentFrequency === "Semestral"
-      ? 0.05
-      : paymentFrequency === "Anual"
-      ? 0.1
-      : 0;
+    paymentFrequency === "Semestral" ? 0.05 :
+    paymentFrequency === "Anual" ? 0.1 : 0;
 
-  const moduleCount = modulesForDiscount.length;
   const volumeDiscount =
-    moduleCount >= 5 ? 0.2 : moduleCount >= 3 ? 0.15 : moduleCount === 2 ? 0.1 : 0;
+    modulesForDiscount.length >= 5 ? 0.2 :
+    modulesForDiscount.length >= 3 ? 0.15 :
+    modulesForDiscount.length === 2 ? 0.1 : 0;
 
-  const totalDiscountPercent = freqDiscount + volumeDiscount;
-  const discountAmount = subtotalForDiscount * totalDiscountPercent;
+  const discountAmount = subtotalForDiscount * (freqDiscount + volumeDiscount);
 
-  const total = subtotalModulos - discountAmount + subtotalRentaHora;
+  const totalMXN = subtotalModulos - discountAmount + subtotalRentaHora;
+
+  const totalUSD = (userPlan?.precio_mensual_nube || 0) * userCount;
+
+  const totalGlobal = {
+    mxn: totalMXN,
+    usd: totalUSD
+  };
 
   return {
     subtotalModulos,
     subtotalRentaHora,
     subtotalForDiscount,
     discountAmount,
-    total,
+    totalMXN,
+    totalUSD,
+    totalGlobal   
   };
 }

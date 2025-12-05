@@ -40,7 +40,7 @@ export default function EquipoPage() {
     },
     {
       name: "Alfredo Jones",
-      role: "Finall Boss",
+      role: "Final Boss",
       description:
         "Crack de cracks en black_sheep®",
       image: "/Team/jones.png",

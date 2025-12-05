@@ -50,6 +50,12 @@ const EnRuta: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Sincroniza tus pedidos y existencias con Shopify o MercadoLibre
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -80,7 +86,7 @@ const EnRuta: React.FC = () => {
                             </div>
 
                             <p className="font-medium mb-2">Información de los clientes</p>
-                            <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                            <ul className="list-disc list-inside ml-7 space-y-1 text-sm">
                                 <li>Saldos vencidos y por vencer</li>
                                 <li>Descuentos por pronto pago</li>
                                 <li>Políticas de crédito</li>
@@ -92,7 +98,7 @@ const EnRuta: React.FC = () => {
                             </ul>
 
                             <p className="font-medium mt-6 mb-2">Información de los artículos</p>
-                            <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                            <ul className="list-disc list-inside ml-7 space-y-1 text-sm">
                                 <li>Precios</li>
                                 <li>Existencias</li>
                                 <li>Descuentos de los productos</li>
@@ -112,7 +118,7 @@ const EnRuta: React.FC = () => {
                             </ul>
 
                             <p className="font-medium mt-6 mb-2">Aplicarlos:</p>
-                            <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                            <ul className="list-disc list-inside ml-7 space-y-1 text-sm">
                                 <li>Por antigüedad a las facturas</li>
                                 <li>En forma individual</li>
                                 <li>Como anticipo</li>
@@ -133,7 +139,7 @@ const EnRuta: React.FC = () => {
                             </ul>
 
                             <p className="font-medium mt-6 mb-2">Información</p>
-                            <ul className="list-disc list-inside ml-4 space-y-1 text-sm">
+                            <ul className="list-disc list-inside ml-7 space-y-1 text-sm">
                                 <li>Actividad de cada vendedor</li>
                                 <li>Reportes de ventas por ruta</li>
                                 <li>Historial de visitas realizadas</li>
@@ -159,7 +165,7 @@ const EnRuta: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR COBRAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Se reflejan los pagos de los clientes que reciben los vendedores en ruta
+                                        • Se reflejan los pagos de los clientes que reciben los vendedores en ruta
                                     </p>
                                 </div>
                             </div>
@@ -177,7 +183,7 @@ const EnRuta: React.FC = () => {
                                 <div className="flex-1">
                                     <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">VENTAS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Genera los pedidos de los clientes realizados durante la visita del vendedor
+                                        • Genera los pedidos de los clientes realizados durante la visita del vendedor
                                     </p>
                                 </div>
                             </div>

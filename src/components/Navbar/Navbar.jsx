@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import GooeyNav from '../ReactBits/GooeyNav';
+import { X, Home, Briefcase, Users, Mail } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeItem, setActiveItem] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,18 +28,12 @@ const Navbar = () => {
   }, [isMenuOpen]);
 
   const handleMenuToggle = () => {
-    if (!isMenuOpen) {
-      setIsMenuOpen(true);
-      setIsAnimating(true);
-    } else {
-      setIsAnimating(false);
-      setTimeout(() => setIsMenuOpen(false), 300);
-    }
+    setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleNavClick = (href) => {
-    setIsAnimating(false);
-    setTimeout(() => setIsMenuOpen(false), 300);
+  const handleNavClick = (href, index) => {
+    setActiveItem(index);
+    setIsMenuOpen(false);
 
     if (href.startsWith('#')) {
       setTimeout(() => {
@@ -47,210 +41,295 @@ const Navbar = () => {
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, 350);
+      }, 300);
     }
   };
 
   const menuItems = [
-    { label: "Inicio", href: "#inicio" },
-    { label: "Proyectos", href: "#proyects" },
-    { label: "Equipo", href: "#equipo" },
-    { label: "Contacto", href: "/form" } 
+    { label: "Inicio", href: "#inicio", icon: Home },
+    { label: "Proyectos", href: "#proyects", icon: Briefcase },
+    { label: "Equipo", href: "#equipo", icon: Users },
+    { label: "Contacto", href: "/form", icon: Mail }
   ];
 
   return (
-    <nav className={`
-      fixed w-full top-0 z-50 transition-all duration-300
-      ${scrolled 
-        ? 'bg-black/95 backdrop-blur-lg shadow-lg border-b border-gray-800' 
-        : 'bg-black/80 backdrop-blur-md border-b border-gray-800/50'
-      }
-    `}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center space-x-3 z-10">
-            <Link 
-              to="/#inicio"
-              className="group flex items-center space-x-3 transition-transform duration-300 hover:scale-105"
-            >
-              <div className="w-40 h-10 aspect-video rounded-lg flex items-center justify-center shadow-md transition-all duration-300 ">
-                <img 
-                  src="/black_sheep_white.png" 
-                  alt="Black Sheep Logo"
-                  className="w-full transition-transform duration-300 object-contain"
-                />
-              </div>
-            </Link>
-          </div>
-
-          <div className="hidden md:flex items-center justify-center flex-1">
-            <GooeyNav items={menuItems} />
-          </div>
-
-          <div className="hidden md:block w-10"></div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden z-50">
-            <button
-              onClick={handleMenuToggle}
-              className={`
-                text-white focus:outline-none rounded-lg p-2 transition-all duration-300
-                ${isMenuOpen 
-                  ? 'bg-white/20 hover:bg-white/25 rotate-90' 
-                  : 'bg-white/10 hover:bg-white/15 hover:scale-110'
-                }
-              `}
-              aria-label="Toggle menu"
-            >
-              <svg 
-                className="h-6 w-6 transition-transform duration-300" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
+    <>
+      <nav className={`
+        fixed w-full top-0 z-50 transition-all duration-300
+        ${scrolled 
+          ? 'bg-black/95 backdrop-blur-lg shadow-lg border-b border-gray-800' 
+          : 'bg-black/80 backdrop-blur-md border-b border-gray-800/50'
+        }
+      `}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            
+            {/* Logo */}
+            <div className="flex-shrink-0 flex items-center space-x-3 z-10">
+              <Link 
+                to="/#inicio"
+                className="group flex items-center space-x-3 transition-transform duration-300 hover:scale-105"
               >
-                {isMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <div className="w-40 h-10 rounded-lg flex items-center justify-center shadow-md transition-all duration-300">
+                  <img 
+                    src="/black_sheep_white.png" 
+                    alt="Black Sheep Logo"
+                    className="w-full transition-transform duration-300 object-contain group-hover:brightness-110"
+                  />
+                </div>
+              </Link>
+            </div>
+
+            {/* Desktop Menu - Mejorado */}
+            <div className="hidden md:flex items-center justify-center flex-1 gap-2">
+              {menuItems.map((item, index) => {
+                const Icon = item.icon;
+                return item.href.startsWith('#') ? (
+                  <button
+                    key={index}
+                    onClick={() => handleNavClick(item.href, index)}
+                    className={`
+                      group relative px-6 py-2.5 rounded-xl font-medium
+                      transition-all duration-300 overflow-hidden
+                      flex items-center gap-2
+                      ${activeItem === index 
+                        ? 'text-white bg-white/15' 
+                        : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                    <span className="relative z-10">{item.label}</span>
+                    
+                    {/* Efecto hover gradiente */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Brillo animado */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                      <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
+                    </div>
+
+                    {/* Borde inferior activo */}
+                    {activeItem === index && (
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" />
+                    )}
+                  </button>
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
+                  <Link
+                    key={index}
+                    to={item.href}
+                    onClick={() => handleNavClick(item.href, index)}
+                    className={`
+                      group relative px-6 py-2.5 rounded-xl font-medium
+                      transition-all duration-300 overflow-hidden
+                      flex items-center gap-2
+                      ${activeItem === index 
+                        ? 'text-white bg-white/15' 
+                        : 'text-gray-300 hover:text-white hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                    <span className="relative z-10">{item.label}</span>
+                    
+                    {/* Efecto hover gradiente */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Brillo animado */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                      <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
+                    </div>
 
-          {/* Mobile Menu Overlay */}
-          {(isMenuOpen || isAnimating) && (
-            <>
-              {/* Backdrop con blur */}
-              <div 
-                className={`
-                  md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40 mt-16
-                  transition-opacity duration-300
-                  ${isAnimating ? 'opacity-100' : 'opacity-0'}
-                `}
+                    {/* Borde inferior activo */}
+                    {activeItem === index && (
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="hidden md:block w-10"></div>
+
+            {/* Mobile Menu Button - Hamburger Animado */}
+            <div className="md:hidden z-50">
+              <button
                 onClick={handleMenuToggle}
-              />
-
-              {/* Menu Container */}
-              <div className={`
-                md:hidden fixed inset-x-0 top-20 z-40 px-4
-                transition-all duration-300 ease-out
-                ${isAnimating 
-                  ? 'opacity-100 translate-y-0' 
-                  : 'opacity-0 -translate-y-4'
-                }
-              `}>
-                <div className="bg-gradient-to-br from-[#0E0F15] to-[#1a1b24] border border-gray-700/50 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-                  
-                  {/* Menu Items */}
-                  <div className="flex flex-col space-y-3 relative z-10">
-                    {menuItems.map((item, index) => (
-                      <div
-                        key={index}
-                        className={`
-                          transition-all duration-500 ease-out
-                          ${isAnimating 
-                            ? 'opacity-100 translate-x-0' 
-                            : 'opacity-0 translate-x-8'
-                          }
-                        `}
-                        style={{
-                          transitionDelay: isAnimating ? `${index * 80 + 150}ms` : '0ms'
-                        }}
-                      >
-                        {item.href.startsWith('#') ? (
-                          <button
-                            onClick={() => handleNavClick(item.href)}
-                            className="
-                              text-white hover:text-white py-4 px-6 rounded-xl 
-                              bg-white/5 hover:bg-white/10 transition-all duration-300 
-                              text-center font-medium w-full
-                              border border-white/10 hover:border-white/20
-                              transform hover:scale-[1.02] active:scale-95
-                              shadow-lg hover:shadow-xl
-                              relative overflow-hidden group
-                            "
-                          >
-                            <span className="relative z-10">{item.label}</span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </button>
-                        ) : (
-                          <Link
-                            to={item.href}
-                            onClick={() => handleNavClick(item.href)}
-                            className="
-                              text-white hover:text-white py-4 px-6 rounded-xl 
-                              bg-white/5 hover:bg-white/10 transition-all duration-300 
-                              text-center font-medium block w-full
-                              border border-white/10 hover:border-white/20
-                              transform hover:scale-[1.02] active:scale-95
-                              shadow-lg hover:shadow-xl
-                              relative overflow-hidden group
-                            "
-                          >
-                            <span className="relative z-10">{item.label}</span>
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          </Link>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Efectos decorativos de fondo */}
-                  <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
-                    <div className={`
-                      absolute -top-10 -right-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl
-                      transition-all duration-1000
-                      ${isAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}
-                    `} />
-                    <div className={`
-                      absolute -bottom-10 -left-10 w-28 h-28 bg-blue-500/20 rounded-full blur-2xl
-                      transition-all duration-1000 delay-200
-                      ${isAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}
-                    `} />
-                    <div className={`
-                      absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-pink-500/10 rounded-full blur-3xl
-                      transition-all duration-1000 delay-400
-                      ${isAnimating ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}
-                    `} />
-                  </div>
-
-                  {/* Borde animado */}
-                  <div className={`
-                    absolute inset-0 rounded-2xl
-                    bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20
-                    opacity-0 group-hover:opacity-100 transition-opacity duration-500
-                    blur-sm
+                className="relative w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 focus:outline-none hover:scale-110 active:scale-95"
+                aria-label="Toggle menu"
+              >
+                <div className="w-5 h-4 flex flex-col justify-between">
+                  <span className={`
+                    block h-0.5 w-full bg-white rounded-full transition-all duration-300 origin-center
+                    ${isMenuOpen ? 'rotate-45 translate-y-[7px]' : ''}
+                  `} />
+                  <span className={`
+                    block h-0.5 w-full bg-white rounded-full transition-all duration-300
+                    ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}
+                  `} />
+                  <span className={`
+                    block h-0.5 w-full bg-white rounded-full transition-all duration-300 origin-center
+                    ${isMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''}
                   `} />
                 </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-                {/* Botón Cerrar */}
-                <div className={`
-                  mt-4 flex justify-center
-                  transition-all duration-500
-                  ${isAnimating ? 'opacity-100 translate-y-0 delay-500' : 'opacity-0 translate-y-4'}
-                `}>
-                  <button
-                    onClick={handleMenuToggle}
-                    className="
-                      text-white/90 hover:text-white py-3 px-8 rounded-full
-                      bg-white/10 hover:bg-white/20 transition-all duration-300
-                      border border-white/20 hover:border-white/40
-                      text-sm font-medium backdrop-blur-sm
-                      transform hover:scale-105 active:scale-95
-                      shadow-lg hover:shadow-xl
-                    "
-                  >
-                    Cerrar Menú
-                  </button>
+      {/* Mobile Menu - Pantalla Completa */}
+      <div className={`
+        md:hidden fixed inset-0 z-40 transition-all duration-500 ease-out
+        ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}
+      `}>
+        {/* Backdrop */}
+        <div 
+          className={`
+            absolute inset-0 bg-gradient-to-br from-black/95 via-purple-900/20 to-black/95 backdrop-blur-xl
+            transition-opacity duration-500
+            ${isMenuOpen ? 'opacity-100' : 'opacity-0'}
+          `}
+          onClick={handleMenuToggle}
+        />
+
+        {/* Menu Content */}
+        <div className={`
+          relative h-full flex flex-col justify-center items-center px-8
+          transition-all duration-700 ease-out
+          ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
+        `}>
+          
+          {/* Close Button */}
+          <button
+            onClick={handleMenuToggle}
+            className={`
+              absolute top-8 right-8 p-3 rounded-full bg-white/10 hover:bg-white/20 
+              text-white transition-all duration-300 hover:rotate-90 hover:scale-110 active:scale-95
+              ${isMenuOpen ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 -translate-y-4'}
+            `}
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Logo en el centro */}
+          <div className={`
+            mb-12 transition-all duration-700 delay-100
+            ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+          `}>
+            <img 
+              src="/black_sheep_white.png" 
+              alt="Black Sheep"
+              className="w-48 h-auto opacity-30"
+            />
+          </div>
+
+          {/* Menu Items */}
+          <div className="w-full max-w-md space-y-4">
+            {menuItems.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={index}
+                  className={`
+                    transition-all duration-700 ease-out
+                    ${isMenuOpen 
+                      ? 'opacity-100 translate-x-0' 
+                      : 'opacity-0 -translate-x-12'
+                    }
+                  `}
+                  style={{
+                    transitionDelay: isMenuOpen ? `${index * 100 + 200}ms` : '0ms'
+                  }}
+                >
+                  {item.href.startsWith('#') ? (
+                    <button
+                      onClick={() => handleNavClick(item.href, index)}
+                      className="
+                        w-full group relative overflow-hidden
+                        flex items-center gap-4 px-8 py-5 rounded-2xl
+                        bg-white/5 hover:bg-white/10 
+                        border border-white/10 hover:border-white/30
+                        transition-all duration-300
+                        hover:scale-105 active:scale-95
+                        hover:shadow-2xl hover:shadow-purple-500/20
+                      "
+                    >
+                      <Icon className="w-6 h-6 text-purple-400 group-hover:text-purple-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                      <span className="text-2xl font-semibold text-white group-hover:text-white transition-colors">
+                        {item.label}
+                      </span>
+                      
+                      {/* Efecto hover gradiente */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      {/* Brillo */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
+                      </div>
+                    </button>
+                  ) : (
+                    <Link
+                      to={item.href}
+                      onClick={() => handleNavClick(item.href, index)}
+                      className="
+                        w-full group relative overflow-hidden
+                        flex items-center gap-4 px-8 py-5 rounded-2xl
+                        bg-white/5 hover:bg-white/10 
+                        border border-white/10 hover:border-white/30
+                        transition-all duration-300
+                        hover:scale-105 active:scale-95
+                        hover:shadow-2xl hover:shadow-purple-500/20
+                      "
+                    >
+                      <Icon className="w-6 h-6 text-purple-400 group-hover:text-purple-300 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                      <span className="text-2xl font-semibold text-white group-hover:text-white transition-colors">
+                        {item.label}
+                      </span>
+                      
+                      {/* Efecto hover gradiente */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      {/* Brillo */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
+                      </div>
+                    </Link>
+                  )}
                 </div>
-              </div>
-            </>
-          )}
+              );
+            })}
+          </div>
+
+          {/* Efectos de fondo decorativos */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className={`
+              absolute top-1/4 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl
+              transition-all duration-1000
+              ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
+            `} />
+            <div className={`
+              absolute bottom-1/4 -right-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl
+              transition-all duration-1000 delay-200
+              ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
+            `} />
+            <div className={`
+              absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl
+              transition-all duration-1000 delay-400
+              ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}
+            `} />
+          </div>
+
+          {/* Footer */}
+          <div className={`
+            absolute bottom-8 text-center transition-all duration-700 delay-500
+            ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
+          `}>
+            <p className="text-white/40 text-sm">Black Sheep © 2026</p>
+          </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 

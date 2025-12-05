@@ -19,7 +19,8 @@ interface CompanyData {
 export default function DownloadPresentation({ 
   moduleSelections, 
   totals, 
-  paymentFrequency 
+  paymentFrequency ,
+  userCount
 }: DownloadPresentationProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companyData, setCompanyData] = useState<CompanyData>({
@@ -65,17 +66,14 @@ export default function DownloadPresentation({
     });
   };
 
-  // Tu plantilla base predefinida
   const createBaseTemplate = async (logoData: string, companyData: CompanyData) => {
     const pptx = new PptxGenJS();
 
-    // Configuración general de la presentación
     pptx.layout = 'LAYOUT_WIDE';
     pptx.defineSlideMaster({
       title: 'MASTER_SLIDE',
       background: { color: 'FFFFFF' },
       objects: [
-        // Header con logo
         {
           rect: { x: 0, y: 0, w: '100%', h: 0.8, fill: { color: 'F59E0B' } }
         },
@@ -88,7 +86,6 @@ export default function DownloadPresentation({
             data: logoData 
           }
         },
-        // Footer
         {
           rect: { x: 0, y: 6.8, w: '100%', h: 0.4, fill: { color: '1F2937' } }
         },
@@ -123,10 +120,8 @@ export default function DownloadPresentation({
       ]
     });
 
-    // Slide 1: Portada
     const coverSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
     
-    // Título principal
     coverSlide.addText('COTIZACIÓN MICROSIP', {
       x: 1,
       y: 2,
@@ -138,7 +133,6 @@ export default function DownloadPresentation({
       align: 'center'
     });
 
-    // Información de la empresa
     coverSlide.addText(`Razón Social: ${companyData.razonSocial}`, {
       x: 1,
       y: 3.2,
@@ -170,7 +164,6 @@ export default function DownloadPresentation({
       align: 'center'
     });
 
-    // Slide 2: Módulos seleccionados
     const modulesSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
     
     modulesSlide.addText('MÓDULOS SELECCIONADOS', {
@@ -183,15 +176,16 @@ export default function DownloadPresentation({
       color: '1F2937'
     });
 
-    // Tabla de módulos
     const moduleRows = [
-      ['Módulo', 'Plan', 'Precio'], // Header
+      ['Módulo', 'Plan', 'Precio'],
     ];
 
     Object.entries(moduleSelections).forEach(([moduleName, selection]: [string, any]) => {
-      const moduleData = modules.find(m => m.name === moduleName);
-      const price = moduleData ? moduleData.prices[selection.plan] : 0;
-      moduleRows.push([moduleName, selection.plan.toUpperCase(), `$${price}`]);
+        moduleRows.push([
+        moduleName,
+        selection.plan.toUpperCase(),
+        `$${selection.price}`
+      ]);
     });
 
     modulesSlide.addTable(moduleRows, {
@@ -207,49 +201,81 @@ export default function DownloadPresentation({
       valign: 'middle'
     });
 
-    // Slide 3: Resumen de costos
-    const costsSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
-    
-    costsSlide.addText('RESUMEN DE COSTOS', {
-      x: 0.5,
-      y: 1,
-      w: 9,
-      h: 0.6,
-      fontSize: 24,
-      bold: true,
-      color: '1F2937'
-    });
 
-    // Tabla de costos
-    const costRows = [
-      ['Concepto', 'Valor'],
-      ['Subtotal Módulos', `$${totals.subtotalModulos}`],
-    ];
+const costsSlide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
-    if (totals.freqDiscount > 0) {
-      costRows.push([`Descuento por pago ${paymentFrequency}`, `-$${totals.discountAmount.toFixed(2)}`]);
-    }
+// Título
+costsSlide.addText("RESUMEN DE COSTOS", {
+  x: 0.5,
+  y: 0.6,
+  fontSize: 26,
+  bold: true,
+  color: "1F2937",
+});
 
-    if (totals.volumeDiscount > 0) {
-      costRows.push([`Descuento por volumen`, `-$${(totals.subtotalForDiscount * totals.volumeDiscount).toFixed(2)}`]);
-    }
+const mxnRows = [
+  ["Concepto", "Monto (MXN)"],
+  ["Subtotal módulos", `$${totals.subtotalModulos.toLocaleString("es-MX")}`],
+];
 
-    costRows.push(['TOTAL FINAL', `$${totals.total.toFixed(2)}`]);
+if (totals.discountAmount > 0) {
+  mxnRows.push([
+    "Descuento aplicado",
+    `-$${totals.discountAmount.toLocaleString("es-MX")}`,
+  ]);
+}
 
-    costsSlide.addTable(costRows, {
-      x: 0.5,
-      y: 1.8,
-      w: 8.5,
-      colW: [6, 2.5],
-      border: { pt: 1, color: 'E5E7EB' },
-      fill: { color: 'F8FAFC' },
-      color: '1F2937',
-      fontSize: 12,
-      align: 'left',
-      valign: 'middle'
-    });
+mxnRows.push([
+  "TOTAL MXN",
+  `$${totals.totalMXN.toLocaleString("es-MX")}`,
+]);
 
-    // Slide 4: Contacto y próximos pasos
+costsSlide.addText("Costos en MXN", {
+  x: 0.5,
+  y: 1.4,
+  fontSize: 20,
+  bold: true,
+  color: "F59E0B",
+});
+
+costsSlide.addTable(mxnRows, {
+  x: 0.5,
+  y: 1.9,
+  w: 4,
+  colW: [2.3, 1.7],
+  border: { pt: 1, color: "E5E7EB" },
+  fill: { color: "F8FAFC" },
+  fontSize: 12,
+  color: "1F2937",
+});
+
+
+const usdRows = [
+  ["Concepto", "Monto (USD)"],
+  [`Usuarios en la nube (${userCount})`, `$${totals.totalUSD}`],
+  ["TOTAL USD", `$${totals.totalUSD}`],
+];
+
+costsSlide.addText("Costos en USD", {
+  x: 5.1,
+  y: 1.4,
+  fontSize: 20,
+  bold: true,
+  color: "3B82F6",
+});
+
+costsSlide.addTable(usdRows, {
+  x: 5.1,
+  y: 1.9,
+  w: 4,
+  colW: [2.3, 1.7],
+  border: { pt: 1, color: "E5E7EB" },
+  fill: { color: "EFF6FF" }, // azul muy claro
+  fontSize: 12,
+  color: "1F2937",
+});
+
+
     const contactSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
     
     contactSlide.addText('PRÓXIMOS PASOS', {
@@ -315,26 +341,21 @@ export default function DownloadPresentation({
     setIsGenerating(true);
 
     try {
-      // Obtener el logo (del usuario o por defecto)
       let logoData = '';
       if (companyData.logo && !companyData.useDefaultLogo) {
         logoData = await convertImageToBase64(companyData.logo);
       } else {
-        // Tu logo por defecto - puedes reemplazar con tu imagen base64
         logoData = await loadDefaultLogo();
       }
 
-      // Crear la presentación usando tu plantilla base
       const pptx = await createBaseTemplate(logoData, companyData);
 
-      // Generar y descargar el archivo
       const blob = await pptx.writeFile({
         fileName: `Cotización_Microsip_${companyData.razonSocial.replace(/\s+/g, '_')}.pptx`
       });
       
       saveAs(blob, `Cotización_Microsip_${companyData.razonSocial.replace(/\s+/g, '_')}.pptx`);
       
-      // Cerrar modal y resetear formulario
       setIsModalOpen(false);
       setCompanyData({
         razonSocial: '',

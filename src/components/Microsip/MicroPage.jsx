@@ -217,7 +217,7 @@ const MicroPage = () => {
           </div>
         </section>
 
-        <section ref={whySectionRef} className="w-full bg-[#1B1F23] text-white py-12 sm:py-16 md:py-24 px-4 sm:px-6">
+        <section ref={whySectionRef} className="w-full bg-white text-black py-12 sm:py-16 md:py-24 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-12 sm:mb-16 md:mb-20">
               ¿Por qué elegir el ERP Microsip?
@@ -237,7 +237,7 @@ const MicroPage = () => {
 
                 <a 
                   href="/sat"
-                  className="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-all group"
+                  className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
                     src="/fle.webp" 
@@ -279,7 +279,7 @@ const MicroPage = () => {
 
                 <a 
                   href="/SistemaMicrosip"
-                  className="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-all group"
+                  className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
                     src="/fle.webp" 
@@ -305,7 +305,7 @@ const MicroPage = () => {
 
                 <a 
                   href="https://www.microsip.com/que-es-erp-microsip"
-                  className="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-all group"
+                  className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
                     src="/fle.webp" 
@@ -347,7 +347,7 @@ const MicroPage = () => {
 
                 <a 
                   href="/FormMicro"
-                  className="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-all group"
+                  className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
                     src="/fle.webp" 
@@ -373,7 +373,7 @@ const MicroPage = () => {
 
                 <a 
                   href="https://club.microsip.com/"
-                  className="inline-flex items-center gap-3 text-white hover:text-orange-400 transition-all group"
+                  className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
                     src="/fle.webp" 

@@ -51,6 +51,12 @@ const SyncE: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Sincroniza tus pedidos y existencias con Shopify o MercadoLibre
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img

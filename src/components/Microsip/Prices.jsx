@@ -13,12 +13,13 @@ import ModulesList from "./ModulesList";
 import VpsPlans from "./VPSPlans";
 import HourlyRentals from "./HourlyRentals";
 import PriceSummary from "./PriceSummary";
-import DownloadPresentation from "./DownloadPresentation";
 import AdminPricingPanel from "./AdminPricingPanel";
 import AdminVpsPanel from "./VpsPricingPanel";
 import AdminHourlyPanel from "./AdminHourlyPanel";
 import SessionWarning from "./SessionWarning";
 import MicrosipFooter from "./MicrosipFooter";
+import DownloadPresentation from "./DownloadPresentation";
+import DownloadPDF from "./DownloadPDF";
 
 export default function MicrosipPricing() {
 
@@ -26,6 +27,7 @@ export default function MicrosipPricing() {
   const [moduleSelections, setModuleSelections] = useState({});
   const [hourRentals, setHourRentals] = useState([]);
   const [scrollY, setScrollY] = useState(0);
+  const exchangeRate = 2.86; 
   
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -51,6 +53,23 @@ export default function MicrosipPricing() {
 
   const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
   const [logoutClosing, setLogoutClosing] = useState(false);
+
+  const [selectedVps, setSelectedVps] = useState([]);
+
+  const [userCount, setUserCount] = useState(0);
+
+  const [vpsPlans, setVpsPlans] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/vps")
+      .then(res => res.json())
+      .then(setVpsPlans)
+      .catch(() => setVpsPlans([]));
+  }, []);
+
+  const userPlan = vpsPlans.find(
+    p => p.vcores === null && p.memoria_gb === null && p.almacenamiento_gb === null
+  );
 
   const reloadPrices = async () => {
     const updated = await fetchAllPrices();
@@ -101,7 +120,7 @@ export default function MicrosipPricing() {
     };
   }, [isAuthenticated]);
 
-    useEffect(() => {
+  useEffect(() => {
     const revealElements = document.querySelectorAll(".reveal");
 
     const observer = new IntersectionObserver(
@@ -122,13 +141,14 @@ export default function MicrosipPricing() {
   }, []);
 
   const totals = calculateTotals({
-    moduleSelections: JSON.parse(JSON.stringify(moduleSelections)),
-    hourRentals: JSON.parse(JSON.stringify(hourRentals)),
+    moduleSelections,
+    hourRentals,
     modulesList,
     pricesDB,
     paymentFrequency,
+    userPlan,
+    userCount
   });
-
 
   const handleLogout = () => {
     setShowLogoutAnimation(true);
@@ -146,18 +166,18 @@ export default function MicrosipPricing() {
 
   return (
   <>
-    <div className="min-h-screen py-10 px-6 relative  bg-white">
+    <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 relative bg-white">
       <div className="relative w-full">
         <a
           href="/MicroPage"
-          className={`fixed top-4 left-4 z-[60] transition-all duration-300 
+          className={`fixed top-3 sm:top-4 left-3 sm:left-4 z-[60] transition-all duration-300 
             ${scrollY > 80 ? "scale-75 translate-y-[-10px]" : "scale-100"}
           `}
         >
           <img
             src="/msppart.webp"
             alt="logo"
-            className="h-12 sm:h-12 object-contain"
+            className="h-10 sm:h-12 object-contain"
           />
         </a>
     
@@ -172,10 +192,10 @@ export default function MicrosipPricing() {
         />
       </div>
 
-      <div className="pt-32 pb-20 px-6 flex justify-center">
-        <div className="w-full max-w-6xl space-y-16">
+      <div className="pt-20 sm:pt-32 pb-12 sm:pb-20 px-3 sm:px-6 flex justify-center">
+        <div className="w-full max-w-6xl space-y-8 sm:space-y-12 lg:space-y-16">
 
-          <section className="reveal bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8">
+          <section className="reveal bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6">
             <SubscriptionInfo />
           </section>
 
@@ -196,7 +216,12 @@ export default function MicrosipPricing() {
 
           <section className="reveal bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
             <ModulesHeader title="Planes VPS" />
-            <VpsPlans />
+              <VpsPlans
+                selectedVps={selectedVps}
+                setSelectedVps={setSelectedVps}
+                userCount={userCount}
+                setUserCount={setUserCount} 
+              />
           </section>
 
           <Separator />
@@ -221,6 +246,9 @@ export default function MicrosipPricing() {
               totals={totals}
               paymentFrequency={paymentFrequency}
               setPaymentFrequency={setPaymentFrequency}
+              userCount={userCount}
+              userPlan={userPlan}
+              exchangeRate={exchangeRate}
             />
           </section>
 
@@ -232,6 +260,16 @@ export default function MicrosipPricing() {
               moduleSelections={moduleSelections}
               totals={totals}
               paymentFrequency={paymentFrequency}
+            />
+          </section>
+
+          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
+            <ModulesHeader title="Descargar PDF" />
+            <DownloadPDF
+              moduleSelections={moduleSelections}
+              totals={totals}
+              paymentFrequency={paymentFrequency}
+              userCount={userCount}
             />
           </section>
         </div>
@@ -253,7 +291,7 @@ export default function MicrosipPricing() {
 
       {showAdminPanel && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <AdminPricingPanel
               pricesDB={pricesDB}
               onClose={() => setShowAdminPanel(false)}
@@ -265,7 +303,7 @@ export default function MicrosipPricing() {
 
       {showAdminVpsPanel && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <AdminVpsPanel onClose={() => setShowAdminVpsPanel(false)} />
           </div>
         </div>  
@@ -273,7 +311,7 @@ export default function MicrosipPricing() {
 
       {showAdminHourlyPanel && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <AdminHourlyPanel
               hourlyPricesDB={hourlyPricesDB}
               onClose={() => setShowAdminHourlyPanel(false)}
@@ -301,9 +339,9 @@ export default function MicrosipPricing() {
     </div>
 
     <section className="bg-black">
-          <MicrosipFooter className="mt-20"/>
-      </section>
-    </>  
+      <MicrosipFooter className="mt-12 sm:mt-16 lg:mt-20"/>
+    </section>
+  </>  
   );
 }
 
@@ -312,7 +350,8 @@ function Separator() {
     <div className="relative my-6 sm:my-8 lg:my-12">
        <div className="h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
        <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-orange-300/30 to-transparent blur-sm" />
-    </div>  );
+    </div>  
+  );
 }
 
 function ModulesHeader({ title }) {

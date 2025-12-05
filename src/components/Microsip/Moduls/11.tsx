@@ -50,6 +50,12 @@ const PuntoVenta: React.FC = () => {
                             <p className="text-base sm:text-lg text-gray-600">
                                 Lleva el control de un negocio con una sola caja, hasta un gran consorcio de sucursales multicajas
                             </p>
+
+                            <div className="mt-8">
+                                <a href="/FormMicro" className="inline-block bg-orange-500 text-white font-semibold px-8 py-2 rounded-full shadow hover:bg-orange-600 transition text-center">
+                                    ADQUIERE MICROSIP
+                                </a>
+                            </div>
                         </div>
                         <div className="flex-shrink-0">
                             <img
@@ -87,7 +93,7 @@ const PuntoVenta: React.FC = () => {
                                         <p>Complemento de recepción de pagos 2.0</p>
 
                                         <p className="font-medium text-gray-700">Impuestos precargados</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>IVA</li>
                                             <li>IEPS</li>
                                         </ul>
@@ -104,14 +110,14 @@ const PuntoVenta: React.FC = () => {
                                         <p>CFDI de traslado</p>
 
                                         <p className="font-medium text-gray-700">Retenciones</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>IVA</li>
                                             <li>ISR</li>
                                             <li>ISR a RESICOs</li>
                                         </ul>
 
                                         <p className="font-medium text-gray-700">Genera factura global</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Detallada</li>
                                             <li>Concentrada</li>
                                             <li>Una partida</li>
@@ -147,7 +153,7 @@ const PuntoVenta: React.FC = () => {
 
                                         {/* Generales */}
                                         <p className="font-medium text-gray-700">Generales</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Nombre</li>
                                             <li>Correo electrónico</li>
                                             <li>RFC</li>
@@ -162,14 +168,14 @@ const PuntoVenta: React.FC = () => {
 
                                         {/* Clasificación */}
                                         <p className="font-medium text-gray-700">Clasificación</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Por zona</li>
                                             <li>Por tipo</li>
                                         </ul>
 
                                         {/* Historial */}
                                         <p className="font-medium text-gray-700">Historial</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Saldos de los clientes</li>
                                             <li>Cargos de los clientes</li>
                                             <li>Anticipos</li>
@@ -204,7 +210,7 @@ const PuntoVenta: React.FC = () => {
                                         {/* Tipos de documentos */}
                                         <p className="font-medium text-gray-700">Tipos de documentos</p>
 
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Ventas de mostrador</li>
                                             <li>Devoluciones de venta</li>
                                             <li>Retiros de caja</li>
@@ -247,7 +253,7 @@ const PuntoVenta: React.FC = () => {
                                         <p className="font-medium text-gray-700">Campos de registro:</p>
 
                                         <p className="font-medium text-gray-700">Generales</p>
-                                        <ul className="list-disc list-inside ml-6 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Nombre</li>
                                             <li>Imágenes</li>
                                             <li>Clave</li>
@@ -361,7 +367,7 @@ const PuntoVenta: React.FC = () => {
                                         <p>Lista de precios</p>
 
                                         <p className="font-medium text-gray-700">Diarios de Venta:</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside space-y-1 ml-7">
                                             <li>Incluye descuentos sobre ventas</li>
                                         </ul>
 
@@ -404,7 +410,7 @@ const PuntoVenta: React.FC = () => {
                                         <p>Impresoras de tickets</p>
 
                                         <p className="font-medium text-gray-700">Terminal bancaria</p>
-                                        <ul className="list-disc list-inside ml-6 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Banorte</li>
                                             <li>Banregio</li>
                                         </ul>
@@ -444,7 +450,7 @@ const PuntoVenta: React.FC = () => {
                                         <p>Manejar vendedores por cada caja</p>
 
                                         <p className="font-medium text-gray-700">Registrar forma de cobro aceptada:</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Efectivo</li>
                                             <li>Tarjeta</li>
                                             <li>Cheque</li>
@@ -455,7 +461,7 @@ const PuntoVenta: React.FC = () => {
                                             Compatible con dispositivos touchscreen con una resolución de pantalla de:
                                         </p>
 
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>1360 x 768 px</li>
                                             <li>1280 x 1024 px</li>
                                             <li>1360 x 768 px</li>
@@ -464,7 +470,7 @@ const PuntoVenta: React.FC = () => {
                                         </ul>
 
                                         <p className="font-medium text-gray-700">Notificaciones de Punto de venta:</p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
+                                        <ul className="list-disc list-inside ml-7 space-y-1">
                                             <li>Modificación de cliente en el documento</li>
                                             <li>Modificación de descuento en el documento</li>
                                             <li>Modificación de precio en la partida</li>
@@ -543,12 +549,12 @@ const PuntoVenta: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">INVENTARIOS</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">INVENTARIOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Analiza el inventario tomando en cuenta las salidas por ventas de mostrador y las entradas por devoluciones
+                                        • Analiza el inventario tomando en cuenta las salidas por ventas de mostrador y las entradas por devoluciones
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Permite consultar las existencias de los artículos
+                                        • Permite consultar las existencias de los artículos
                                     </p>
                                 </div>
                             </div>
@@ -564,9 +570,9 @@ const PuntoVenta: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        -Genera las pólizas de los movimientos realizados
+                                        • Genera las pólizas de los movimientos realizados
                                     </p>
                                 </div>
                             </div>
@@ -582,12 +588,12 @@ const PuntoVenta: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR COBRAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CUENTAS POR COBRAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Registra los cargos y créditos a los clientes frecuentes
+                                        • Registra los cargos y créditos a los clientes frecuentes
                                     </p>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        -Configura alertas para clientes con saldo pendiente
+                                        • Configura alertas para clientes con saldo pendiente
                                     </p>
                                 </div>
                             </div>
