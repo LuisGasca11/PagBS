@@ -23,8 +23,19 @@ import Sat from './components/Microsip/SAT';
 import Prices from './components/Microsip/Prices';
 
 //Modules
-import EditablePage from './components/Microsip/Moduls/1';
+import Bancos from './components/Microsip/Moduls/1';
 import Contabilidad from './components/Microsip/Moduls/2';
+import Nomina from './components/Microsip/Moduls/3';
+import CeoMovil from './components/Microsip/Moduls/4';
+import CuentasPagar from './components/Microsip/Moduls/5';
+import Compras from './components/Microsip/Moduls/6';
+import Inventarios from './components/Microsip/Moduls/7';
+import CuentasCobrar from './components/Microsip/Moduls/8';
+import SyncE from './components/Microsip/Moduls/9';
+import Ventas from './components/Microsip/Moduls/10';
+import PuntoVenta from './components/Microsip/Moduls/11';
+import EnRuta from './components/Microsip/Moduls/12';
+import AdminSuc from './components/Microsip/Moduls/13';
 
 function AppContent() {
   const location = useLocation();
@@ -35,8 +46,19 @@ function AppContent() {
     "/SistemaMicrosip",
     "/FormMicro",
     "/sat",
-    "/EditablePage",
+    "/Bancos",
     "/Contabilidad",
+    "/Nomina",
+    "/CeoMovil",
+    "/CuentasPagar",
+    "/Compras",
+    "/Inventarios",
+    "/CuentasCobrar",
+    "/SyncE",
+    "/Ventas",
+    "/PuntoVenta",
+    "/EnRuta",
+    "/AdminSuc",
   ];
 
   const hideUI = hiddenUIRoutes.includes(location.pathname);
@@ -69,8 +91,19 @@ function AppContent() {
         <Route path="/Prices" element={<Prices />} />
         <Route path="/SistemaMicrosip" element={<SistemaMicrosip />} />
 
-        <Route path="/EditablePage" element={<EditablePage />} />
+        <Route path="/Bancos" element={<Bancos />} />
         <Route path="/Contabilidad" element={<Contabilidad />} />
+        <Route path="/Nomina" element={<Nomina />} />
+        <Route path="/CeoMovil" element={<CeoMovil />} />
+        <Route path="/CuentasPagar" element={<CuentasPagar />} />
+        <Route path="/Compras" element={<Compras />} />
+        <Route path="/Inventarios" element={<Inventarios />} />
+        <Route path="/CuentasCobrar" element={<CuentasCobrar />} />
+        <Route path="/SyncE" element={<SyncE />} />
+        <Route path="/Ventas" element={<Ventas />} />
+        <Route path="/PuntoVenta" element={<PuntoVenta />} />
+        <Route path="/EnRuta" element={<EnRuta />} />
+        <Route path="/AdminSuc" element={<AdminSuc />} />
       </Routes>
 
       {!hideUI && <FooterSection />}

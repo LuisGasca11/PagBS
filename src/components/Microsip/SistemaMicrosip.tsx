@@ -6,36 +6,36 @@ const modules = [
   {
     category: "Administra",
     items: [
-      { name: "Bancos", image: "/icons/bancos.png", link: "/EditablePage" },
+      { name: "Bancos", image: "/icons/bancos.png", link: "/Bancos" },
       { name: "Contabilidad", image: "/icons/cont_elect.png", link: "/Contabilidad" },
-      { name: "Nómina", image: "/icons/nomina.png", link: "https://www.microsip.com/modulos/nomina" },
+      { name: "Nómina", image: "/icons/nomina.png", link: "/Nomina" },
     ],
   },
   {
     category: "Consulta",
-    items: [{ name: "CEO Móvil", image: "/icons/ceo_movil.png", link: "https://www.microsip.com/modulos/ceo-movil" }],
+    items: [{ name: "CEO Móvil", image: "/icons/ceo_movil.png", link: "/CeoMovil" }],
   },
   {
     category: "Opera",
     items: [
-      { name: "Cuentas por Pagar", image: "/icons/cuentas_pagar.png", link: "https://www.microsip.com/modulos/cuentas-por-pagar" },
-      { name: "Compras", image: "/icons/compras.png", link: "https://www.microsip.com/modulos/compras" },
-      { name: "Inventarios", image: "/icons/inventarios.png", link: "https://www.microsip.com/modulos/inventarios" },
-      { name: "Cuentas por Cobrar", image: "/icons/cuentas_cobrar.png", link: "https://www.microsip.com/modulos/cuentas-por-cobrar" },
+      { name: "Cuentas por Pagar", image: "/icons/cuentas_pagar.png", link: "/CuentasPagar" },
+      { name: "Compras", image: "/icons/compras.png", link: "/Compras" },
+      { name: "Inventarios", image: "/icons/inventarios.png", link: "/Inventarios" },
+      { name: "Cuentas por Cobrar", image: "/icons/cuentas_cobrar.png", link: "/CuentasCobrar" },
     ],
   },
   {
     category: "Vende",
     items: [
-      { name: "Sync E", image: "/icons/synce.png", link: "https://www.microsip.com/modulos/sync-e" },
-      { name: "Ventas", image: "/icons/ventas.png", link: "https://www.microsip.com/modulos/ventas" },
-      { name: "Punto de Venta", image: "/icons/punto-venta.png", link: "https://www.microsip.com/modulos/punto-de-venta" },
-      { name: "En Ruta", image: "/icons/en-ruta.png", link: "https://www.microsip.com/modulos/en-ruta" },
+      { name: "Sync E", image: "/icons/synce.png", link: "SyncE" },
+      { name: "Ventas", image: "/icons/ventas.png", link: "Ventas" },
+      { name: "Punto de Venta", image: "/icons/punto-venta.png", link: "PuntoVenta" },
+      { name: "En Ruta", image: "/icons/en-ruta.png", link: "EnRuta" },
     ],
   },
   {
     category: "Sincroniza",
-    items: [{ name: "Administrador de Sucursales", image: "/icons/admin_suc.png", link: "https://www.microsip.com/modulos/administrador-de-sucursales" }],
+    items: [{ name: "Administrador de Sucursales", image: "/icons/admin_suc.png", link: "AdminSuc" }],
   },
 ];
 

@@ -175,11 +175,13 @@ export default function MicrosipPricing() {
       <div className="pt-32 pb-20 px-6 flex justify-center">
         <div className="w-full max-w-6xl space-y-16">
 
-          <SubscriptionInfo />
+          <section className="reveal bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-8">
+            <SubscriptionInfo />
+          </section>
 
           <Separator />
 
-          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 backdrop-blur-lg rounded-2xl shadow-sm border border-gray-200 p-8">
+          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
             <ModulesHeader title="Módulos del Sistema" />
             <ModulesList
               modulesList={modulesList}
@@ -192,7 +194,7 @@ export default function MicrosipPricing() {
 
           <Separator />
 
-          <section className="reveal bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <section className="reveal bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
             <ModulesHeader title="Planes VPS" />
             <VpsPlans />
           </section>
@@ -200,7 +202,7 @@ export default function MicrosipPricing() {
           <Separator />
 
           {isAuthenticated && (
-            <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-2xl shadow-sm border border-gray-200 p-8">
+            <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
               <ModulesHeader title="Renta por Hora" />
               <HourlyRentals
                 hourRentals={hourRentals}
@@ -213,7 +215,7 @@ export default function MicrosipPricing() {
 
           <Separator />
 
-          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-2xl shadow-sm border border-gray-200 p-8">
+          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
             <ModulesHeader title="Resumen Final" />
             <PriceSummary
               totals={totals}
@@ -224,7 +226,7 @@ export default function MicrosipPricing() {
 
           <Separator />
 
-          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-2xl shadow-sm border border-gray-200 p-9">
+          <section className="reveal bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
             <ModulesHeader title="Descargar Presentación" />
             <DownloadPresentation
               moduleSelections={moduleSelections}
@@ -250,35 +252,51 @@ export default function MicrosipPricing() {
       )}
 
       {showAdminPanel && (
-        <AdminPricingPanel
-          pricesDB={pricesDB}
-          onClose={() => setShowAdminPanel(false)}
-          onPriceUpdate={reloadPrices}
-        />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+            <AdminPricingPanel
+              pricesDB={pricesDB}
+              onClose={() => setShowAdminPanel(false)}
+              onPriceUpdate={reloadPrices}
+            />
+          </div>
+        </div>
       )}
 
       {showAdminVpsPanel && (
-        <AdminVpsPanel onClose={() => setShowAdminVpsPanel(false)} />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+            <AdminVpsPanel onClose={() => setShowAdminVpsPanel(false)} />
+          </div>
+        </div>  
       )}
 
       {showAdminHourlyPanel && (
-        <AdminHourlyPanel
-          hourlyPricesDB={hourlyPricesDB}
-          onClose={() => setShowAdminHourlyPanel(false)}
-        />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full">
+            <AdminHourlyPanel
+              hourlyPricesDB={hourlyPricesDB}
+              onClose={() => setShowAdminHourlyPanel(false)}
+            />
+          </div>
+        </div>    
       )}
 
       {sessionWarning && (
-        <SessionWarning
-          onContinue={() => {
-            extendSession();
-            setSessionWarning(false);
-          }}
-          onLogout={() => {
-            setSessionWarning(false);
-            handleLogout();
-          }}
-        />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full">
+            <SessionWarning
+              onContinue={() => {
+                extendSession();
+                setSessionWarning(false);
+              }}
+              onLogout={() => {
+                setSessionWarning(false);
+                handleLogout();
+              }}
+            />
+          </div>
+        </div>    
       )}
     </div>
 
@@ -291,7 +309,7 @@ export default function MicrosipPricing() {
 
 function Separator() {
   return (
-    <div className="relative my-12">
+    <div className="relative my-6 sm:my-8 lg:my-12">
        <div className="h-px bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
        <div className="absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-orange-300/30 to-transparent blur-sm" />
     </div>  );
@@ -299,7 +317,7 @@ function Separator() {
 
 function ModulesHeader({ title }) {
   return (
-    <h2 className="text-3xl font-bold tracking-tight text-white mb-8">
+    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-4 sm:mb-6 lg:mb-8">
       {title}
     </h2>
   );

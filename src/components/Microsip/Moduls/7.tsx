@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MicrosipFooter from "../MicrosipFooter";
 import NavBar from "../NavbarMicro";
 
-const Bancos: React.FC = () => {
+const Inventarios: React.FC = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState("");
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -42,19 +42,18 @@ const Bancos: React.FC = () => {
                 />
             </div>
 
-
-            <section className="bg-emerald-50 text-emerald-400 w-full py-20">
+            <section className="bg-purple-50 text-purple-500 w-full py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 lg:py-16">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
                         <div className="flex-1 text-center sm:text-left">
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Bancos</h1>
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Inventarios</h1>
                             <p className="text-base sm:text-lg text-gray-600">
-                                Lleva el control de las diferentes cuentas bancarias y el detalle de los movimientos.
+                                Controla existencias y optimiza el flujo de mercancía de tus almacenes
                             </p>
                         </div>
                         <div className="flex-shrink-0">
                             <img
-                                src="/icons/bancos.png"
+                                src="/icons/inventarios.png"
                                 alt="Bancos"
                                 className="h-16 sm:h-20 lg:h-24 object-contain"
                             />
@@ -76,21 +75,25 @@ const Bancos: React.FC = () => {
                             <div className="flex flex-col sm:flex-row items-start gap-4">
                                 <div className="flex-1 w-full">
                                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4 text-orange-500">
-                                        Cumplimiento Fiscal
+                                        Cumplimiento fiscal
                                     </h3>
-                                    <div className="space-y-2">
-                                        <p className="text-gray-500 text-sm">Adjunta el CFDI correspondiente a retiros y depósitos</p>
-                                        <p className="text-gray-500 text-sm">Válida contribuyentes incumplidos de los CFDI</p>
-                                        <p className="text-gray-500 text-sm">Información de CFDI y PPD</p>
-                                        <p className="text-gray-500 text-sm">Verifica el estado de los CFDI en el SAT</p>
-                                        <p className="text-gray-500 text-sm">Válida ante el SAT el RFC de los terceros registrados</p>
+                                    <div className="space-y-3">
+                                        <p className="text-gray-500 text-sm">
+                                            Registra pedimentos de importación
+                                        </p>
+                                        <p className="text-gray-500 text-sm">
+                                            Emite el CFDI de traslado de mercancía propia
+                                        </p>
+                                        <p className="text-gray-500 text-sm font-medium">
+                                            Cancela los CFDI directamente en el SAT y archivo de confirmaciones
+                                        </p>                                        
                                     </div>
                                 </div>
                                 <div className="flex-shrink-0 self-center">
                                     <img
                                         src="/Modulos/banc1.svg"
                                         alt="Cumplimiento Fiscal"
-                                        className="h-24 sm:h-32 lg:h-36 object-contain"
+                                        className="h-24 sm:h-32 lg:h-40 object-contain"
                                     />
                                 </div>
                             </div>
@@ -100,24 +103,45 @@ const Bancos: React.FC = () => {
                         <div className="p-4 sm:p-6 bg-zinc-100 rounded-lg shadow-md">
                             <div className="flex flex-col sm:flex-row items-start gap-4">
                                 <div className="flex-1 w-full">
-                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4 text-[#6285f0]">
-                                        Herramientas
+                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4 text-sky-500">
+                                        Manejo de artículos
                                     </h3>
-                                    <div className="space-y-2">
-                                        <p className="text-gray-500 text-sm">Recalcular saldos</p>
-                                        <p className="text-gray-500 text-sm">Eliminar historial de las cuentas bancarias</p>
-                                        <p className="text-gray-500 text-sm">Inicializar las cuentas bancarias</p>
-                                        <p className="text-gray-500 text-sm">Importar movimientos</p>
-                                        <p className="text-gray-500 text-sm">Exportar movimientos</p>
-                                        <p className="text-gray-500 text-sm">Acceso a la carpeta de comprobantes fiscales emitidos y recibidos</p>
-                                        <p className="text-gray-500 text-sm">Dispersión de pagos a proveedores</p>
+                                    <div className="space-y-3">
+                                        <p className="text-gray-500 text-sm">
+                                            Información de registro:
+                                        </p>
+                                        <ul className="text-gray-500 text-sm space-y-1 list-disc list-inside ml-7">
+                                            <li>Nombre</li>
+                                            <li>Imagen</li>
+                                            <li>Clave</li>
+                                            <li>Unidad de medida de ecompra</li>
+                                            <li>Unidad de medida de venta</li>
+                                            <li>Líneas</li>
+                                            <li>Grupo de líneas</li>
+                                            <li>Proveedor</li>
+                                            <li>Clasificador</li>                                            
+                                            <li>Existencias</li>                                            
+                                            <li>Números de serie</li>                                            
+                                        </ul>
+                                        <p className="text-gray-500 text-sm">
+                                            Control e historial
+                                        </p>
+                                        <ul className="text-gray-500 text-sm space-y-1 list-disc list-inside ml-7">
+                                            <li>Existencias</li>
+                                            <li>Precio</li>
+                                            <li>Rotación</li>
+                                            <li>Kárdex</li>                                                                      
+                                            <li>Lotex</li>                                                                      
+                                            <li>Filtro de almacenes</li>                                                                      
+                                            <li>Importación de artículos desde archivos externos</li>                                                                      
+                                        </ul>                              
                                     </div>
                                 </div>
                                 <div className="flex-shrink-0 self-center">
                                     <img
-                                        src="/Modulos/banc2.svg"
-                                        alt="Herramientas"
-                                        className="h-24 sm:h-32 lg:h-36 object-contain"
+                                        src="/Modulos/comp3.svg"
+                                        alt="Cumplimiento Fiscal"
+                                        className="h-24 sm:h-32 lg:h-40 object-contain"
                                     />
                                 </div>
                             </div>
@@ -128,17 +152,17 @@ const Bancos: React.FC = () => {
                             <div className="flex flex-col sm:flex-row items-start gap-4">
                                 <div className="flex-1 w-full">
                                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4 text-[#ffb816]">
-                                        Reportes Predefinidos
+                                        Reportes predefinidos
                                     </h3>
                                     <div className="space-y-2">
-                                        <p className="text-gray-500 text-sm">Posición bancaria y depósitos</p>
-                                        <p className="text-gray-500 text-sm">Auxiliares de bancos</p>
-                                        <p className="text-gray-500 text-sm">Relaciones en bancos</p>
-                                        <p className="text-gray-500 text-sm">Movimiento en tránsito</p>
-                                        <p className="text-gray-500 text-sm">Retiros por beneficiario</p>
-                                        <p className="text-gray-500 text-sm">Diario de bancos</p>
-                                        <p className="text-gray-500 text-sm">Saldos promedios de bancos</p>
-                                        <p className="text-gray-500 text-sm">Comprobantes fiscales</p>
+                                        <p className="text-gray-500 text-sm">Existencia y valor de inventario</p>
+                                        <p className="text-gray-500 text-sm">Situación del inventario</p>
+                                        <p className="text-gray-500 text-sm">Rotación del inventario</p>
+                                        <p className="text-gray-500 text-sm">Kárdex de los artículos</p>
+                                        <p className="text-gray-500 text-sm">Relaciones del inventario</p>                                        
+                                        <p className="text-gray-500 text-sm">Diarios del inventario</p>                                        
+                                        <p className="text-gray-500 text-sm">Resultado del inventario físico</p>                                        
+                                        <p className="text-gray-500 text-sm">Capas de costo</p>                                        
                                     </div>
                                 </div>
                                 <div className="flex-shrink-0 self-center">
@@ -158,22 +182,22 @@ const Bancos: React.FC = () => {
                     
                     <div className="flex flex-col lg:flex-row gap-6 items-start">
                         {/* Card de contenido */}
-                        <div className="bg-white p-4 sm:p-6 border-2 border-gray-200 rounded-lg flex-1 w-full">
-                            <div className="border border-emerald-200 rounded-2xl bg-emerald-50 w-fit p-2 mb-4">
+                        <div className="bg-white p-4 sm:p-6 border-2 border-gray-200 rounded-lg flex-1">
+                            <div className="border border-blue-600 rounded-2xl bg-blue-50 w-fit p-2 mb-4">
                                 <img
-                                    src="/icons/movi_ban.svg"
+                                    src="/icons/sics.png"
                                     alt="Movimientos bancarios"
                                     className="h-8 sm:h-10 object-contain"
                                 />
                             </div>
                             <h4 className="text-xs sm:text-[13px] text-gray-500 tracking-wider mb-3 sm:mb-4 font-semibold">
-                                MOVIMIENTOS BANCARIOS
+                                SICS
                             </h4>
                             <p className="mb-2 sm:mb-3 text-sm sm:text-[15px] text-gray-500">
-                                Realiza tus conciliaciones bancarias eliminando la captura de tus estados de cuenta
+                                Homologa los datos de los catálogos de cada sucursal por medio de una sincronización
                             </p>
                             <p className="mb-3 sm:mb-4 text-sm sm:text-[15px] text-gray-500">
-                                Importa los estados de cuenta directamente desde tu portal bancario
+                                Información de tus sucursales actualiza y unificada
                             </p>
                             <a href="#" className="text-orange-500 text-sm font-semibold hover:underline">
                                 Conoce más
@@ -194,67 +218,55 @@ const Bancos: React.FC = () => {
                     <h3 className="text-2xl sm:text-3xl text-gray-500 font-bold mb-6">Integraciones</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-                        {/* Card Nómina */}
+                        
                         <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-pink-300 rounded-2xl bg-pink-50 p-2 flex-shrink-0">
+                                <div className="border border-orange-400 rounded-2xl bg-orange-50 p-2 flex-shrink-0">
                                     <img
-                                        src="/icons/nomina.png"
-                                        alt="Nómina"
-                                        className="h-8 sm:h-10 object-contain"
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">NÓMINA</h4>
-                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        Los pagos de nómina realizados con cheque generan el retiro correspondiente en el módulo de Bancos
-                                    </p>
-                                    <p className="text-xs sm:text-sm text-gray-600">
-                                        En la carpeta de pagos por liberar del módulo Bancos, se consultan los pagos de Nómina
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Card Cuentas por Cobrar */}
-                        <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
-                            <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-red-400 rounded-2xl bg-red-50 p-2 flex-shrink-0">
-                                    <img
-                                        src="/icons/cuentas_pagar.png"
+                                        src="/icons/ventas.png"
                                         alt="Cuentas por cobrar"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR COBRAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">VENTAS</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Registra las entradas y salidas del inventarios
+                                    </p>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Verifica las existencias
+                                    </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        Se generan los retiros correspondientes realizados por medio del módulo Cuentas por pagar.
+                                        Calcula los niveles de inventario basado en el método de Máximos y Mínimos
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Card Cuentas por Pagar */}
                         <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-green-400 rounded-2xl bg-green-50 p-2 flex-shrink-0">
+                                <div className="border border-amber-400 rounded-2xl bg-amber-50 p-2 flex-shrink-0">
                                     <img
-                                        src="/icons/cuentas_cobrar.png"
+                                        src="/icons/punto-venta.png"
                                         alt="Cuentas por pagar"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR PAGAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">PUNTO DE VENTA</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Genera los cargos a los proveedores por compras
+                                    </p>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        Se generan los retiros correspondientes realizados por medio del módulo Cuentas por Pagar.
+                                        Genera los cargos a los proveedores por compras
+                                    </p>
+                                    <p className="text-xs sm:text-sm text-gray-600">
+                                        Genera los créditos por devoluciones
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Card Contabilidad */}
                         <div className="bg-white p-4 sm:p-6 border border-gray-300 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
                                 <div className="border border-blue-300 rounded-2xl bg-cyan-100 p-2 flex-shrink-0">
@@ -265,9 +277,27 @@ const Bancos: React.FC = () => {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        Al crear depósitos y retiros en Bancos, se crean las pólizas contables.
+                                        Genera las pólizas correspondientes a las compras y a las devoluciones a proveedores
+                                    </p>
+                                </div>
+                            </div>    
+                        </div>
+
+                        <div className="bg-white p-4 sm:p-6 border border-gray-300 rounded-lg">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                                <div className="border border-yellow-400 rounded-2xl bg-yellow-50 p-2 flex-shrink-0">
+                                    <img
+                                        src="/icons/compras.png"
+                                        alt="Contabilidad"
+                                        className="h-8 sm:h-10 object-contain"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700 tracking-widest">COMPRAS</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600">
+                                        Genera las pólizas correspondientes a las compras y a las devoluciones a proveedores
                                     </p>
                                 </div>
                             </div>    
@@ -280,4 +310,4 @@ const Bancos: React.FC = () => {
     );
 };
 
-export default Bancos;
+export default Inventarios;

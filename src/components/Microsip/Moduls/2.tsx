@@ -82,7 +82,7 @@ const Contabilidad: React.FC = () => {
                                       <p className="text-gray-500 text-sm">Agrega comprobantes con XML y sin XML</p>
                                       <p className="text-gray-500 text-sm">Agrega comprobantes directo al portal del SAT</p>
                                       <p className="text-gray-500 text-sm">Herramienta de información de CFDI PPD:</p>
-                                      <ul className="list-disc list-inside text-gray-500 text-sm ml-4">
+                                      <ul className="list-disc list-inside text-gray-500 text-sm ml-7">
                                         <li>Completamente pagado</li>
                                         <li>Parcialmente pagado</li>
                                         <li>Sin pago</li>
@@ -92,7 +92,7 @@ const Contabilidad: React.FC = () => {
                                       <p className="text-gray-500 text-sm">Reporte auxiliar de folios para el SAT</p>
                                       <p className="text-gray-500 text-sm">Genera archivo para la DIOT</p>
                                       <p className="text-gray-500 text-sm">Verifica el estado de los CFDIs ante el SAT:</p>
-                                      <ul className="list-disc list-inside text-gray-500 text-sm ml-4">
+                                      <ul className="list-disc list-inside text-gray-500 text-sm ml-7">
                                         <li>Vigentes</li>
                                         <li>Cancelados</li>
                                         <li>No encontrados</li>
@@ -106,7 +106,7 @@ const Contabilidad: React.FC = () => {
                                     <img
                                         src="/Modulos/banc1.svg"
                                         alt="Cumplimiento Fiscal"
-                                        className="h-32 sm:h-60 lg:h-36 object-contain"
+                                        className="h-30 sm:h-45 lg:h-50 object-contain"
                                     />
                                 </div>
                             </div>
@@ -139,7 +139,7 @@ const Contabilidad: React.FC = () => {
                                     <img
                                         src="/Modulos/banc3.svg"
                                         alt="Reportes"
-                                        className="h-30 sm:h-45 lg:h-36 object-contain"
+                                        className="h-30 sm:h-45 lg:h-50 object-contain"
                                     />
                                 </div>
                             </div>
@@ -156,7 +156,7 @@ const Contabilidad: React.FC = () => {
                                         <p className="text-gray-500 text-sm">Genera presupuestos para cada área de la empresa</p>
                                         <p className="text-gray-500 text-sm">Crea reportes de presupuestos ejercidos</p>
                                         <p className="text-gray-500 text-sm">Asigna presupuesto:</p>
-                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-4">
+                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-7">
                                           <li>General: para todos los ejercicios</li>
                                           <li>Un ejercicio en especifico</li>
                                       </ul>                                    
@@ -166,7 +166,7 @@ const Contabilidad: React.FC = () => {
                                     <img
                                         src="/Modulos/cont2.svg"
                                         alt="Herramientas"
-                                        className="h-30 sm:h-45 lg:h-36 object-contain"
+                                        className="h-30 sm:h-45 lg:h-50 object-contain"
                                     />
                                 </div>
                             </div>
@@ -190,7 +190,7 @@ const Contabilidad: React.FC = () => {
                                     <img
                                         src="/Modulos/banc2.svg"
                                         alt="Herramientas"
-                                        className="h-30 sm:h-45 lg:h-36 object-contain"
+                                        className="h-30 sm:h-45 lg:h-50 object-contain"
                                     />
                                 </div>
                             </div>
@@ -205,12 +205,12 @@ const Contabilidad: React.FC = () => {
                                     </h3>
                                     <div className="space-y-2">
                                         <p className="text-gray-500 text-sm">Cálculo de depreciación de los activos</p>
-                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-4">
+                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-7">
                                           <li>Depreciación contable</li>
                                           <li>Depreciación fiscal</li>
                                         </ul> 
                                         <p className="text-gray-500 text-sm">Historial:</p>
-                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-4">
+                                        <ul className="list-disc list-inside text-gray-500 text-sm ml-7">
                                           <li>Genera la póliza de depreciación</li>
                                           <li>Agrega a tus activos fijos documentos de respaldo</li>
                                         </ul> 
@@ -220,7 +220,7 @@ const Contabilidad: React.FC = () => {
                                     <img
                                         src="/Modulos/cont3.svg"
                                         alt="Herramientas"
-                                        className="h-30 sm:h-45 lg:h-36 object-contain"
+                                        className="h-30 sm:h-45 lg:h-50 object-contain"
                                     />
                                 </div>
                             </div>
@@ -235,20 +235,93 @@ const Contabilidad: React.FC = () => {
                         {/* Card Nómina */}
                         <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-pink-300 rounded-2xl bg-pink-50 p-2 flex-shrink-0">
+                                <div className="border border-purple-400 rounded-2xl bg-purple-50 p-2 flex-shrink-0">
                                     <img
-                                        src="/Modulos/banc6.svg"
+                                        src="/icons/inventarios.png"
                                         alt="Nómina"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 text-gray-700">NÓMINA</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">INVENTARIOS</h4>
                                     <p className="text-xs sm:text-sm text-gray-600 mb-2">
-                                        Los pagos de nómina realizados con cheque generan el retiro correspondiente en el módulo de Bancos
+                                        Genera las pólizas contables de los movimientos realizados en este módulo
                                     </p>
-                                    <p className="text-xs sm:text-sm text-gray-600">
-                                        En la carpeta de pagos por liberar del módulo Bancos, se consultan los pagos de Nómina
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card Nómina */}
+                        <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                                <div className="border border-pink-300 rounded-2xl bg-pink-50 p-2 flex-shrink-0">
+                                    <img
+                                        src="/icons/ventas.png"
+                                        alt="Nómina"
+                                        className="h-8 sm:h-10 object-contain"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">NÓMINA</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Crea las pólizas contables de las ventas y devoluciones realizadas
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card Nómina */}
+                        <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                                <div className="border border-emerald-300 rounded-2xl bg-emerald-50 p-2 flex-shrink-0">
+                                    <img
+                                        src="/icons/bancos.png"
+                                        alt="Nómina"
+                                        className="h-8 sm:h-10 object-contain"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">BANCOS</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Los cobros o depósitos en este módulo, generan a su vez, depósitos en el módulo de Bancos
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card Nómina */}
+                        <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                                <div className="border border-yellow-400 rounded-2xl bg-yellow-50 p-2 flex-shrink-0">
+                                    <img
+                                        src="/icons/punto-venta.png"
+                                        alt="Nómina"
+                                        className="h-8 sm:h-10 object-contain"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">PUNTO DE VENTA</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Genera las pólizas contables de los cargos y créditos de los clientes, ventas y devoluciones.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card Nómina */}
+                        <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
+                            <div className="flex items-start gap-3 sm:gap-4">
+                                <div className="border border-pink-300 rounded-2xl bg-pink-50 p-2 flex-shrink-0">
+                                    <img
+                                        src="/icons/nomina.png"
+                                        alt="Nómina"
+                                        className="h-8 sm:h-10 object-contain"
+                                    />
+                                </div>
+                                <div className="flex-1">
+                                    <h4 className="text-xs sm:text-sm lg:text-sm tracking-widest mb-2 text-gray-700">NÓMINA</h4>
+                                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                                        Todos lo movimientos realizados en este módulo generan su póliza correspondiente y se registra en el módulo de contabilidad
                                     </p>
                                 </div>
                             </div>
@@ -257,17 +330,17 @@ const Contabilidad: React.FC = () => {
                         {/* Card Cuentas por Cobrar */}
                         <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-red-400 rounded-2xl bg-red-50 p-2 flex-shrink-0">
+                                <div className="border border-green-400 rounded-2xl bg-green-50 p-2 flex-shrink-0">
                                     <img
-                                        src="/Modulos/banc7.svg"
-                                        alt="Cuentas por cobrar"
+                                        src="/icons/cuentas_cobrar.png"
+                                        alt="Cuentas por pagar"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 text-gray-700">CUENTAS POR COBRAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR COBRAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        Los cobros o depósitos en este módulo, generan a su vez, depósitos en el módulo de Bancos.
+                                        Crea las pólizas contables de los movimientos realizados en este módulo
                                     </p>
                                 </div>
                             </div>
@@ -276,17 +349,17 @@ const Contabilidad: React.FC = () => {
                         {/* Card Cuentas por Pagar */}
                         <div className="bg-white border border-gray-300 p-4 sm:p-6 rounded-lg">
                             <div className="flex items-start gap-3 sm:gap-4">
-                                <div className="border border-green-400 rounded-2xl bg-green-50 p-2 flex-shrink-0">
+                                <div className="border border-red-400 rounded-2xl bg-red-50 p-2 flex-shrink-0">
                                     <img
-                                        src="/Modulos/banc8.svg"
-                                        alt="Cuentas por pagar"
+                                        src="/icons/cuentas_pagar.png"
+                                        alt="Cuentas por cobrar"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 text-gray-700">CUENTAS POR PAGAR</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CUENTAS POR PAGAR</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
-                                        Se generan los retiros correspondientes realizados por medio del módulo Cuentas por Pagar.
+                                        Crea las pólizas contables de los movimientos realizados en este módulo
                                     </p>
                                 </div>
                             </div>
@@ -297,13 +370,13 @@ const Contabilidad: React.FC = () => {
                             <div className="flex items-start gap-3 sm:gap-4">
                                 <div className="border border-blue-300 rounded-2xl bg-cyan-100 p-2 flex-shrink-0">
                                     <img
-                                        src="/Modulos/banc9.svg"
+                                        src="/icons/cont_elect.png"
                                         alt="Contabilidad"
                                         className="h-8 sm:h-10 object-contain"
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="text-sm sm:text-base lg:text-lg font-semibold mb-2 text-gray-700">CONTABILIDAD</h4>
+                                    <h4 className="text-xs sm:text-sm lg:text-sm mb-2 text-gray-700">CONTABILIDAD</h4>
                                     <p className="text-xs sm:text-sm text-gray-600">
                                         Al crear depósitos y retiros en Bancos, se crean las pólizas contables.
                                     </p>
