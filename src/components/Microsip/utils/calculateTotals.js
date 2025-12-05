@@ -4,13 +4,23 @@ export default function calculateTotals({
   pricesDB,
   paymentFrequency,
   userPlan,
-  userCount
+  userCount,
+  selectedVps,  
+  exchangeRate = 2.86 
 }) {
+
   const subtotalModulos = Object.entries(moduleSelections).reduce(
     (sum, [moduleName, { plan }]) =>
       sum + (pricesDB[moduleName]?.[plan]?.costo || 0),
     0
   );
+
+  const subtotalVpsUSD = selectedVps?.reduce(
+    (sum, plan) => sum + (plan.precio_mensual_nube || 0),
+    0
+  );
+
+  const subtotalVpsMXN = subtotalVpsUSD * exchangeRate;
 
   const subtotalRentaHora = hourRentals.reduce(
     (sum, r) => sum + r.price * r.hours,
@@ -29,18 +39,23 @@ export default function calculateTotals({
 
   const freqDiscount =
     paymentFrequency === "Semestral" ? 0.05 :
-    paymentFrequency === "Anual" ? 0.1 : 0;
+    paymentFrequency === "Anual" ? 0.10 : 0;
 
   const volumeDiscount =
-    modulesForDiscount.length >= 5 ? 0.2 :
+    modulesForDiscount.length >= 5 ? 0.20 :
     modulesForDiscount.length >= 3 ? 0.15 :
-    modulesForDiscount.length === 2 ? 0.1 : 0;
+    modulesForDiscount.length === 2 ? 0.10 : 0;
 
   const discountAmount = subtotalForDiscount * (freqDiscount + volumeDiscount);
 
-  const totalMXN = subtotalModulos - discountAmount + subtotalRentaHora;
+  const totalMXN =
+    subtotalModulos +
+    subtotalRentaHora +
+    subtotalVpsMXN -
+    discountAmount;
 
-  const totalUSD = (userPlan?.precio_mensual_nube || 0) * userCount;
+  const totalUSD_users = userCount * (userPlan?.precio_mensual_nube || 0);
+  const totalUSD = totalUSD_users + subtotalVpsUSD;
 
   const totalGlobal = {
     mxn: totalMXN,
@@ -50,10 +65,13 @@ export default function calculateTotals({
   return {
     subtotalModulos,
     subtotalRentaHora,
+    subtotalVpsUSD,
+    subtotalVpsMXN,
     subtotalForDiscount,
     discountAmount,
     totalMXN,
     totalUSD,
-    totalGlobal   
+    totalGlobal,
+    selectedVps
   };
 }

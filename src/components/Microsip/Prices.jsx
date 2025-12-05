@@ -147,7 +147,8 @@ export default function MicrosipPricing() {
     pricesDB,
     paymentFrequency,
     userPlan,
-    userCount
+    userCount,
+    selectedVps
   });
 
   const handleLogout = () => {
