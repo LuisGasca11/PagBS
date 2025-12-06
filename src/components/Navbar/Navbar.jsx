@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { X, Home, Briefcase, Users, Mail } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,12 +38,22 @@ const Navbar = () => {
     setIsMenuOpen(false);
 
     if (href.startsWith('#')) {
-      setTimeout(() => {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 300);
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const element = document.querySelector(href);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 500);
+      } else {
+        setTimeout(() => {
+          const element = document.querySelector(href);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300);
+      }
     }
   };
 
@@ -67,12 +79,19 @@ const Navbar = () => {
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center space-x-3 z-10">
               <Link 
-                to="/#inicio"
+                to="/"
+                onClick={() => {
+                  if (location.pathname === '/') {
+                    setTimeout(() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
+                  }
+                }}
                 className="group flex items-center space-x-3 transition-transform duration-300 hover:scale-105"
               >
                 <div className="w-40 h-10 rounded-lg flex items-center justify-center shadow-md transition-all duration-300">
                   <img 
-                    src="/black_sheep_white.png" 
+                    src="/BSwhite 1.png" 
                     alt="Black Sheep Logo"
                     className="w-full transition-transform duration-300 object-contain group-hover:brightness-110"
                   />
@@ -80,7 +99,6 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Desktop Menu - Mejorado */}
             <div className="hidden md:flex items-center justify-center flex-1 gap-2">
               {menuItems.map((item, index) => {
                 const Icon = item.icon;
@@ -101,15 +119,12 @@ const Navbar = () => {
                     <Icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                     <span className="relative z-10">{item.label}</span>
                     
-                    {/* Efecto hover gradiente */}
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
-                    {/* Brillo animado */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                       <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
                     </div>
 
-                    {/* Borde inferior activo */}
                     {activeItem === index && (
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" />
                     )}
@@ -118,7 +133,7 @@ const Navbar = () => {
                   <Link
                     key={index}
                     to={item.href}
-                    onClick={() => handleNavClick(item.href, index)}
+                    onClick={() => setActiveItem(index)}
                     className={`
                       group relative px-6 py-2.5 rounded-xl font-medium
                       transition-all duration-300 overflow-hidden
@@ -132,15 +147,12 @@ const Navbar = () => {
                     <Icon className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
                     <span className="relative z-10">{item.label}</span>
                     
-                    {/* Efecto hover gradiente */}
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
-                    {/* Brillo animado */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                       <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
                     </div>
 
-                    {/* Borde inferior activo */}
                     {activeItem === index && (
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full" />
                     )}
@@ -151,7 +163,6 @@ const Navbar = () => {
 
             <div className="hidden md:block w-10"></div>
 
-            {/* Mobile Menu Button - Hamburger Animado */}
             <div className="md:hidden z-50">
               <button
                 onClick={handleMenuToggle}
@@ -178,12 +189,10 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu - Pantalla Completa */}
       <div className={`
         md:hidden fixed inset-0 z-40 transition-all duration-500 ease-out
         ${isMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}
       `}>
-        {/* Backdrop */}
         <div 
           className={`
             absolute inset-0 bg-gradient-to-br from-black/95 via-purple-900/20 to-black/95 backdrop-blur-xl
@@ -193,14 +202,12 @@ const Navbar = () => {
           onClick={handleMenuToggle}
         />
 
-        {/* Menu Content */}
         <div className={`
           relative h-full flex flex-col justify-center items-center px-8
           transition-all duration-700 ease-out
           ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
         `}>
           
-          {/* Close Button */}
           <button
             onClick={handleMenuToggle}
             className={`
@@ -212,7 +219,6 @@ const Navbar = () => {
             <X className="w-6 h-6" />
           </button>
 
-          {/* Logo en el centro */}
           <div className={`
             mb-12 transition-all duration-700 delay-100
             ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}
@@ -260,10 +266,8 @@ const Navbar = () => {
                         {item.label}
                       </span>
                       
-                      {/* Efecto hover gradiente */}
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       
-                      {/* Brillo */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                         <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
                       </div>
@@ -287,10 +291,8 @@ const Navbar = () => {
                         {item.label}
                       </span>
                       
-                      {/* Efecto hover gradiente */}
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                       
-                      {/* Brillo */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                         <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
                       </div>
@@ -301,7 +303,6 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* Efectos de fondo decorativos */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className={`
               absolute top-1/4 -left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl

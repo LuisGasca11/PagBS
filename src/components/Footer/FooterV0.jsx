@@ -82,7 +82,7 @@ export function FooterSection() {
 
     {/* Bottom Bar */}
     <div className={`w-full py-4 px-5`}>
-      <div className="max-w-[1320px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/10 pt-4">
+      <div className="max-w-[1320px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4 border-t border-purple-200 pt-4">
         {/* Left - Powered by */}
         <div className="flex items-center gap-2">
           <img src="/black_sheep_white.png" alt="Black Sheep" className="h-8 object-contain" />

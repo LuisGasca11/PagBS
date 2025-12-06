@@ -50,28 +50,28 @@ export default function MicrosipPricing() {
   const [selectedVps, setSelectedVps] = useState([]);
   const [userCount, setUserCount] = useState(0);
   const [vpsPlans, setVpsPlans] = useState([]);
-
+  
   useEffect(() => {
     fetch("/api/vps")
-      .then(res => res.json())
-      .then(setVpsPlans)
-      .catch(() => setVpsPlans([]));
+    .then(res => res.json())
+    .then(setVpsPlans)
+    .catch(() => setVpsPlans([]));
   }, []);
-
+  
   const userPlan = vpsPlans.find(
     p => p.vcores === null && p.memoria_gb === null && p.almacenamiento_gb === null
   );
-
+  
   const reloadPrices = async () => {
     const updated = await fetchAllPrices();
     setPricesDB(updated);
   };
-
+  
   useEffect(() => {
     document.title = "PRECIOS | black_sheep";
     fetchAllPrices().then(setPricesDB);
     fetchHourlyPrices().then(setHourlyPricesDB);
-
+    
     const sessionUser = loadSession();
     if (sessionUser) {
       setIsAuthenticated(true);
@@ -79,10 +79,10 @@ export default function MicrosipPricing() {
     }
     return () => (document.title = "Black-Sheep");
   }, []);
-
+  
   useEffect(() => {
     if (!isAuthenticated) return;
-
+    
     const events = ["click", "keypress", "mousemove", "scroll"];
     const refreshActivity = () => extendSession();
     events.forEach((e) => window.addEventListener(e, refreshActivity));
@@ -90,7 +90,7 @@ export default function MicrosipPricing() {
     const checkInterval = setInterval(() => {
       const expires = getSessionExpiration();
       if (!expires) return;
-
+      
       const remaining = expires - Date.now();
       if (remaining < 120000 && remaining > 0) {
         setSessionWarning(true);
@@ -100,13 +100,13 @@ export default function MicrosipPricing() {
         handleLogout();
       }
     }, 15000);
-
+    
     return () => {
       events.forEach((e) => window.removeEventListener(e, refreshActivity));
       clearInterval(checkInterval);
     };
   }, [isAuthenticated]);
-
+  
   const totals = calculateTotals({
     moduleSelections,
     hourRentals,
@@ -117,7 +117,7 @@ export default function MicrosipPricing() {
     userCount,
     selectedVps
   });
-
+  
   const handleLogout = () => {
     setShowLogoutAnimation(true);
     setTimeout(() => setLogoutClosing(true), 900);
@@ -129,7 +129,7 @@ export default function MicrosipPricing() {
       setLogoutClosing(false);
     }, 1300);
   };
-
+  
   const tabs = [
     { id: "modulos", label: "Módulos", auth: false },
     { id: "vps", label: "VPS", auth: false },
@@ -137,7 +137,9 @@ export default function MicrosipPricing() {
     { id: "resumen", label: "Resumen", auth: false },
     { id: "descargas", label: "Descargas", auth: false }
   ];
-
+  
+  const visibleTabs = tabs.filter(tab => !tab.auth || isAuthenticated);
+  
   return (
     <>
       <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 relative bg-white">
@@ -169,37 +171,93 @@ export default function MicrosipPricing() {
         <div className="pt-20 sm:pt-32 pb-12 sm:pb-20 px-3 sm:px-6 flex justify-center">
           <div className="w-full max-w-6xl space-y-8 sm:space-y-12">
 
-            {/* Subscription Info - Siempre visible */}
-            <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6">
+         <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6">
               <SubscriptionInfo />
             </section>
 
-            {/* Tabs Navigation */}
-            <div className="bg-white rounded-xl shadow-lg p-2">
-              <div className="flex flex-wrap gap-2">
-                {tabs.map(tab => {
-                  if (tab.auth && !isAuthenticated) return null;
+            <div className="bg-orange-500 rounded-2xl shadow-2xl p-6 border border-gray-200">
+              <div className="flex flex-wrap items-center gap-4 justify-center text-black">
+                {visibleTabs.map((tab, index) => {
+                  const isActive = activeTab === tab.id;
+                  const isLast = index === visibleTabs.length - 1;
+
+                  const tabColors = {
+                    modulos: "bg-white",
+                    vps: "bg-white",
+                    renta: "bg-white",
+                    resumen: "bg-white",
+                    descargas: "bg-white"
+                  };
+
+                  const tabColor = tabColors[tab.id] || "from-orange-500 to-orange-400";
+
                   return (
-                    <button
+                    <div
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`
-                        flex-1 min-w-[120px] px-4 py-3 rounded-lg font-semibold
-                        transition-all duration-300
-                        ${activeTab === tab.id
-                          ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg scale-105"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        }
-                      `}
+                      className={`relative ${!isLast ? 'mr-[-20px]' : ''}`}
+                      style={{ zIndex: isActive ? 20 : 10 - index }}
                     >
-                      {tab.label}
-                    </button>
+                      <button
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`
+                          relative flex items-center justify-center 
+                          min-w-[170px] h-16 px-8 py-4
+                          font-bold text-base transition-all duration-500
+                          transform hover:scale-105
+                          ${isActive
+                            ? `bg-gradient-to-r ${tabColor} text-black shadow-2xl`
+                            : "bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700 hover:from-gray-300 hover:to-gray-200 shadow-md"
+                          }
+                        `}
+                        style={{
+                          clipPath: "polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%)",
+                          transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)"
+                        }}
+                      >
+                        <div 
+                          className={`
+                            absolute inset-0 opacity-0 transition-opacity duration-500
+                            ${isActive ? "opacity-20" : ""}
+                          `}
+                          style={{
+                            clipPath: "polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%)",
+                            background: "linear-gradient(135deg, rgba(255,255,255,0.5) 0%, transparent 50%)"
+                          }}
+                        />
+
+                        <span className={`relative z-10 tracking-wide ${isActive ? 'drop-shadow-md' : ''}`}>
+                          {tab.label}
+                        </span>
+
+                        <div 
+                          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700"
+                          style={{
+                            clipPath: "polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%)"
+                          }}
+                        >
+                          <div 
+                            className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 animate-shine"
+                          />
+                        </div>
+                      </button>
+
+                      {isActive && (
+                        <div 
+                          className="absolute inset-0 animate-pulse-slow"
+                          style={{
+                            clipPath: "polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%)",
+                            filter: "blur(8px)",
+                            opacity: 0.4,
+                            zIndex: -1
+                          }}
+                        />
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
 
-            {/* Tab Content */}
             <div className="min-h-[400px]">
               {activeTab === "modulos" && (
                 <section className="bg-gradient-to-r from-orange-500 to-orange-500 backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">

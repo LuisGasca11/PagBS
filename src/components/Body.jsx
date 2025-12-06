@@ -250,7 +250,7 @@ const Body = () => {
       </div>
 
       <div className="absolute bottom-[-160px] md:bottom-[-430px] lg:bottom-[-440px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-6xl px-4">
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-3">
+        <div className=" rounded-2xl p-3">
           <img 
             alt="AI Dashboard preview" 
             loading="lazy" 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { LogIn, LogOut, User, Settings, ChevronDown, Menu, X, Package, DollarSign, MessageSquare } from "lucide-react";
+import { LogIn, LogOut, User, Settings, ChevronDown, X } from "lucide-react";
 
 export default function NavBar({
   links = [
-    { label: "Sistema ERP", href: "/MicroPage", icon: Package },
-    { label: "Precios", href: "/Prices", icon: DollarSign },
-    { label: "Contáctanos", href: "/FormMicro", icon: MessageSquare },
+    { label: "Sistema ERP", href: "/MicroPage" },
+    { label: "Precios", href: "/Prices" },
+    { label: "Contáctanos", href: "/FormMicro" },
   ],
   isAuthenticated,
   username,
@@ -14,18 +14,36 @@ export default function NavBar({
   onOpenAdmin,
   onOpenVpsAdmin,
   onOpenHourlyAdmin,
-  currentPath = "/Prices",
 }) {
   const [scrollY, setScrollY] = useState(0);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [activeLink, setActiveLink] = useState(null);
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
     const handler = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  useEffect(() => {
+    const handlePathChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePathChange);
+    
+    const originalPushState = window.history.pushState;
+    window.history.pushState = function(...args) {
+      originalPushState.apply(window.history, args);
+      handlePathChange();
+    };
+
+    return () => {
+      window.removeEventListener("popstate", handlePathChange);
+      window.history.pushState = originalPushState;
+    };
   }, []);
 
   useEffect(() => {
@@ -42,7 +60,7 @@ export default function NavBar({
   const canUseAdmin = currentPath === "/Prices";
 
   const requirePricesForAdmin = () => {
-    alert("Para utilizar el panel de administración dirígete a la página de Precios (/Prices).");
+    alert("Para utilizar el panel de administración dirígete a la página de Precios.");
   };
 
   const handleAdminClick = () => {
@@ -71,6 +89,11 @@ export default function NavBar({
       onLogoutClick && onLogoutClick();
       setLoggingOut(false);
     }, 600);
+  };
+
+  const handleLinkClick = (href) => {
+    setCurrentPath(href);
+    setShowMobileMenu(false);
   };
 
   return (
@@ -102,24 +125,22 @@ export default function NavBar({
 
             <div className="hidden md:flex justify-center gap-2 lg:gap-3">
               {links.map((link, i) => {
-                const Icon = link.icon;
                 const isActive = currentPath === link.href;
                 return (
                   <a
                     key={i}
                     href={link.href}
-                    onClick={() => setActiveLink(i)}
+                    onClick={() => handleLinkClick(link.href)}
                     className={`
                       group relative px-4 lg:px-5 py-2.5 rounded-xl font-semibold text-base lg:text-lg
                       transition-all duration-300 overflow-hidden
                       flex items-center gap-2
-                      ${isActive || activeLink === i
+                      ${isActive
                         ? "text-orange-600 bg-orange-50" 
                         : "text-gray-600 hover:text-orange-500 hover:bg-orange-50/50"
                       }
                     `}
                   >
-                    {Icon && <Icon className="w-4 h-4 lg:w-5 lg:h-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />}
                     <span className="relative z-10 whitespace-nowrap">{link.label}</span>
                     
                     <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-orange-500/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -128,7 +149,7 @@ export default function NavBar({
                       <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
                     </div>
 
-                    {(isActive || activeLink === i) && (
+                    {isActive && (
                       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full animate-slideUp" />
                     )}
                   </a>
@@ -137,21 +158,19 @@ export default function NavBar({
             </div>
 
             <div className="hidden md:flex items-center relative">
-              {!isAuthenticated && (
+              {!isAuthenticated ? (
                 <button
-                  onClick={onLoginClick}
-                  className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white backdrop-blur-xl transition-all shadow-lg hover:shadow-xl hover:bg-orange-600 hover:scale-105 active:scale-95 overflow-hidden"
+                  onClick={canUseAdmin ? onLoginClick : requirePricesForAdmin}
+                  className="group relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-white backdrop-blur-xl transition-all shadow-lg overflow-hidden bg-orange-500 hover:shadow-xl hover:bg-orange-600 hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  <span className="font-semibold">Iniciar</span>
+                  <span className="font-semibold">Iniciar Sesión</span>
                   
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                     <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
                   </div>
                 </button>
-              )}
-
-              {isAuthenticated && (
+              ) : (
                 <div className="relative">
                   <button
                     onClick={() => setShowAdminMenu(!showAdminMenu)}
@@ -244,7 +263,6 @@ export default function NavBar({
           <div className="fixed inset-x-4 top-20 bottom-4 overflow-y-auto animate-scaleIn">
             <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-gray-200 p-6 relative overflow-hidden">
               
-              {/* Close Button */}
               <button
                 onClick={() => setShowMobileMenu(false)}
                 className="absolute top-6 right-6 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all hover:rotate-90 hover:scale-110 active:scale-95 z-10"
@@ -254,30 +272,29 @@ export default function NavBar({
 
               <div className="h-16"></div>
 
-              {/* Links */}
               <div className="flex flex-col gap-3 mb-6">
                 {links.map((link, i) => {
-                  const Icon = link.icon;
+                  const isActive = currentPath === link.href;
                   return (
                     <a
                       key={i}
                       href={link.href}
-                      onClick={() => setShowMobileMenu(false)}
-                      className="group relative flex items-center gap-3 px-5 py-4 rounded-2xl bg-gradient-to-r from-orange-50 to-transparent hover:from-orange-100 hover:to-orange-50 border border-orange-100 hover:border-orange-200 transition-all hover:scale-[1.02] active:scale-95 overflow-hidden"
+                      onClick={() => handleLinkClick(link.href)}
+                      className={`group relative flex items-center gap-3 px-5 py-4 rounded-2xl border transition-all hover:scale-[1.02] active:scale-95 overflow-hidden ${
+                        isActive 
+                          ? "bg-gradient-to-r from-orange-100 to-orange-50 border-orange-300" 
+                          : "bg-gradient-to-r from-orange-50 to-transparent hover:from-orange-100 hover:to-orange-50 border-orange-100 hover:border-orange-200"
+                      }`}
                       style={{
                         animation: `slideInRight 0.4s ease-out ${i * 0.1}s backwards`
                       }}
                     >
-                      {Icon && (
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                      )}
-                      <span className="text-lg font-semibold text-gray-700 group-hover:text-orange-600 transition-colors">
+                      <span className={`text-lg font-semibold transition-colors ${
+                        isActive ? "text-orange-600" : "text-gray-700 group-hover:text-orange-600"
+                      }`}>
                         {link.label}
                       </span>
 
-                      {/* Brillo */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                         <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
                       </div>
@@ -290,15 +307,18 @@ export default function NavBar({
                 {!isAuthenticated ? (
                   <button
                     onClick={() => {
-                      onLoginClick();
-                      setShowMobileMenu(false);
+                      if (canUseAdmin) {
+                        onLoginClick();
+                        setShowMobileMenu(false);
+                      } else {
+                        requirePricesForAdmin();
+                      }
                     }}
-                    className="w-full relative flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 text-white transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-95 group overflow-hidden"
+                    className="w-full relative flex items-center justify-center gap-3 px-6 py-4 rounded-2xl text-white transition-all shadow-lg group overflow-hidden bg-gradient-to-r from-orange-500 to-orange-600 hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer"
                   >
                     <LogIn className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                     <span className="font-semibold text-lg">Iniciar Sesión</span>
 
-                    {/* Brillo */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
                       <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
                     </div>
@@ -429,18 +449,6 @@ export default function NavBar({
             opacity: 1;
             transform: translateX(0);
           }
-        }
-
-        @keyframes slideInFromRight {
-          from {
-            transform: translateX(100%);
-          }
-          to {
-            transform: translateX(0);
-          }
-        }
-        .animate-slideInFromRight {
-          animation: slideInFromRight 0.3s ease-out;
         }
       `}</style>
     </>

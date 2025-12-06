@@ -9,9 +9,10 @@ const Carousel = () => {
       id: 1,
       title: "Microsip",
       features: [],
-      image: "Mspbla.png",
+      image: "mspPartner.png",
       link: "/MicroPage",
       target: "_blank",
+      height: "h-[150px]"
     },
     {
       id: 2,
@@ -137,11 +138,11 @@ const Card = ({ card }) => {
   const CardContent = () => (
     <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-5 md:p-6">
       {/* Image Container */}
-      <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mb-4 sm:mb-5 md:mb-6">
+      <div className="relative w-40 h-40 sm:w-35 sm:h-35 md:w-36 md:h-36 lg:w-40 lg:h-40 mb-4 sm:mb-5 md:mb-6">
         <img
           src={card.image}
           alt={card.title}
-          className="w-full h-full object-contain rounded-lg"
+          className={`object-contain rounded-lg ${card.height || "h-full w-full"}`}
           style={{
             transition: "transform 500ms ease-out, filter 500ms ease-out",
             transform: isHovered ? "scale(1.1)" : "scale(1)",

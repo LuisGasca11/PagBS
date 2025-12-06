@@ -126,7 +126,7 @@ export default function EquipoPage() {
             <div className="flex flex-col lg:flex-row min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] xl:min-h-[800px] backdrop-blur-xl rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
               
               {/* Large Profile Image */}
-              <div className="lg:w-4/5 relative overflow-hidden bg-gradient-to-br from-white/5 to-white/10">
+              <div className="lg:w-4/5 relative overflow-hidden bg-gradient-to-br from-black/5 to-black/10">
                 <img
                   src={currentTeamMember.image || "/placeholder.svg"}
                   alt={currentTeamMember.name}

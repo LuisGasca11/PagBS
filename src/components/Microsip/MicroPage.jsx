@@ -304,7 +304,7 @@ const MicroPage = () => {
                 </p>
 
                 <a 
-                  href="https://www.microsip.com/que-es-erp-microsip"
+                  href="/Experiencia"
                   className="inline-flex items-center gap-3 text-black hover:text-orange-400 transition-all group"
                 >
                   <img 
@@ -354,7 +354,7 @@ const MicroPage = () => {
                     alt="Flecha"
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-                  <p className="font-bold text-sm sm:text-base">Contacta a un partner</p>
+                  <p className="font-bold text-sm sm:text-base">CONTACTANOS</p>
                 </a>
               </div>
             </div>

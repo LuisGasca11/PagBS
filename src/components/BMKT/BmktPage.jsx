@@ -8,7 +8,7 @@ export default function BmktPage() {
           
           {/* Left content */}
           <div className="md:w-1/2 flex flex-col items-start text-left">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 md:ml-30 text-gray-900 tracking-tight md:ml-40 tracking-widest">
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 md:ml-30 text-gray-900 md:ml-40 tracking-widest">
               TAURUS
             </h1>
 

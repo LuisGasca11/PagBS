@@ -5,6 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
+  safelist: [
+  'h-[50px]',
+  'h-[60px]',
+  'h-[80px]',
+],
   theme: {
     extend: {
       fontFamily: {

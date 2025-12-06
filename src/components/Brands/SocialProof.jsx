@@ -2,9 +2,9 @@ import LogoLoop from "../ReactBits/LogoLoop";
 
 export function SocialProof() {
   const companyLogos = [
-    { src: "/fyttg.png", alt: "FYTTSA", href: "https://stripe.com", height: "h-[120px]" },  
-    { src: "/gmn.png", alt: "Gouman", href: "https://linear.app", height: "h-[150px]" }, 
-    { src: "/ely.png", alt: "ELYSSIA", href: "https://linear.app", height: "h-[50px]" },  
+    { src: "/fyttg.png", alt: "FYTTSA", href: "https://fyttsa.com", height: "h-[120px]" },  
+    { src: "/gmn.png", alt: "Gouman", href: "https://krkn.mx", height: "h-[150px]" }, 
+    { src: "/ely.png", alt: "ELYSSIA", href: "https://elyssia.com.mx", height: "h-[50px]" },  
   ];
 
   const formatted = companyLogos.map((logo) => ({

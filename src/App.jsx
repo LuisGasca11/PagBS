@@ -21,6 +21,7 @@ import FormMicro from './components/Microsip/FormMicro';
 import BmktPage from './components/BMKT/BmktPage';
 import Sat from './components/Microsip/SAT';
 import Prices from './components/Microsip/Prices';
+import Experiencia from './components/Microsip/experiencia';
 
 //Modules
 import Bancos from './components/Microsip/Moduls/1';
@@ -46,6 +47,8 @@ function AppContent() {
     "/SistemaMicrosip",
     "/FormMicro",
     "/sat",
+    "/Experiencia",
+
     "/Bancos",
     "/Contabilidad",
     "/Nomina",
@@ -59,6 +62,8 @@ function AppContent() {
     "/PuntoVenta",
     "/EnRuta",
     "/AdminSuc",
+
+    "/BmktPage",
   ];
 
   const hideUI = hiddenUIRoutes.includes(location.pathname);
@@ -90,6 +95,7 @@ function AppContent() {
         <Route path="/MicroPage" element={<MicroPage />} />
         <Route path="/Prices" element={<Prices />} />
         <Route path="/SistemaMicrosip" element={<SistemaMicrosip />} />
+        <Route path="/Experiencia" element={<Experiencia />} />
 
         <Route path="/Bancos" element={<Bancos />} />
         <Route path="/Contabilidad" element={<Contabilidad />} />
