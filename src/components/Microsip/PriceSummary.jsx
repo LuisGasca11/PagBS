@@ -5,9 +5,21 @@ export default function PriceSummary({
   userCount,
   exchangeRate
 }) {
-  const totalUSD = totals.totalUSD;
-  const totalUSD_in_MXN = totalUSD * exchangeRate;
-  const totalFinal = totals.totalMXN;
+  const formatMXN = (num) => {
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
+    }).format(num);
+  };
+
+  const formatUSD = (num) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(num);
+  };
+
+  const totalUSD_in_MXN = totals.totalUSD * exchangeRate;
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
@@ -29,76 +41,65 @@ export default function PriceSummary({
 
         <div className="flex justify-between">
           <span>Subtotal módulos:</span>
-          <span>${totals.subtotalModulos}</span>
+          <span>{formatMXN(totals.subtotalModulos || 0)}</span>
         </div>
+
+        {totals.subtotalVpsMXN > 0 && (
+          <div className="flex justify-between">
+            <span>Subtotal VPS:</span>
+            <span>{formatMXN(totals.subtotalVpsMXN || 0)}</span>
+          </div>
+        )}
 
         {totals.subtotalRentaHora > 0 && (
           <div className="flex justify-between">
             <span>Renta por hora:</span>
-            <span>${totals.subtotalRentaHora}</span>
+            <span>{formatMXN(totals.subtotalRentaHora || 0)}</span>
+          </div>
+        )}
+
+        {totals.discountAmount > 0 && (
+          <div className="flex justify-between text-orange-600">
+            <span>Descuento total:</span>
+            <span>- {formatMXN(totals.discountAmount || 0)}</span>
           </div>
         )}
 
         <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold">
           <span>Total en MXN ({paymentFrequency}):</span>
-          <span>
-            {totals.totalMXN.toLocaleString("es-MX", {
-              style: "currency",
-              currency: "MXN",
-            })}
-          </span>
+          <span>{formatMXN(totals.totalMXN || 0)}</span>
         </div>
 
         {userCount > 0 && (
-          <div className="flex justify-between text-lg mt-2">
-            <span>Usuarios en la nube ({userCount}):</span>
-            <span>
-              {totals.totalUSD.toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </span>
-          </div>
-        )}
-
-        {userCount > 0 && (
           <>
-            <div className="flex justify-between text-lg mt-2">
-              <span>Usuarios en la nube USD({userCount}):</span>
-              <span>
-                {totalUSD.toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                })}
+            <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold text-orange-600">
+              <span>Usuarios en la nube ({userCount}):</span>
+              <span className="flex items-center gap-2">
+                {formatUSD(totals.totalUSD || 0)}
+                <span className="text-xs font-normal bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                  USD
+                </span>
               </span>
             </div>
-
-            <div className="flex justify-between text-sm text-gray-600 mt-1">
-              <span>Equivalente en MXN:</span>
-              <span>
-                {totalUSD_in_MXN.toLocaleString("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                })}
-              </span>
+            
+            <div className="flex justify-between text-sm text-gray-600 ml-4">
+              <span>≈ Equivalente en MXN (TC: ${exchangeRate}):</span>
+              <span>{formatMXN(totalUSD_in_MXN)}</span>
             </div>
           </>
         )}
 
-        <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold">
+        <div className="border-t-2 border-orange-500 pt-4 mt-4 flex justify-between text-xl font-bold text-orange-600">
           <span>Total global:</span>
-          <span>
-            MXN {totals.totalGlobal.mxn.toLocaleString("es-MX")}  
-            / USD {totals.totalGlobal.usd.toLocaleString("en-US")}
-          </span>
-        </div>
-
-        {totals.discountAmount > 0 && (
-          <div className="flex justify-between text-orange-600 mt-1">
-            <span>Descuento total:</span>
-            <span>- ${totals.discountAmount.toFixed(2)}</span>
+          <div className="text-right">
+            <div>{formatMXN(totals.totalGlobal.mxn || 0)}</div>
+            {userCount > 0 && (
+              <div className="text-base text-blue-600">
+                + {formatUSD(totals.totalGlobal.usd || 0)}
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
       </div>
     </div>

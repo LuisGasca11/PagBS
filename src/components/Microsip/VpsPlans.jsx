@@ -7,6 +7,9 @@ export default function VpsPlans({ selectedVps, setSelectedVps, userCount, setUs
   const formatUSD = (num) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(num);
 
+  const formatMXN = (num) =>
+    new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(num);
+
   useEffect(() => {
     fetch("/api/vps")
       .then((res) => res.json())
@@ -118,8 +121,15 @@ export default function VpsPlans({ selectedVps, setSelectedVps, userCount, setUs
               {/* Right Side - Price & Action */}
               <div className="flex flex-row lg:flex-col items-center lg:items-end justify-between lg:justify-center lg:text-right gap-4 lg:gap-0 border-t lg:border-t-0 lg:border-l border-white/20 pt-6 lg:pt-0 lg:pl-8">
                 <div>
-                  <p className="text-3xl sm:text-4xl font-bold">{formatUSD(p.precio_mensual_nube)}</p>
-                  <p className="opacity-80 text-xs sm:text-sm mt-1">/mes en la nube</p>
+                  <p className="text-3xl sm:text-4xl font-bold">
+                    {isUserPlan 
+                      ? formatUSD(p.precio_mensual_nube) 
+                      : formatMXN(p.precio_mensual_nube)
+                    }
+                  </p>
+                  <p className="opacity-80 text-xs sm:text-sm mt-1">
+                    /mes en la nube
+                  </p>
                 </div>
 
                 {!isUserPlan && (

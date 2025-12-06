@@ -40,6 +40,7 @@ export default function ModulesList({
             icon={m.icon}
             prices={pricesDB[m.name] || {}}
             isSelected={!!moduleSelections[m.name]}
+            selectedPlanFromParent={moduleSelections[m.name]?.plan} 
             onSelect={handleSelect}
             onDeselect={handleDeselect}
             isAuthenticated={isAuthenticated}

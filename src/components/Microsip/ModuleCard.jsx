@@ -7,11 +7,12 @@ export default function ModuleCard({
   name,
   prices,
   isSelected,
+  selectedPlanFromParent,
   onSelect,
   onDeselect,
   isAuthenticated,
 }) {
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(selectedPlanFromParent || null);
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
   const buttonRef = useRef(null);
@@ -27,6 +28,10 @@ export default function ModuleCard({
   };
 
   const planKeys = Object.keys(planLabels);
+
+  useEffect(() => {
+    setSelectedPlan(selectedPlanFromParent || null);
+  }, [selectedPlanFromParent]);
 
   useEffect(() => {
     if (isOpen && buttonRef.current) {
@@ -97,7 +102,7 @@ export default function ModuleCard({
 
   return (
     <div
-      className={`border rounded-lg transition-colors ${
+      className={`border rounded-lg p-4 transition-colors ${
         isSelected
           ? "border-orange-500 bg-orange-50"
           : "hover:border-orange-300"

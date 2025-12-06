@@ -10,20 +10,23 @@ export default function calculateTotals({
 }) {
 
   const subtotalModulos = Object.entries(moduleSelections).reduce(
-    (sum, [moduleName, { plan }]) =>
-      sum + (pricesDB[moduleName]?.[plan]?.costo || 0),
+    (sum, [moduleName, { plan }]) => {
+      const costo = pricesDB[moduleName]?.[plan]?.costo || 0;
+      return sum + Number(costo);
+    },
     0
   );
 
-  const subtotalVpsUSD = selectedVps?.reduce(
-    (sum, plan) => sum + (plan.precio_mensual_nube || 0),
+  const subtotalVpsMXN = (selectedVps || []).reduce(
+    (sum, plan) => {
+      const precio = plan.precio_mensual_nube || 0;
+      return sum + Number(precio);
+    },
     0
   );
 
-  const subtotalVpsMXN = subtotalVpsUSD * exchangeRate;
-
-  const subtotalRentaHora = hourRentals.reduce(
-    (sum, r) => sum + r.price * r.hours,
+  const subtotalRentaHora = (hourRentals || []).reduce(
+    (sum, r) => sum + (Number(r.price) * Number(r.hours)),
     0
   );
 
@@ -32,8 +35,10 @@ export default function calculateTotals({
   );
 
   const subtotalForDiscount = modulesForDiscount.reduce(
-    (sum, [name, { plan }]) =>
-      sum + (pricesDB[name]?.[plan]?.costo || 0),
+    (sum, [name, { plan }]) => {
+      const costo = pricesDB[name]?.[plan]?.costo || 0;
+      return sum + Number(costo);
+    },
     0
   );
 
@@ -50,12 +55,11 @@ export default function calculateTotals({
 
   const totalMXN =
     subtotalModulos +
-    subtotalRentaHora +
-    subtotalVpsMXN -
+    subtotalVpsMXN +
+    subtotalRentaHora -
     discountAmount;
 
-  const totalUSD_users = userCount * (userPlan?.precio_mensual_nube || 0);
-  const totalUSD = totalUSD_users + subtotalVpsUSD;
+  const totalUSD = Number(userCount) * Number(userPlan?.precio_mensual_nube || 0);
 
   const totalGlobal = {
     mxn: totalMXN,
@@ -65,7 +69,6 @@ export default function calculateTotals({
   return {
     subtotalModulos,
     subtotalRentaHora,
-    subtotalVpsUSD,
     subtotalVpsMXN,
     subtotalForDiscount,
     discountAmount,
