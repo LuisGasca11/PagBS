@@ -14,6 +14,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        lexend: ["Lexend Exa", "sans-serif"], 
+        sans: ["Lexend Exa", "sans-serif"],
       },
       colors: {
         border: "var(--border)",

@@ -127,6 +127,97 @@ export default function Experiencia() {
             </div>
         </section>
 
+        <section className="w-full bg-white px-6 sm:px-10 lg:px-20">
+            <div className="max-w-6xl mx-auto">
+                
+                <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 text-left mb-3">
+                ¿Qué buscamos?
+                </h2>
+
+                <p className="text-gray-600 text-lg mb-16">
+                Ser auténticos practicando los comportamientos que consideramos indispensables:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
+                <img
+                    src="/client.png"
+                    alt="Cliente"
+                    className="w-60 sm:w-72 mx-auto md:mx-0"
+                />
+
+                <div>
+                    <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
+                    Centricidad en el cliente
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                    Nuestros clientes son el epicentro de todas las decisiones.
+                    </p>
+                </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
+                <img
+                    src="/feedback.png"
+                    alt="Feedback"
+                    className="w-60 sm:w-72 mx-auto md:mx-0"
+                />
+
+                <div>
+                    <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
+                    Apertura al feedback
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">
+                    Sabemos que el primer paso para el progreso es la capacidad de recibir retroalimentación
+                    y brindarla con asertividad.
+                    </p>
+                </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <img
+                        src="/data.png"
+                        alt="Datos"
+                        className="w-60 sm:w-72 mx-auto md:mx-0"
+                    />
+
+                    <div>
+                        <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
+                        Obsesión por los datos
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed">
+                        Medimos y orientamos nuestros proyectos con antecedentes e información documentada y respaldada.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <img
+                        src="/confidence.png"
+                        alt="Datos"
+                        className="w-60 sm:w-72 mx-auto md:mx-0"
+                    />
+
+                    <div>
+                        <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
+                        Confianza y colaboración
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed">
+                        Valoramos, impulsamos y desarrollamos el talento individual y grupal.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section className="w-full bg-white px-6 sm:px-10 lg:px-20 py-20">
+            <div className="max-w-4xl mx-auto text-center">
+                    <div>
+                        <p className="text-gray-400 leading-relaxed text-center">
+                        Toma el control, realiza decisiones informadas y alcanza todas tus metas con un ERP hecho para tu empresa. ¡Conoce la solución!
+                        </p>
+                    </div>
+                </div>
+        </section>
 
         <MicrosipFooter />
     </>

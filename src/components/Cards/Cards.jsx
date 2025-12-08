@@ -12,7 +12,7 @@ const Carousel = () => {
       image: "mspPartner.png",
       link: "/MicroPage",
       target: "_blank",
-      height: "h-[150px]"
+      imageSize: "w-52 h-52 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64",
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ const Carousel = () => {
       features: [],
       cta: "PROXIMAMENTE",
       image: "bmktW.png",
-      link: "/",
+      link: "/BmktPage",
       target: "_blank",
     },
     {
@@ -86,7 +86,6 @@ const Carousel = () => {
           </p>
         </div>
 
-        {/* Cards Grid Container */}
         <div
           className="relative z-10"
           onMouseEnter={() => setIsAutoPlaying(false)}
@@ -137,8 +136,10 @@ const Card = ({ card }) => {
 
   const CardContent = () => (
     <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-5 md:p-6">
-      {/* Image Container */}
-      <div className="relative w-40 h-40 sm:w-35 sm:h-35 md:w-36 md:h-36 lg:w-40 lg:h-40 mb-4 sm:mb-5 md:mb-6">
+      {/* Image Container - Ahora usa imageSize si existe */}
+      <div className={`relative mb-4 sm:mb-5 md:mb-6 ${
+        card.imageSize || "w-40 h-40 sm:w-35 sm:h-35 md:w-36 md:h-36 lg:w-40 lg:h-40"
+      }`}>
         <img
           src={card.image}
           alt={card.title}
@@ -209,7 +210,6 @@ const Card = ({ card }) => {
         </div>
       )}
 
-      {/* Overlay de hover */}
       <div
         className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/2 rounded-2xl transition-all duration-300 pointer-events-none ${
           isHovered ? "opacity-100" : "opacity-0"

@@ -1,7 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import"https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap";.tip-badge {box-shadow: 0 1px 14px #0000001f,0 5px 8px #00000024,0 3px 5px -1px #0003}
+@import"https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap";
+.tip-badge {box-shadow: 0 1px 14px #0000001f,0 5px 8px #00000024,0 3px 5px -1px #0003}
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@100..900&display=swap");
 @import "tailwindcss";
 
 .gradient-stripe {

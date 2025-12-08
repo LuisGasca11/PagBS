@@ -1,3 +1,5 @@
+import { formatMXN, formatUSD } from "./currency";
+
 export default function calculateTotals({
   moduleSelections,
   hourRentals,
@@ -75,6 +77,14 @@ export default function calculateTotals({
     totalMXN,
     totalUSD,
     totalGlobal,
+    formatted: {
+      subtotalModulosMXN: formatMXN(subtotalModulos),
+      subtotalRentaHoraMXN: formatMXN(subtotalRentaHora),
+      subtotalVpsMXN: formatMXN(subtotalVpsMXN),
+      discountAmountMXN: formatMXN(discountAmount),
+      totalMXN: formatMXN(totalMXN),
+      totalUSD: formatUSD(totalUSD),
+    },
     selectedVps
   };
 }

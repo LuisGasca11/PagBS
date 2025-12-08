@@ -296,11 +296,11 @@ const MicroPage = () => {
               
               <div className="text-center md:text-left md:pl-8 lg:pl-20">
                 <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                  39 años de experiencia
+                  20 años de experiencia
                 </h2>
 
                 <p className="text-base sm:text-lg text-gray-400 mb-6 sm:mb-8">
-                  Aprovecha la experiencia de más de 100,000 clientes satisfechos y más de tres décadas de excelencia.
+                  Comenzamos siendo clientes MICROSIP desde hace más de 20 años
                 </p>
 
                 <a 
@@ -338,11 +338,11 @@ const MicroPage = () => {
 
               <div className="text-center md:text-left order-1 md:order-2 md:pr-8 lg:pr-20">
                 <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                  Partners expertos en todo el país
+                  Partners expertos
                 </h2>
 
                 <p className="text-base sm:text-lg text-gray-400 mb-6 sm:mb-8">
-                  Contamos con más de 350 partners certificados, siempre dispuestos a digitalizar los procesos de tu empresa.
+                  Somos partners MICROSIP certificados y al igual que tú somos clientes de la herramienta.
                 </p>
 
                 <a 
@@ -354,7 +354,7 @@ const MicroPage = () => {
                     alt="Flecha"
                     className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-                  <p className="font-bold text-sm sm:text-base">CONTACTANOS</p>
+                  <p className="font-bold text-sm sm:text-base">Contactanos</p>
                 </a>
               </div>
             </div>

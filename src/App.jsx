@@ -77,7 +77,7 @@ function AppContent() {
         <Route path="/" element={
           <>
             <Body />
-            <SocialProof />
+            {/*<SocialProof />*/}
             <Cards />
             <LargeTestimonial />
             <FAQSection />
@@ -91,7 +91,7 @@ function AppContent() {
 
         <Route path="/sat" element={<Sat />} />
         <Route path="/krkn" element={<Krkn />} />
-        <Route path="/bmkt" element={<BmktPage />} />
+        <Route path="/BmktPage" element={<BmktPage />} />
         <Route path="/MicroPage" element={<MicroPage />} />
         <Route path="/Prices" element={<Prices />} />
         <Route path="/SistemaMicrosip" element={<SistemaMicrosip />} />

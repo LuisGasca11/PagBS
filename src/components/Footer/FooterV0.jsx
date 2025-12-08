@@ -91,7 +91,7 @@ export function FooterSection() {
         {/* Center - Links and Info */}
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="flex flex-wrap justify-center items-center gap-2 text-white/80 text-xs">
-            <span>© 2025 Blck Sheep</span>
+            <span>© 2026 Blck Sheep</span>
             <span>|</span>
             <a href="#" className="hover:underline">Aviso de Privacidad</a>
             <span>|</span>
@@ -103,7 +103,7 @@ export function FooterSection() {
 
         {/* Right - Logo */}
         <div className="flex items-center">
-          <img src="/LOGO_FYTTSA_White.png" alt="Fyttg" className="h-16 object-contain" />
+          <img src="/Sheep Icon.png" alt="Fyttg" className="h-16 object-contain" />
         </div>
       </div>
     </div>

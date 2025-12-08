@@ -50,6 +50,10 @@ export default function MicrosipPricing() {
   const [selectedVps, setSelectedVps] = useState([]);
   const [userCount, setUserCount] = useState(0);
   const [vpsPlans, setVpsPlans] = useState([]);
+
+  const userPlanSelected = userCount > 0;     
+  const vpsSelected = selectedVps.length > 0;   
+
   
   useEffect(() => {
     fetch("/api/vps")
@@ -106,6 +110,20 @@ export default function MicrosipPricing() {
       clearInterval(checkInterval);
     };
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (vpsSelected && userCount > 0) {
+      alert("Solo puedes seleccionar un plan VPS o Usuarios, no ambos.");
+      setUserCount(0);
+    }
+  }, [vpsSelected]);
+
+  useEffect(() => {
+    if (userPlanSelected && selectedVps.length > 0) {
+      alert("Solo puedes seleccionar usuarios o un plan VPS, no ambos.");
+      setSelectedVps([]);
+    }
+  }, [userPlanSelected]);
   
   const totals = calculateTotals({
     moduleSelections,
@@ -129,13 +147,27 @@ export default function MicrosipPricing() {
       setLogoutClosing(false);
     }, 1300);
   };
+
+  const getNextTab = (currentTab) => {
+    if (currentTab === "modulos") return "vps";
+    if (currentTab === "vps") {
+      return isAuthenticated ? "renta" : "resumen";
+    }
+    if (currentTab === "renta") return "resumen";
+    if (currentTab === "resumen") return "descargas";
+    return currentTab;
+  };
+
+  const handleNextTab = () => {
+    setActiveTab(getNextTab(activeTab));
+  };
   
   const tabs = [
     { id: "modulos", label: "Módulos", auth: false },
     { id: "vps", label: "VPS", auth: false },
     { id: "renta", label: "Renta por Hora", auth: true },
     { id: "resumen", label: "Resumen", auth: false },
-    { id: "descargas", label: "Descargas", auth: false }
+    { id: "descargas", label: "Descargas", auth: true }
   ];
   
   const visibleTabs = tabs.filter(tab => !tab.auth || isAuthenticated);
@@ -204,6 +236,7 @@ export default function MicrosipPricing() {
                           min-w-[170px] h-16 px-8 py-4
                           font-bold text-base transition-all duration-500
                           transform hover:scale-105
+                          ${isActive ? 'border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'border border-orange-200'}
                           ${isActive
                             ? `bg-gradient-to-r ${tabColor} text-black shadow-2xl`
                             : "bg-gradient-to-r from-gray-200 to-gray-100 text-gray-700 hover:from-gray-300 hover:to-gray-200 shadow-md"
@@ -269,18 +302,46 @@ export default function MicrosipPricing() {
                     pricesDB={pricesDB}
                     isAuthenticated={isAuthenticated}
                   />
+                  {Object.keys(moduleSelections).length > 0 && (
+                    <div className="flex justify-end mt-6">
+                      <button
+                        onClick={handleNextTab}
+                        className="bg-white hover:bg-gray-100 text-orange-500 font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                      >
+                        Continuar a VPS
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </section>
               )}
 
               {activeTab === "vps" && (
                 <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
                   <ModulesHeader title="Planes VPS" />
-                  <VpsPlans
-                    selectedVps={selectedVps}
-                    setSelectedVps={setSelectedVps}
-                    userCount={userCount}
-                    setUserCount={setUserCount} 
-                  />
+                    <VpsPlans
+                      selectedVps={selectedVps}
+                      setSelectedVps={setSelectedVps}
+                      userCount={userCount}
+                      setUserCount={setUserCount}
+                      userPlanSelected={userPlanSelected}
+                      vpsSelected={vpsSelected}
+                    />
+                    {(selectedVps.length > 0 || userCount > 0) && (
+                    <div className="flex justify-end mt-6">
+                      <button
+                        onClick={handleNextTab}
+                        className="bg-white hover:bg-gray-100 text-orange-500 font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                      >
+                        {isAuthenticated ? "Continuar a Renta por Hora" : "Continuar a Resumen"}
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </section>
               )}
 
@@ -310,7 +371,7 @@ export default function MicrosipPricing() {
                 </section>
               )}
 
-              {activeTab === "descargas" && (
+              {activeTab === "descargas" && isAuthenticated &&(
                 <div className="space-y-6 animate-fade-in">
                   <section className="bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8">
                     <ModulesHeader title="Descargar Presentación" />
@@ -337,7 +398,6 @@ export default function MicrosipPricing() {
           </div>
         </div>
 
-        {/* MODALS */}
         {showLoginModal && (
           <LoginModal
             onClose={() => setShowLoginModal(false)}
