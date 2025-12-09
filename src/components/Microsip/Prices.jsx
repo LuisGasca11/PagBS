@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchAllPrices, fetchHourlyPrices } from "./utils/fetchPrices";
 import { loadSession, clearSession, extendSession, getSessionExpiration } from "./utils/auth";
+import { useExchangeRate } from "./utils/useExchange";
 
 import modulesList from "./utils/modulesList";
 import calculateTotals from "./utils/calculateTotals";
@@ -25,7 +26,6 @@ export default function MicrosipPricing() {
   const [moduleSelections, setModuleSelections] = useState({});
   const [hourRentals, setHourRentals] = useState([]);
   const [scrollY, setScrollY] = useState(0);
-  const exchangeRate = 2.86; 
   
   const [activeTab, setActiveTab] = useState("modulos");
   
@@ -50,6 +50,8 @@ export default function MicrosipPricing() {
   const [selectedVps, setSelectedVps] = useState([]);
   const [userCount, setUserCount] = useState(0);
   const [vpsPlans, setVpsPlans] = useState([]);
+
+  const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
   const userPlanSelected = userCount > 0;     
   const vpsSelected = selectedVps.length > 0;   
@@ -133,7 +135,8 @@ export default function MicrosipPricing() {
     paymentFrequency,
     userPlan,
     userCount,
-    selectedVps
+    selectedVps,
+    exchangeRate
   });
   
   const handleLogout = () => {
@@ -165,7 +168,7 @@ export default function MicrosipPricing() {
   const tabs = [
     { id: "modulos", label: "Módulos", auth: false },
     { id: "vps", label: "VPS", auth: false },
-    { id: "renta", label: "Renta por Hora", auth: true },
+    { id: "renta", label: "Implementación", auth: true },
     { id: "resumen", label: "Resumen", auth: false },
     { id: "descargas", label: "Descargas", auth: true }
   ];
@@ -175,6 +178,11 @@ export default function MicrosipPricing() {
   return (
     <>
       <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 relative bg-white">
+        {exchangeLoading && (
+          <div className="fixed top-20 right-4 bg-blue-100 text-blue-800 px-4 py-2 rounded-lg shadow-lg text-sm z-50">
+            Actualizando tipo de cambio...
+          </div>
+        )}
         <div className="relative w-full">
           <a
             href="/MicroPage"
@@ -347,17 +355,18 @@ export default function MicrosipPricing() {
 
               {activeTab === "renta" && isAuthenticated && (
                 <section className="bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
-                  <ModulesHeader title="Renta por Hora" />
+                  <ModulesHeader title="Implementación de módulos por Hora" />
                   <HourlyRentals
                     hourRentals={hourRentals}
                     setHourRentals={setHourRentals}
                     hourlyPricesDB={hourlyPricesDB}
+                    selectedModules={Object.keys(moduleSelections)}
                     isAuthenticated={isAuthenticated}
                   />
                 </section>
               )}
 
-              {activeTab === "resumen" && (
+               {activeTab === "resumen" && (
                 <section className="bg-gradient-to-r from-orange-500 to-orange-500 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-fade-in">
                   <ModulesHeader title="Resumen Final" />
                   <PriceSummary
@@ -367,6 +376,7 @@ export default function MicrosipPricing() {
                     userCount={userCount}
                     userPlan={userPlan}
                     exchangeRate={exchangeRate}
+                    lastUpdate={lastUpdate} 
                   />
                 </section>
               )}

@@ -6,6 +6,7 @@ export default function HourlyRentals({
   hourRentals,
   setHourRentals,
   hourlyPricesDB,
+  selectedModules,
   isAuthenticated,
 }) {
   const addRental = () => {
@@ -19,7 +20,7 @@ export default function HourlyRentals({
     return (
       <div className="bg-white rounded-xl shadow-lg p-6 mt-8 opacity-70 pointer-events-none">
         <h3 className="text-xl font-bold text-black mb-4">
-          Renta de Módulos por Hora
+          Implementación de módulos por Hora
         </h3>
 
         <p className="text-gray-600">
@@ -32,18 +33,18 @@ export default function HourlyRentals({
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
       <h3 className="text-xl font-bold text-black mb-6">
-        Renta de Módulos por Hora
+        Implementaciones por Hora
       </h3>
 
       <button
         onClick={addRental}
         className="mb-4 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition"
       >
-        + Añadir renta por hora
+        + Añadir implementación de módulo por hora
       </button>
 
       {hourRentals.length === 0 && (
-        <p className="text-black">No hay rentas por hora agregadas.</p>
+        <p className="text-black">No hay implementaciones agregadas.</p>
       )}
 
       <div className="space-y-4">
@@ -53,6 +54,7 @@ export default function HourlyRentals({
             index={i}
             rental={r}
             hourlyPricesDB={hourlyPricesDB}
+            selectedModules={selectedModules}   
             updateRental={(...args) => {
               if (isAuthenticated) return setHourRentals(prev =>
                 prev.map((r, idx) =>

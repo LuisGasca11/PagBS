@@ -4,6 +4,7 @@ export default function HourlyRentalItem({
   index,
   rental,
   hourlyPricesDB,
+  selectedModules,
   updateRental,
   removeRental,
   isAuthenticated,
@@ -21,7 +22,7 @@ export default function HourlyRentalItem({
         }}
       >
         <option value="">Selecciona un módulo</option>
-        {Object.keys(hourlyPricesDB).map((m) => (
+        {selectedModules.map((m) => (
           <option key={m} value={m}>
             {m}
           </option>
