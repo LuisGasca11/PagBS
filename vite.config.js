@@ -18,6 +18,7 @@ export default {
       },
     },
   },
+  preview: {
+    allowedHosts: ['blck-sheep.com', 'www.blck-sheep.com', 'localhost'],
+  },
 };
-
-
