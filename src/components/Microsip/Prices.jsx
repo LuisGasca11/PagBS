@@ -26,6 +26,7 @@ export default function MicrosipPricing() {
   const [moduleSelections, setModuleSelections] = useState({});
   const [hourRentals, setHourRentals] = useState([]);
   const [scrollY, setScrollY] = useState(0);
+  const [localUserSelected, setLocalUserSelected] = useState(false);
   
   const [activeTab, setActiveTab] = useState("modulos");
   
@@ -53,9 +54,8 @@ export default function MicrosipPricing() {
 
   const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
-  const userPlanSelected = userCount > 0;     
-  const vpsSelected = selectedVps.length > 0;   
-
+  const userPlanSelected = userCount > 0 || localUserSelected;     
+  const vpsSelected = selectedVps.length > 0;
   
   useEffect(() => {
     fetch("/api/vps")
@@ -112,20 +112,6 @@ export default function MicrosipPricing() {
       clearInterval(checkInterval);
     };
   }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (vpsSelected && userCount > 0) {
-      alert("Solo puedes seleccionar un plan VPS o Usuarios, no ambos.");
-      setUserCount(0);
-    }
-  }, [vpsSelected]);
-
-  useEffect(() => {
-    if (userPlanSelected && selectedVps.length > 0) {
-      alert("Solo puedes seleccionar usuarios o un plan VPS, no ambos.");
-      setSelectedVps([]);
-    }
-  }, [userPlanSelected]);
   
   const totals = calculateTotals({
     moduleSelections,
@@ -334,8 +320,8 @@ export default function MicrosipPricing() {
                       setSelectedVps={setSelectedVps}
                       userCount={userCount}
                       setUserCount={setUserCount}
-                      userPlanSelected={userPlanSelected}
-                      vpsSelected={vpsSelected}
+                      localUserSelected={localUserSelected}
+                      setLocalUserSelected={setLocalUserSelected}
                     />
                     {(selectedVps.length > 0 || userCount > 0) && (
                     <div className="flex justify-end mt-6">

@@ -6,8 +6,8 @@ export default function VpsPlans({
   setSelectedVps, 
   userCount, 
   setUserCount,
-  userPlanSelected,
-  vpsSelected
+  localUserSelected,
+  setLocalUserSelected
 }) {
   const [plans, setPlans] = useState([]);
 
@@ -28,23 +28,76 @@ export default function VpsPlans({
   useEffect(() => {
     fetch("/api/vps")
       .then((res) => res.json())
-      .then(setPlans)
+      .then((data) => {
+        setPlans(data);
+      })
       .catch(() => setPlans([]));
   }, []);
 
+  const getPlanType = (plan) => {
+    if ((plan.vcores === null || plan.vcores === undefined) &&
+        (plan.memoria_gb === null || plan.memoria_gb === undefined) &&
+        (plan.almacenamiento_gb === null || plan.almacenamiento_gb === undefined) &&
+        plan.precio_mensual_nube > 0) {
+      return "cloud_user";
+    }
+
+    const isLocalByValues = 
+      (plan.precio_mensual_nube === 0 || plan.precio_mensual_nube === null) &&
+      (plan.vcores === 0 || plan.vcores === null) &&
+      (plan.memoria_gb === 0 || plan.memoria_gb === null) &&
+      (plan.almacenamiento_gb === 0 || plan.almacenamiento_gb === null);
+    
+    const isLocalByName = plan.nombre && plan.nombre.toLowerCase().includes("local");
+
+    if (isLocalByValues || isLocalByName) {
+      return "local_user";
+    }
+
+    if (plan.vcores > 0 || plan.memoria_gb > 0 || plan.almacenamiento_gb > 0) {
+      return "vps";
+    }
+
+    return "unknown";
+  };
+
   const handleSelectPlan = (plan) => {
-    if (userCount > 0) {
-      alert("Ya seleccionaste usuarios en la nube. Debes desactivar usuarios antes de elegir un VPS o Usuario Local.");
+    const planType = getPlanType(plan);
+
+    if (planType === "local_user") {
+      const isCurrentlySelected = localUserSelected;
+      
+      if (isCurrentlySelected) {
+        setLocalUserSelected(false);
+      } else {
+        if (userCount > 0 || selectedVps.length > 0) {
+          alert("Al seleccionar Usuario Local se deshabilitarán los Usuarios en la Nube y VPS.");
+        }
+        setLocalUserSelected(true);
+        setUserCount(0);
+        setSelectedVps([]);
+      }
       return;
     }
 
-    const isSelected = selectedVps.some(v => v.id === plan.id);
+    if (planType === "vps") {
+      const isSelected = selectedVps.some(v => v.id === plan.id);
 
-    if (isSelected) {
-      setSelectedVps([]);
-    } else {
-      setSelectedVps([plan]);
+      if (isSelected) {
+        setSelectedVps([]);
+      } else {
+        setSelectedVps([plan]);
+      }
     }
+  };
+
+  const handleUserCountChange = (delta) => {
+    if (localUserSelected) {
+      return; 
+    }
+    
+    const newCount = Math.max(userCount + delta, 0);
+    setUserCount(newCount);
   };
 
   return (
@@ -53,19 +106,18 @@ export default function VpsPlans({
 
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {plans.map((p) => {
-          const isSelected = selectedVps.some(v => v.id === p.id);
+          const planType = getPlanType(p);
 
-          const isCloudUserPlan =
-            p.vcores === null &&
-            p.memoria_gb === null &&
-            p.almacenamiento_gb === null &&
-            p.precio_mensual_nube > 0;
+          const isCloudUserPlan = planType === "cloud_user";
+          const isLocalUserPlan = planType === "local_user";
+          const isVpsPlan = planType === "vps";
 
-          const isLocalUserPlan =
-            p.precio_mensual_nube === 0 &&
-            p.vcores === 0 &&
-            p.memoria_gb === 0 &&
-            p.almacenamiento_gb === 0;
+          const isSelected =
+            isLocalUserPlan
+              ? localUserSelected
+              : isVpsPlan && selectedVps.some(v => v.id === p.id);
+
+          const disableThisPlan = localUserSelected && !isLocalUserPlan;
 
           return (
             <div
@@ -80,7 +132,7 @@ export default function VpsPlans({
                   : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
                 }
 
-                ${userPlanSelected && !isCloudUserPlan ? "opacity-40 cursor-not-allowed" : ""}
+                ${disableThisPlan ? "opacity-40 pointer-events-none" : ""}
               `}
             >
               <div className="flex-1 mb-6 lg:mb-0">
@@ -94,7 +146,7 @@ export default function VpsPlans({
                 {isCloudUserPlan ? (
                   <>
                     <p className="text-base sm:text-lg mt-2 opacity-90 mb-4">
-                      {p.descripcion || "Usuarios en la nube"}
+                      {p.descripcion || "Usuario individual almacenado en la nube"}
                     </p>
 
                     <div className="flex items-center mt-4 space-x-4">
@@ -102,11 +154,12 @@ export default function VpsPlans({
 
                       <div className="flex items-center space-x-3 bg-black/20 rounded-full px-4 py-2">
                         <button
-                          disabled={vpsSelected}
-                          onClick={() => setUserCount(Math.max(userCount - 1, 0))}
+                          disabled={localUserSelected}
+                          onClick={() => handleUserCountChange(-1)}
                           className={`
                             w-10 h-10 rounded-full flex items-center justify-center
-                            ${vpsSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            transition-all duration-200
+                            ${localUserSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
                           `}
                         >
                           <Minus />
@@ -115,11 +168,12 @@ export default function VpsPlans({
                         <span className="text-3xl font-bold min-w-[3rem] text-center">{userCount}</span>
 
                         <button
-                          disabled={vpsSelected}
-                          onClick={() => setUserCount(userCount + 1)}
+                          disabled={localUserSelected}
+                          onClick={() => handleUserCountChange(1)}
                           className={`
                             w-10 h-10 rounded-full flex items-center justify-center
-                            ${vpsSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            transition-all duration-200
+                            ${localUserSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
                           `}
                         >
                           <Plus />
@@ -134,9 +188,15 @@ export default function VpsPlans({
                 ) : (
                   <>
                     <div className="space-y-2 mt-3">
-                      <div className="flex items-center gap-2"><Cpu /> {p.vcores} vCores</div>
-                      <div className="flex items-center gap-2"><Server /> {p.memoria_gb} GB RAM</div>
-                      <div className="flex items-center gap-2"><HardDrive /> {p.almacenamiento_gb} GB SSD</div>
+                      <div className="flex items-center gap-2">
+                        <Cpu /> {p.vcores} vCores
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Server /> {p.memoria_gb} GB RAM
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <HardDrive /> {p.almacenamiento_gb} GB SSD
+                      </div>
                     </div>
                   </>
                 )}
@@ -152,13 +212,13 @@ export default function VpsPlans({
 
                 {!isCloudUserPlan && (
                   <button
-                    disabled={userPlanSelected}
+                    disabled={disableThisPlan}
                     onClick={() => handleSelectPlan(p)}
                     className={`
                       px-8 py-3 rounded-full shadow-lg font-semibold
                       transition-all duration-300
                       ${isSelected ? "bg-white text-orange-600" : "bg-black text-white hover:bg-gray-900"}
-                      ${userPlanSelected ? "opacity-40 cursor-not-allowed" : "hover:scale-105"}
+                      ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:scale-105"}
                     `}
                   >
                     {isSelected ? "Seleccionado" : "Seleccionar"}

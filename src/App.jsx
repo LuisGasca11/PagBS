@@ -13,12 +13,14 @@ import { ContactSection } from './components/Form/FormKR';
 import { FAQSection } from './components/FAQ/faqdata';
 import { FooterSection } from './components/Footer/FooterV0';
 
+import BmktPage from './components/BMKT/BmktPage';
+import Landing from './components/BMKT/Landing';
+
 //Microsip
 import MicroPage from './components/Microsip/MicroPage';
 import SistemaMicrosip from './components/Microsip/SistemaMicrosip';
 import Krkn from './components/Krkn/Krkn';
 import FormMicro from './components/Microsip/FormMicro';
-import BmktPage from './components/BMKT/BmktPage';
 import Sat from './components/Microsip/SAT';
 import Prices from './components/Microsip/Prices';
 import Experiencia from './components/Microsip/experiencia';
@@ -64,6 +66,7 @@ function AppContent() {
     "/AdminSuc",
 
     "/BmktPage",
+    "/Landing",
   ];
 
   const hideUI = hiddenUIRoutes.includes(location.pathname);
@@ -89,9 +92,11 @@ function AppContent() {
         <Route path="/form" element={<ContactSection />} />
         <Route path="/FormMicro" element={<FormMicro />} />
 
+        <Route path="/BmktPage" element={<BmktPage />} />
+        <Route path="/Landing" element={<Landing />} />
+
         <Route path="/sat" element={<Sat />} />
         <Route path="/krkn" element={<Krkn />} />
-        <Route path="/BmktPage" element={<BmktPage />} />
         <Route path="/MicroPage" element={<MicroPage />} />
         <Route path="/Prices" element={<Prices />} />
         <Route path="/SistemaMicrosip" element={<SistemaMicrosip />} />

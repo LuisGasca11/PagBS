@@ -34,7 +34,7 @@ const Carousel = () => {
       features: [],
       cta: "PROXIMAMENTE",
       image: "bmktW.png",
-      link: "/BmktPage",
+      link: "/Landing",
       target: "_blank",
     },
     {
@@ -136,7 +136,6 @@ const Card = ({ card }) => {
 
   const CardContent = () => (
     <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-5 md:p-6">
-      {/* Image Container - Ahora usa imageSize si existe */}
       <div className={`relative mb-4 sm:mb-5 md:mb-6 ${
         card.imageSize || "w-40 h-40 sm:w-35 sm:h-35 md:w-36 md:h-36 lg:w-40 lg:h-40"
       }`}>
