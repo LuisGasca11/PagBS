@@ -203,12 +203,24 @@ export default function VpsPlans({
               </div>
 
               <div className="flex flex-col items-end gap-4 border-t lg:border-t-0 lg:border-l border-white/20 pt-6 lg:pt-0 lg:pl-8">
-                <p className="text-4xl font-bold">
-                  {isCloudUserPlan 
-                    ? formatUSD(p.precio_mensual_nube) 
-                    : formatMXN(p.precio_mensual_nube)}
-                </p>
-                <p className="opacity-80 text-sm">/mes en la nube</p>
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-5xl font-bold">
+                      {isCloudUserPlan 
+                        ? formatUSD(p.precio_mensual_nube) 
+                        : formatMXN(p.precio_mensual_nube)}
+                    </p>
+                    <div className="flex items-baseline gap-1">
+                      <p className="opacity-80 text-lg">/ Mes</p>
+                      {isCloudUserPlan && (
+                        <p className="opacity-80 text-lg">/ Usuario</p>
+                      )}
+                      {isLocalUserPlan && (
+                        <p className="opacity-80 text-lg">/ Usuario</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
                 {!isCloudUserPlan && (
                   <button
