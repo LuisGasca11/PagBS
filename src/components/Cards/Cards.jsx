@@ -49,7 +49,7 @@ const Carousel = () => {
       title: "FyttsaTV",
       description: "",
       features: [],
-      image: "ftv.png",
+      image: "tv.png",
       link: "https://fyttsatv.com/",
     },
   ];

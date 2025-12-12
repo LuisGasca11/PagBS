@@ -12,14 +12,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  /* Detectar scroll */
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  /* Body scroll lock */
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "unset";
     return () => (document.body.style.overflow = "unset");
@@ -27,7 +25,6 @@ const Navbar = () => {
 
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
 
-  /* Menu click + scroll suave */
   const handleNavClick = (href, index) => {
     setActiveItem(index);
     setIsMenuOpen(false);
@@ -49,7 +46,6 @@ const Navbar = () => {
     { label: "CONTACTO", href: "/form" }
   ];
 
-  /* Highlight activo */
   const updateHighlight = (index) => {
     const el = document.querySelector(`#nav-item-${index}`);
     if (!el) return;
@@ -68,7 +64,6 @@ const Navbar = () => {
     if (activeItem !== null) updateHighlight(activeItem);
   }, [activeItem]);
 
-  /* Hover highlight */
   const updateHoverHighlight = (index) => {
     const el = document.querySelector(`#nav-item-${index}`);
     if (!el) return;
@@ -83,7 +78,6 @@ const Navbar = () => {
     });
   };
 
-  /* SCROLL SPY */
   useEffect(() => {
     const sections = menuItems
       .filter(i => i.href.startsWith("#"))

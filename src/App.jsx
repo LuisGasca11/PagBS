@@ -13,8 +13,10 @@ import { ContactSection } from './components/Form/FormKR';
 import { FAQSection } from './components/FAQ/faqdata';
 import { FooterSection } from './components/Footer/FooterV0';
 
+//BMKT
 import BmktPage from './components/BMKT/BmktPage';
 import Landing from './components/BMKT/Landing';
+import BmktForm from './components/BMKT/BmktForm';
 
 //Microsip
 import MicroPage from './components/Microsip/MicroPage';
@@ -67,6 +69,7 @@ function AppContent() {
 
     "/BmktPage",
     "/Landing",
+    "/BmktForm",
   ];
 
   const hideUI = hiddenUIRoutes.includes(location.pathname);
@@ -91,6 +94,7 @@ function AppContent() {
 
         <Route path="/form" element={<ContactSection />} />
         <Route path="/FormMicro" element={<FormMicro />} />
+        <Route path="/BmktForm" element={<BmktForm />} />
 
         <Route path="/BmktPage" element={<BmktPage />} />
         <Route path="/Landing" element={<Landing />} />
