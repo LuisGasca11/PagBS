@@ -14,6 +14,7 @@ export default function NavBar({
   onOpenAdmin,
   onOpenVpsAdmin,
   onOpenHourlyAdmin,
+  onOpenUsersAdmin,
 }) {
   const [scrollY, setScrollY] = useState(0);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
@@ -79,6 +80,12 @@ export default function NavBar({
     if (!canUseAdmin) return requirePricesForAdmin();
     setShowAdminMenu(false);
     onOpenHourlyAdmin && onOpenHourlyAdmin();
+  };
+
+  const handleUsersClick = () => {
+    if (!canUseAdmin) return requirePricesForAdmin();
+    setShowAdminMenu(false);
+    onOpenUsersAdmin && onOpenUsersAdmin();
   };
 
   const handleLogout = () => {
@@ -192,6 +199,14 @@ export default function NavBar({
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-xs text-gray-500 font-medium">ADMINISTRACIÓN</p>
                       </div>
+
+                      <button
+                        onClick={handleUsersClick}
+                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all group"
+                      >
+                        <User className="w-4 h-4 transition-transform group-hover:scale-110" />
+                        <span className="font-medium">Admin Usuarios</span>
+                      </button>
                       
                       <button
                         onClick={handleAdminClick}
@@ -345,6 +360,17 @@ export default function NavBar({
                       <Settings className="w-5 h-5 transition-transform group-hover:rotate-90" /> 
                       <span className="font-medium">Admin Precios</span>
                     </button>
+                    <button
+                      onClick={() => {
+                        handleHourlyClick();
+                        setShowMobileMenu(false);
+                      }}
+                      className="w-full px-5 py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                    >
+                      <Settings className="w-5 h-5 transition-transform group-hover:rotate-90" /> 
+                      <span className="font-medium">Admin Hora</span>
+                    </button>
+
                     <button
                       onClick={() => {
                         handleVpsClick();

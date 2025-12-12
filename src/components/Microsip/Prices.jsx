@@ -14,6 +14,7 @@ import VpsPlans from "./VPSPlans";
 import HourlyRentals from "./HourlyRentals";
 import PriceSummary from "./PriceSummary";
 import AdminPricingPanel from "./AdminPricingPanel";
+import AdminUsersPanel from "./AdminUsersPanel";
 import AdminVpsPanel from "./VpsPricingPanel";
 import AdminHourlyPanel from "./AdminHourlyPanel";
 import SessionWarning from "./SessionWarning";
@@ -45,12 +46,14 @@ export default function MicrosipPricing() {
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showAdminVpsPanel, setShowAdminVpsPanel] = useState(false);
   const [showAdminHourlyPanel, setShowAdminHourlyPanel] = useState(false);
+  const [showAdminUsersPanel, setShowAdminUsersPanel] = useState(false);
   const [sessionWarning, setSessionWarning] = useState(false);
   const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
   const [logoutClosing, setLogoutClosing] = useState(false);
   const [selectedVps, setSelectedVps] = useState([]);
   const [userCount, setUserCount] = useState(0);
   const [vpsPlans, setVpsPlans] = useState([]);
+  const [userRole, setUserRole] = useState(null);
 
   const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
@@ -78,14 +81,17 @@ export default function MicrosipPricing() {
     fetchAllPrices().then(setPricesDB);
     fetchHourlyPrices().then(setHourlyPricesDB);
     
-    const sessionUser = loadSession();
-    if (sessionUser) {
+    const sessionData = loadSession();
+    
+    if (sessionData && sessionData.user) {
       setIsAuthenticated(true);
-      setUsername(sessionUser.username);
-    }
+      setUsername(sessionData.user.usuario);
+      setUserRole(sessionData.user.rol);
+    } 
+
     return () => (document.title = "Black-Sheep");
   }, []);
-  
+
   useEffect(() => {
     if (!isAuthenticated) return;
     
@@ -126,16 +132,17 @@ export default function MicrosipPricing() {
   });
   
   const handleLogout = () => {
-    setShowLogoutAnimation(true);
-    setTimeout(() => setLogoutClosing(true), 900);
-    setTimeout(() => {
-      clearSession();
-      setIsAuthenticated(false);
-      setUsername("");
-      setShowLogoutAnimation(false);
-      setLogoutClosing(false);
-    }, 1300);
-  };
+  setShowLogoutAnimation(true);
+  setTimeout(() => setLogoutClosing(true), 900);
+  setTimeout(() => {
+    clearSession();
+    setIsAuthenticated(false);
+    setUsername("");
+    setUserRole(null);  
+    setShowLogoutAnimation(false);
+    setLogoutClosing(false);
+  }, 1300);
+};
 
   const getNextTab = (currentTab) => {
     if (currentTab === "modulos") return "vps";
@@ -191,6 +198,7 @@ export default function MicrosipPricing() {
             onOpenAdmin={() => setShowAdminPanel(true)}
             onOpenVpsAdmin={() => setShowAdminVpsPanel(true)}
             onOpenHourlyAdmin={() => setShowAdminHourlyPanel(true)}
+            onOpenUsersAdmin={() => setShowAdminUsersPanel(true)}
           />
         </div>
 
@@ -399,7 +407,8 @@ export default function MicrosipPricing() {
             onClose={() => setShowLoginModal(false)}
             onSuccess={(user) => {
               setIsAuthenticated(true);
-              setUsername(user.username);
+              setUsername(user.usuario);      
+              setUserRole(user.rol);          
               setShowLoginModal(false);
               setShowLoginSuccess(true);
               setTimeout(() => setShowLoginSuccess(false), 1000);
@@ -407,7 +416,13 @@ export default function MicrosipPricing() {
           />
         )}
 
-        {showAdminPanel && (
+        {showAdminUsersPanel && userRole === "admin" && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <AdminUsersPanel onClose={() => setShowAdminUsersPanel(false)} />
+          </div>
+        )}
+
+        {showAdminPanel && userRole === "admin" &&  (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <AdminPricingPanel
@@ -419,7 +434,7 @@ export default function MicrosipPricing() {
           </div>
         )}
 
-        {showAdminVpsPanel && (
+        {showAdminVpsPanel && userRole === "admin" &&  (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <AdminVpsPanel onClose={() => setShowAdminVpsPanel(false)} />
@@ -427,7 +442,7 @@ export default function MicrosipPricing() {
           </div>  
         )}
 
-        {showAdminHourlyPanel && (
+        {showAdminHourlyPanel && userRole === "admin" &&  (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-4 sm:p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
               <AdminHourlyPanel

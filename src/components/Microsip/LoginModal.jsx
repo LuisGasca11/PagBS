@@ -81,7 +81,6 @@ export default function LoginModal({ onClose, onSuccess }) {
         `}
       >
 
-        {/* Botón cerrar */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-black transition"
@@ -89,12 +88,10 @@ export default function LoginModal({ onClose, onSuccess }) {
           <X className="w-6 h-6" />
         </button>
 
-        {/* Título */}
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Iniciar Sesión
         </h2>
 
-        {/* Formulario */}
         <div className="space-y-6">
 
           {/* Campo Usuario */}
@@ -121,7 +118,6 @@ export default function LoginModal({ onClose, onSuccess }) {
             </label>
           </div>
 
-          {/* Campo Contraseña */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -143,7 +139,6 @@ export default function LoginModal({ onClose, onSuccess }) {
               Contraseña
             </label>
 
-            {/* Toggle de contraseña */}
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -153,14 +148,12 @@ export default function LoginModal({ onClose, onSuccess }) {
             </button>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="text-red-600 bg-red-50 border border-red-200 px-4 py-2 rounded-lg">
               {error}
             </div>
           )}
 
-          {/* Botón ingresar */}
           <button
             onClick={handleSubmit}
             disabled={loading}
@@ -175,7 +168,6 @@ export default function LoginModal({ onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* ÉXITO — animación iOS */}
         {success && (
           <div className="absolute inset-0 flex justify-center items-center animate-pop">
             <div className="w-24 h-24 bg-white/30 backdrop-blur-xl rounded-full flex items-center justify-center shadow-xl">
@@ -184,14 +176,12 @@ export default function LoginModal({ onClose, onSuccess }) {
           </div>
         )}
 
-        {/* Spinner Apple */}
         {loading && !success && (
           <div className="absolute inset-0 flex justify-center items-center">
             <div className="loaderApple"></div>
           </div>
         )}
 
-        {/* Animaciones */}
         <style>{`
           @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }

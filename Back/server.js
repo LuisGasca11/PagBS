@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import usersRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import preciosRoutes from "./routes/precios.js";
 import preciosHoraRoutes from "./routes/preciosHora.js";
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/api/usuarios", usersRoutes);
 app.use("/api", authRoutes);
 app.use("/api", preciosRoutes);
 app.use("/api", preciosHoraRoutes);

@@ -1,33 +1,45 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 export const authRequired = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token no proporcionado'
-      });
+      return res.status(401).json({ message: "Token no proporcionado" });
     }
 
-    const token = authHeader.startsWith('Bearer ')
+    const token = authHeader.startsWith("Bearer ")
       ? authHeader.slice(7)
       : authHeader;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'jajones');
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "jajones"
+    );
 
-    req.user = decoded;
+    if (!decoded.id_usuario || !decoded.rol) {
+      return res.status(401).json({
+        message: "Token inválido (payload incompleto)",
+      });
+    }
+
+    req.user = decoded; 
     next();
-
   } catch (error) {
-    const message =
-      error.name === 'TokenExpiredError'
-        ? 'Token expirado'
-        : error.name === 'JsonWebTokenError'
-        ? 'Token inválido'
-        : 'Error al verificar token';
-
-    return res.status(401).json({ success: false, message });
+    return res.status(401).json({
+      message:
+        error.name === "TokenExpiredError"
+          ? "Token expirado"
+          : "Token inválido",
+    });
   }
+};
+
+export const adminOnly = (req, res, next) => {
+  if (req.user.rol !== "admin") {
+    return res.status(403).json({
+      message: "Acceso solo para administradores",
+    });
+  }
+  next();
 };

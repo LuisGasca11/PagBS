@@ -1,11 +1,17 @@
 export function saveSession(user, token) {
   const expiresAt = Date.now() + 2 * 60 * 60 * 1000; // 2 horas
 
-  localStorage.setItem(
-    "session",
-    JSON.stringify({ user, token, expiresAt })
-  );
+  const sessionData = {
+    user: {
+      id_usuario: user.id_usuario,
+      usuario: user.usuario,
+      rol: user.rol
+    },
+    token,
+    expiresAt
+  };
 
+  localStorage.setItem("session", JSON.stringify(sessionData));
   localStorage.setItem("auth_token", token);
 }
 
@@ -20,6 +26,8 @@ export function loadSession() {
     localStorage.removeItem("auth_token");
     return null;
   }
+
+  if (!user) return null;
 
   return { user, token };
 }
@@ -76,7 +84,7 @@ export async function verifyToken(token, setAuth, setUsername) {
 
     const data = await response.json();
     setAuth(true);
-    setUsername(data.user.username);
+    setUsername(data.user.usuario);
   } catch {
     logoutUser(setAuth, setUsername);
   }

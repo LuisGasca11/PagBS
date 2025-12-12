@@ -1,20 +1,22 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import pool from "../db.js";
 import dotenv from "dotenv";
-import { authRequired } from "../middleware/auth.js";
+import { authRequired, adminOnly } from "../middleware/auth.js";
 
 dotenv.config();
-
 const router = express.Router();
 
-// LOGIN
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const sql = "SELECT * FROM usuarios WHERE usuario = $1";
-    const result = await pool.query(sql, [username]);
+    const result = await pool.query(
+      "SELECT * FROM usuarios WHERE usuario = $1 AND activo = true",
+      [username]
+    );
 
     if (result.rows.length === 0) {
       return res.status(401).json({ message: "Credenciales inválidas" });
@@ -22,25 +24,34 @@ router.post("/login", async (req, res) => {
 
     const user = result.rows[0];
 
-    if (user.password_hash !== password) {
+    const validPassword = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
+    console.log("VALID PASSWORD?", validPassword);
+
+    if (!validPassword) {
       return res.status(401).json({ message: "Credenciales inválidas" });
     }
 
     const token = jwt.sign(
       {
-        id: user.id_usuario,
-        username: user.usuario,
+        id_usuario: user.id_usuario,
+        usuario: user.usuario,
+        rol: user.rol,
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "jajones",
       { expiresIn: "24h" }
     );
 
     res.json({
       token,
       user: {
-        id: user.id_usuario,
-        username: user.usuario
-      }
+        id_usuario: user.id_usuario,
+        usuario: user.usuario,
+        rol: user.rol,
+      },
     });
   } catch (err) {
     console.error("Error en login:", err);
@@ -48,14 +59,12 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
 // VERIFY TOKEN
 router.get("/verify", authRequired, (req, res) => {
-  res.json({ 
-    valid: true, 
-    user: {
-      id: req.user.id,
-      username: req.user.username
-    }
+  res.json({
+    valid: true,
+    user: req.user,
   });
 });
 
