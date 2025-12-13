@@ -70,12 +70,10 @@ export default function VpsPlans({
       if (isCurrentlySelected) {
         setLocalUserSelected(false);
       } else {
-        if (userCount > 0 || selectedVps.length > 0) {
-          alert("Al seleccionar Usuario Local se deshabilitarán los Usuarios en la Nube y VPS.");
-        }
+        // Al seleccionar Usuario Local, limpiamos todo (incluyendo el VPS)
         setLocalUserSelected(true);
-        setUserCount(0);
-        setSelectedVps([]);
+        setUserCount(0); // Deshabilita Usuarios Cloud
+        setSelectedVps([]); // Deshabilita VPS
       }
       return;
     }
@@ -86,16 +84,17 @@ export default function VpsPlans({
       if (isSelected) {
         setSelectedVps([]);
       } else {
+        // Al seleccionar un VPS, deshabilitamos el "Local User"
+        // Los Usuarios Cloud (userCount) PERMANECEN ACTIVOS.
         setSelectedVps([plan]);
+        setLocalUserSelected(false);
       }
     }
   };
 
   const handleUserCountChange = (delta) => {
-    if (localUserSelected) {
-      return; 
-    }
-    
+    // Los botones de Cloud Users se deshabilitan si 'localUserSelected' es true a través de 'disableThisPlan'
+    // La función interna es simple
     const newCount = Math.max(userCount + delta, 0);
     setUserCount(newCount);
   };
@@ -116,8 +115,24 @@ export default function VpsPlans({
             isLocalUserPlan
               ? localUserSelected
               : isVpsPlan && selectedVps.some(v => v.id === p.id);
-
-          const disableThisPlan = localUserSelected && !isLocalUserPlan;
+          
+          const anyVpsSelected = selectedVps.length > 0;
+          
+          let disableThisPlan = false;
+          
+          if (localUserSelected) {
+            // Si elegí Usuario Local, todo lo demás (Cloud Users y VPS) se desactiva.
+            disableThisPlan = !isLocalUserPlan;
+          } else if (anyVpsSelected) {
+            // Si elegí un VPS:
+            if (isCloudUserPlan) {
+              // El plan Cloud User NUNCA se deshabilita por un VPS.
+              disableThisPlan = false; 
+            } else {
+              // Deshabilita el Plan Local y los OTROS VPS
+              disableThisPlan = isLocalUserPlan || (isVpsPlan && !isSelected);
+            }
+          }
 
           return (
             <div
@@ -132,48 +147,48 @@ export default function VpsPlans({
                   : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
                 }
 
-                ${disableThisPlan ? "opacity-40 pointer-events-none" : ""}
+                ${disableThisPlan ? "opacity-40 pointer-events-none grayscale-[0.5]" : ""}
               `}
             >
               <div className="flex-1 mb-6 lg:mb-0">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
                     {isCloudUserPlan ? <Users /> : <Server />}
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold">{p.nombre}</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">{p.nombre}</h3>
                 </div>
 
                 {isCloudUserPlan ? (
                   <>
-                    <p className="text-base sm:text-lg mt-2 opacity-90 mb-4">
+                    <p className="text-base sm:text-lg mt-2 opacity-90 text-white mb-4">
                       {p.descripcion || "Usuario individual almacenado en la nube"}
                     </p>
 
                     <div className="flex items-center mt-4 space-x-4">
-                      <span className="font-medium opacity-90">Usuarios:</span>
+                      <span className="font-medium opacity-90 text-white">Usuarios:</span>
 
                       <div className="flex items-center space-x-3 bg-black/20 rounded-full px-4 py-2">
                         <button
-                          disabled={localUserSelected}
+                          disabled={disableThisPlan}
                           onClick={() => handleUserCountChange(-1)}
                           className={`
-                            w-10 h-10 rounded-full flex items-center justify-center
+                            w-10 h-10 rounded-full flex items-center justify-center text-white
                             transition-all duration-200
-                            ${localUserSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
                           `}
                         >
                           <Minus />
                         </button>
 
-                        <span className="text-3xl font-bold min-w-[3rem] text-center">{userCount}</span>
+                        <span className="text-3xl font-bold min-w-[3rem] text-center text-white">{userCount}</span>
 
                         <button
-                          disabled={localUserSelected}
+                          disabled={disableThisPlan}
                           onClick={() => handleUserCountChange(1)}
                           className={`
-                            w-10 h-10 rounded-full flex items-center justify-center
+                            w-10 h-10 rounded-full flex items-center justify-center text-white
                             transition-all duration-200
-                            ${localUserSelected ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
                           `}
                         >
                           <Plus />
@@ -182,12 +197,12 @@ export default function VpsPlans({
                     </div>
                   </>
                 ) : isLocalUserPlan ? (
-                  <p className="text-base sm:text-lg mt-2 opacity-90 mb-4">
+                  <p className="text-base sm:text-lg mt-2 opacity-90 text-white mb-4">
                     Usuario local (sin costo, sin almacenamiento en la nube)
                   </p>
                 ) : (
                   <>
-                    <div className="space-y-2 mt-3">
+                    <div className="space-y-2 mt-3 text-white">
                       <div className="flex items-center gap-2">
                         <Cpu /> {p.vcores} vCores
                       </div>
@@ -202,7 +217,7 @@ export default function VpsPlans({
                 )}
               </div>
 
-              <div className="flex flex-col items-end gap-4 border-t lg:border-t-0 lg:border-l border-white/20 pt-6 lg:pt-0 lg:pl-8">
+              <div className="flex flex-col items-end gap-4 border-t lg:border-t-0 lg:border-l border-white/20 pt-6 lg:pt-0 lg:pl-8 text-white">
                 <div>
                   <div className="flex items-baseline gap-2">
                     <p className="text-5xl font-bold">
@@ -212,10 +227,7 @@ export default function VpsPlans({
                     </p>
                     <div className="flex items-baseline gap-1">
                       <p className="opacity-80 text-lg">/ Mes</p>
-                      {isCloudUserPlan && (
-                        <p className="opacity-80 text-lg">/ Usuario</p>
-                      )}
-                      {isLocalUserPlan && (
+                      {(isCloudUserPlan || isLocalUserPlan) && (
                         <p className="opacity-80 text-lg">/ Usuario</p>
                       )}
                     </div>

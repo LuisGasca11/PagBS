@@ -1,5 +1,5 @@
 import React from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, CheckCircle } from "lucide-react";
 
 export default function PriceSummary({
   totals,
@@ -8,6 +8,8 @@ export default function PriceSummary({
   userCount,
   exchangeRate,
   lastUpdate,
+  // NUEVO PROP
+  moduleSelections,
 }) {
   const formatMXN = (num) =>
     new Intl.NumberFormat("es-MX", {
@@ -39,9 +41,51 @@ export default function PriceSummary({
       minute: "2-digit",
     });
   };
+  
+  // Mapeo para obtener la etiqueta completa del plan
+  const getPlanLabel = (planKey) => {
+      const labels = {
+          basico: "Básico",
+          ligero: "Ligero",
+          pro: "Pro",
+          premium: "Premium",
+          corporativo: "Corporativo",
+          incrementos: "Incremento",
+      };
+      return labels[planKey] || planKey;
+  };
+  
+  // Ordena los módulos por nombre
+  const selectedModules = Object.entries(moduleSelections)
+      .sort(([nameA], [nameB]) => nameA.localeCompare(nameB));
+
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mt-8">
+      
+      {/* SECCIÓN DE MÓDULOS SELECCIONADOS */}
+      {selectedModules.length > 0 && (
+          <div className="mb-8 border-b pb-4">
+              <h4 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-orange-600"/> Módulos seleccionados
+              </h4>
+              <div className="space-y-3">
+                  {selectedModules.map(([name, data]) => (
+                      <div key={name} className="flex justify-between items-center text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                          <span className="font-medium text-black">{name}</span>
+                          <div className="flex items-center gap-3">
+                              <span className="text-sm bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                                  {getPlanLabel(data.plan)}
+                              </span>
+                              <span className="font-semibold">{formatMXN(data.price || 0)}</span>
+                          </div>
+                      </div>
+                  ))}
+              </div>
+          </div>
+      )}
+
+
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Frecuencia de pago:

@@ -32,7 +32,6 @@ const Carousel = () => {
       id: 4,
       title: "BMKT",
       features: [],
-      cta: "PROXIMAMENTE",
       image: "bmktW.png",
       link: "/Landing",
       target: "_blank",

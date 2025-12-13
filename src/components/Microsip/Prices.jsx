@@ -57,7 +57,7 @@ export default function MicrosipPricing() {
 
   const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
-  const userPlanSelected = userCount > 0 || localUserSelected;     
+  const userPlanSelected = userCount > 0 || localUserSelected;    
   const vpsSelected = selectedVps.length > 0;
   
   useEffect(() => {
@@ -205,7 +205,7 @@ export default function MicrosipPricing() {
         <div className="pt-20 sm:pt-32 pb-12 sm:pb-20 px-3 sm:px-6 flex justify-center">
           <div className="w-full max-w-6xl space-y-8 sm:space-y-12">
 
-         <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6">
+           <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6">
               <SubscriptionInfo />
             </section>
 
@@ -370,7 +370,8 @@ export default function MicrosipPricing() {
                     userCount={userCount}
                     userPlan={userPlan}
                     exchangeRate={exchangeRate}
-                    lastUpdate={lastUpdate} 
+                    lastUpdate={lastUpdate}
+                    moduleSelections={moduleSelections} 
                   />
                 </section>
               )}
@@ -490,7 +491,7 @@ export default function MicrosipPricing() {
           animation: fade-in 0.3s ease-out;
         }
       `}</style>
-    </>  
+    </>    
   );
 }
 
