@@ -37,6 +37,11 @@ export default function Landing() {
     const [section6Ref, section6InView] = useInView();
     const [section7Ref, section7InView] = useInView();
 
+    useEffect(() => {
+       document.title = "BMKT";
+       return () => (document.title = "Black-Sheep");
+    }, []);
+
     return (
         <>
             <Navbar />
@@ -62,19 +67,56 @@ export default function Landing() {
 
                 <section
                     ref={section1Ref}
-                    className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6"
+                    className="w-full bg-white px-4 sm:px-6"
                 >
-                    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
-                        <div className={`text-center md:text-left transition-all duration-1000 delay-200 ${section1InView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-                            <p className="text-lg sm:text-xl md:text-2xl font-light text-[#232B34] leading-relaxed">
-                                Conecta tu sistema Microsip a B2BGo,<br className="hidden sm:block" />
-                                una plataforma en la nube con la que<br className="hidden sm:block" />
-                                puedes vender por mayoreo en línea.
+                    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:gap-16 py-10 md:py-20 items-center">
+                        <div className={`
+                            text-center md:text-left
+                            transition-all duration-1000 delay-200
+                            ${section1InView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}
+                        `}>
+                            <h2 className="
+                                text-4xl sm:text-3xl md:text-5xl lg:text-5xl
+                                font-extrabold text-gray-900 leading-tight mb-4
+                            ">
+                                Integración B2B <span className="text-green-600"> <br />en Tiempo Real</span>
+                            </h2>
+                            
+                            <p className="
+                                text-lg sm:text-xl md:text-1xl lg:text-2xl
+                                font-light text-gray-700 leading-relaxed
+                            ">
+                                Conecta tu operación Microsip a un canal B2B dinámico.
+                            </p>
+
+                            <p className="
+                                mt-6 text-lg sm:text-2xl md:text-2xl
+                                font-medium text-gray-800 leading-normal
+                            ">
+                                Sin sincronizadores, sin intermediarios, sin tarifas ocultas.
+                            </p>
+                            
+                            <p className="
+                                mt-4 text-base sm:text-lg text-gray-600 italic
+                            ">
+                                Nuestro sistema no replica información, funciona como una <span className="font-semibold">extensión viva</span> de tu operación Microsip.
                             </p>
                         </div>
 
-                        <div className={`flex justify-center transition-all duration-1000 delay-400 ${section1InView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-                            <img src="b2bgo.webp" className="w-full sm:w-3/4 max-w-sm hover:scale-105 transition-transform duration-500" alt="B2BGo" />
+                        <div className={`
+                            flex justify-center transition-all duration-1000 delay-400
+                            ${section1InView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}
+                        `}>
+                            <img 
+                                src="mic.png" 
+                                className="
+                                    w-full max-w-lg
+                                    
+                                    hover:scale-[1.03] transition-transform duration-700 
+                                    cursor-pointer
+                                " 
+                                alt="Esquema de integración Microsip B2BGo" 
+                            />
                         </div>
                     </div>
                 </section>
@@ -87,7 +129,11 @@ export default function Landing() {
                 >
                     <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center">
                         <div className={`relative flex justify-center order-2 md:order-1 transition-all duration-1000 delay-200 ${section2InView ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                            <img src="UC.webp" className="w-full sm:w-3/4 max-w-sm hover:scale-105 transition-transform duration-500" alt="Una sucursal más" />
+                            <img 
+                                src="UC.webp" 
+                                className="w-full max-w-lg  hover:scale-[1.03] transition-transform duration-700 cursor-pointer" 
+                                alt="Una sucursal más" 
+                            />
                         </div>
 
                         <div className={`text-center md:text-left order-1 md:order-2 transition-all duration-1000 delay-400 ${section2InView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
@@ -126,7 +172,11 @@ export default function Landing() {
                             </div>
 
                             <div className={`flex justify-center transition-all duration-1000 delay-300 ${section3InView ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <img src="/vfo.png" className="w-full max-w-sm rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500" alt="Omnicanal" />
+                                <img 
+                                    src="/vfo.png" 
+                                    className="w-full max-w-lg rounded-xl  hover:scale-105 transition-all duration-500" 
+                                    alt="Omnicanal" 
+                                />
                             </div>
                         </div>
 
@@ -137,7 +187,11 @@ export default function Landing() {
                             className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center"
                         >
                             <div className={`flex justify-center order-2 md:order-1 transition-all duration-1000 ${section4InView ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <img src="/gfi.png" className="w-full max-w-sm rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500" alt="Inventario" />
+                                <img 
+                                    src="/gfi.png" 
+                                    className="w-full max-w-lg rounded-xl hover:scale-105 transition-all duration-500" 
+                                    alt="Inventario" 
+                                />
                             </div>
 
                             <div className={`text-center md:text-left order-1 md:order-2 transition-all duration-1000 delay-300 ${section4InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -167,7 +221,11 @@ export default function Landing() {
                             </div>
 
                             <div className={`flex justify-center transition-all duration-1000 delay-300 ${section5InView ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <img src="/stl.png" className="w-full max-w-sm rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500" alt="Logística" />
+                                <img 
+                                    src="/stl.png" 
+                                    className="w-full max-w-lg rounded-xl hover:scale-105 transition-all duration-500" 
+                                    alt="Logística" 
+                                />
                             </div>
                         </div>
 
@@ -178,7 +236,11 @@ export default function Landing() {
                             className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-center"
                         >
                             <div className={`flex justify-center order-2 md:order-1 transition-all duration-1000 ${section6InView ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-                                <img src="/ftc.png" className="w-full max-w-sm rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-500" alt="Fidelización" />
+                                <img 
+                                    src="/ftc.png" 
+                                    className="w-full max-w-lg rounded-xl hover:scale-105 transition-all duration-500" 
+                                    alt="Fidelización" 
+                                />
                             </div>
 
                             <div className={`text-center md:text-left order-1 md:order-2 transition-all duration-1000 delay-300 ${section6InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -207,7 +269,7 @@ export default function Landing() {
                         <div className={`lg:col-span-2 rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#3B4148] to-[#15202B] flex flex-col items-center justify-center text-center transition-all duration-1000 hover:scale-105 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
                             <img
                                 src="/arti.png"
-                                className="rounded-2xl w-full max-w-md mx-auto mb-6 shadow-xl"
+                                className="rounded-2xl w-full max-w-xl mx-auto mb-6 shadow-xl"
                                 alt="Catálogos"
                             />
                             <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
@@ -219,7 +281,11 @@ export default function Landing() {
                         </div>
 
                         <div className={`rounded-3xl p-6 sm:p-8 bg-[#CBFF5E] flex flex-col gap-6 items-center text-center transition-all duration-1000 delay-200 hover:scale-105 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                            <img src="/prod.png" className="rounded-xl w-full max-w-xs shadow-lg" alt="Cotizaciones" />
+                            <img 
+                                src="/prod.png" 
+                                className="rounded-xl w-full max-w-sm shadow-lg" 
+                                alt="Cotizaciones" 
+                            />
                             <div>
                                 <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
                                     Crear cotizaciones
@@ -231,7 +297,11 @@ export default function Landing() {
                         </div>
 
                         <div className={`rounded-3xl p-6 sm:p-8 bg-[#F3F1E8] flex flex-col gap-6 items-center text-center transition-all duration-1000 delay-300 hover:scale-105 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                            <img src="/pedido.png" className="rounded-xl w-full max-w-xs shadow-lg" alt="Pedidos" />
+                            <img 
+                                src="/pedido.png" 
+                                className="rounded-xl w-full max-w-sm shadow-lg" 
+                                alt="Pedidos" 
+                            />
                             <div>
                                 <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
                                     Levantar pedidos
@@ -243,7 +313,11 @@ export default function Landing() {
                         </div>
 
                         <div className={`rounded-3xl p-6 sm:p-8 bg-[#CBFF5E] flex flex-col gap-6 items-center text-center transition-all duration-1000 delay-400 hover:scale-105 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                            <img src="/edc.png" className="rounded-xl w-full max-w-xs shadow-lg" alt="Estados de cuenta" />
+                            <img 
+                                src="/edc.png" 
+                                className="rounded-xl w-full max-w-sm shadow-lg" 
+                                alt="Estados de cuenta" 
+                            />
                             <div>
                                 <h3 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
                                     Consultar sus estados de cuenta
@@ -255,7 +329,11 @@ export default function Landing() {
                         </div>
 
                         <div className={`rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-[#3B4148] to-[#15202B] flex flex-col gap-6 items-center text-center transition-all duration-1000 delay-500 hover:scale-105 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-                            <img src="/descfac.png" className="rounded-xl w-full max-w-xs shadow-lg" alt="Facturas" />
+                            <img 
+                                src="/descfac.png" 
+                                className="rounded-xl w-full max-w-sm shadow-lg" 
+                                alt="Facturas" 
+                            />
                             <div>
                                 <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">
                                     Descargar facturas

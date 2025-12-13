@@ -13,10 +13,10 @@ const Navbar = () => {
   const grad = "bg-gradient-to-r from-[#00C8FF] via-[#38FF66] via-[#FF5AE0] to-[#D014FF]";
 
   const casos = [
-    { label: "Stick", link: "https://stick.mx" },
+    { label: "Elyssia", link: "https://elyssia.com.mx/" },
     { label: "KRKN", link: "https://krkn.mx" },
-    { label: "Microsip", link: "/MicroPage" },
-    { label: "BMKT", link: "/BmktPage" },
+    { label: "Stick", link: "/https://stick.mx/" },
+    { label: "qdwda", link: "/" },
   ];
 
   useEffect(() => {
