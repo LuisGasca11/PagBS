@@ -13,10 +13,13 @@ import ModulesList from "./ModulesList";
 import VpsPlans from "./VPSPlans";
 import HourlyRentals from "./HourlyRentals";
 import PriceSummary from "./PriceSummary";
+
 import AdminPricingPanel from "./AdminPricingPanel";
 import AdminUsersPanel from "./AdminUsersPanel";
 import AdminVpsPanel from "./VpsPricingPanel";
 import AdminHourlyPanel from "./AdminHourlyPanel";
+import AdminDocuments from "./AdminDocuments";
+
 import SessionWarning from "./SessionWarning";
 import MicrosipFooter from "./MicrosipFooter";
 import DownloadPresentation from "./DownloadPresentation";
@@ -47,6 +50,7 @@ export default function MicrosipPricing() {
   const [showAdminVpsPanel, setShowAdminVpsPanel] = useState(false);
   const [showAdminHourlyPanel, setShowAdminHourlyPanel] = useState(false);
   const [showAdminUsersPanel, setShowAdminUsersPanel] = useState(false);
+  const [showAdminDocumentsPanel, setShowAdminDocumentsPanel] = useState(false);
   const [sessionWarning, setSessionWarning] = useState(false);
   const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
   const [logoutClosing, setLogoutClosing] = useState(false);
@@ -54,7 +58,7 @@ export default function MicrosipPricing() {
   const [userCount, setUserCount] = useState(0);
   const [vpsPlans, setVpsPlans] = useState([]);
   const [userRole, setUserRole] = useState(null);
-  const [tabKey, setTabKey] = useState(0); // Clave para forzar la re-animación del contenido
+  const [tabKey, setTabKey] = useState(0);
 
   const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
@@ -155,10 +159,9 @@ export default function MicrosipPricing() {
     return currentTab;
   };
   
-  // Función para cambiar de pestaña y forzar la animación de entrada
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
-    setTabKey(prevKey => prevKey + 1); // Cambia la key para re-renderizar y aplicar la animación
+    setTabKey(prevKey => prevKey + 1); 
   };
 
   const handleNextTab = () => {
@@ -201,24 +204,24 @@ export default function MicrosipPricing() {
           <NavBar
             isAuthenticated={isAuthenticated}
             username={username}
+            userRole={userRole}
             onLoginClick={() => setShowLoginModal(true)}
             onLogoutClick={handleLogout}
             onOpenAdmin={() => setShowAdminPanel(true)}
             onOpenVpsAdmin={() => setShowAdminVpsPanel(true)}
             onOpenHourlyAdmin={() => setShowAdminHourlyPanel(true)}
             onOpenUsersAdmin={() => setShowAdminUsersPanel(true)}
+            onOpenDocuments={() => setShowAdminDocumentsPanel(true)}
           />
         </div>
 
         <div className="pt-20 sm:pt-32 pb-12 sm:pb-20 px-3 sm:px-6 flex justify-center">
           <div className="w-full max-w-6xl space-y-8 sm:space-y-12">
 
-           {/* Sección de Información de Suscripción con animación de entrada */}
            <section className="bg-white rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 lg:p-6 animate-slide-in-up-slow">
               <SubscriptionInfo />
             </section>
 
-            {/* Navegación por Pestañas */}
             <div className="bg-orange-500 rounded-2xl shadow-2xl p-6 border border-gray-200 animate-slide-in-up-delay-200">
               <div className="flex flex-wrap items-center gap-4 justify-center text-black">
                 {visibleTabs.map((tab, index) => {
@@ -274,7 +277,6 @@ export default function MicrosipPricing() {
                           {tab.label}
                         </span>
 
-                        {/* Efecto de Brillo (Shine) */}
                         <div 
                           className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-700 overflow-hidden"
                           style={{
@@ -287,7 +289,6 @@ export default function MicrosipPricing() {
                         </div>
                       </button>
 
-                      {/* Efecto de Pulso/Glow en pestaña activa */}
                       {isActive && (
                         <div 
                           className="absolute inset-0 animate-pulse-slow"
@@ -306,7 +307,6 @@ export default function MicrosipPricing() {
               </div>
             </div>
 
-            {/* Contenido de las pestañas con animación de transición */}
             <div className="min-h-[400px]" key={tabKey}>
               {activeTab === "modulos" && (
                 <section className="bg-gradient-to-r from-orange-500 to-orange-500 backdrop-blur-lg rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 animate-slide-in-right">
@@ -441,7 +441,6 @@ export default function MicrosipPricing() {
           </div>
         </div>
 
-        {/* Login Modal con animación de entrada y salida */}
         {showLoginModal && (
           <LoginModal
             onClose={() => setShowLoginModal(false)}
@@ -453,20 +452,17 @@ export default function MicrosipPricing() {
               setShowLoginSuccess(true);
               setTimeout(() => setShowLoginSuccess(false), 1000);
             }}
-            // Clases para animación de entrada/salida
             modalClass="animate-modal-in"
             backdropClass="animate-backdrop-in"
           />
         )}
         
-        {/* Mensaje de éxito al iniciar sesión */}
         {showLoginSuccess && (
             <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-xl text-sm z-50 animate-bounce-in">
                 ¡Bienvenido, {username}!
             </div>
         )}
         
-        {/* Ventana de Advertencia de Sesión */}
         {sessionWarning && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full animate-modal-in">
@@ -484,7 +480,6 @@ export default function MicrosipPricing() {
           </div>    
         )}
 
-        {/* Administrador */}
         {showAdminUsersPanel && userRole === "admin" && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <AdminUsersPanel onClose={() => setShowAdminUsersPanel(false)} />
@@ -522,15 +517,25 @@ export default function MicrosipPricing() {
           </div>    
         )}
 
+        {showAdminDocumentsPanel && userRole === "admin" && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg p-4 sm:p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto animate-modal-in">
+            <AdminDocuments
+                token={loadSession()?.token} 
+                isAdmin={userRole === "admin"}
+                onClose={() => setShowAdminDocumentsPanel(false)}
+            />
+            </div>
+        </div>    
+        )}
       </div>
 
       <section className="bg-black">
         <MicrosipFooter className="mt-12 sm:mt-16 lg:mt-20"/>
       </section>
 
-      <style jsx global>{`
+      <style jsx >{`
         
-        /* === Animación de Entrada para el Contenido Principal (Reemplaza .animate-fade-in) === */
         @keyframes slide-in-right {
           from {
             opacity: 0;
@@ -545,7 +550,6 @@ export default function MicrosipPricing() {
           animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
-        /* Animación de entrada lenta para la barra superior */
         @keyframes slide-in-up-slow {
             from {
                 opacity: 0;
@@ -564,7 +568,6 @@ export default function MicrosipPricing() {
             opacity: 0;
         }
 
-        /* === Animación de Brillo (Shine) para pestañas al hacer hover === */
         @keyframes shine {
           0% {
             transform: translateX(-100%) skewX(12deg);
@@ -582,7 +585,6 @@ export default function MicrosipPricing() {
           animation-play-state: running;
         }
 
-        /* === Animación de Pulso Lento para pestaña Activa === */
         @keyframes pulse-slow {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 0.6; }
@@ -591,7 +593,6 @@ export default function MicrosipPricing() {
             animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
-        /* === Animación de Pulso/Escala para botones de "Continuar" en hover === */
         .animate-pulse-on-hover:hover {
             animation: pulse-on-hover 1s infinite;
         }
@@ -601,7 +602,6 @@ export default function MicrosipPricing() {
             100% { box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); }
         }
 
-        /* === Animaciones de Modales (General) === */
         @keyframes modal-in {
             from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
@@ -610,7 +610,6 @@ export default function MicrosipPricing() {
             animation: modal-in 0.3s ease-out;
         }
         
-        /* === Animaciones de Éxito y Advertencia === */
         @keyframes bounce-in {
             0% { opacity: 0; transform: scale(0.5); }
             70% { opacity: 1; transform: scale(1.1); }
@@ -620,7 +619,6 @@ export default function MicrosipPricing() {
             animation: bounce-in 0.4s ease-out;
         }
         
-        /* === Animación de Cierre de Sesión (Logout) === */
         @keyframes fade-out-screen {
             from { opacity: 1; filter: blur(0px); }
             to { opacity: 0; filter: blur(10px); }

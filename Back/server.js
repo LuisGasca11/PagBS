@@ -1,6 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import path from "path";
 
 import usersRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
@@ -8,8 +11,7 @@ import preciosRoutes from "./routes/precios.js";
 import preciosHoraRoutes from "./routes/preciosHora.js";
 import vpsRoutes from "./routes/vps.js";
 import pdfRoutes from "./routes/pdf.js";
-
-dotenv.config();
+import documentosRoutes from "./routes/documentos.routes.js";
 
 const app = express();
 
@@ -32,18 +34,14 @@ app.use(
   })
 );
 
-// Logs
-app.use((req, res, next) => {
-  console.log(req.method, req.path);
-  next();
-});
-
 app.use("/api/usuarios", usersRoutes);
 app.use("/api", authRoutes);
 app.use("/api", preciosRoutes);
 app.use("/api", preciosHoraRoutes);
 app.use("/api/vps", vpsRoutes);
 app.use("/api/generate-pdf", pdfRoutes);
+app.use("/api/documentos", documentosRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("API funcionando :3");

@@ -9,12 +9,14 @@ export default function NavBar({
   ],
   isAuthenticated,
   username,
+  userRole,
   onLoginClick,
   onLogoutClick,
   onOpenAdmin,
   onOpenVpsAdmin,
   onOpenHourlyAdmin,
   onOpenUsersAdmin,
+  onOpenDocuments,
 }) {
   const [scrollY, setScrollY] = useState(0);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
@@ -62,6 +64,8 @@ export default function NavBar({
     };
   }, [showMobileMenu]);
 
+  const isAdmin = userRole === 'admin';
+
   const canUseAdmin = currentPath === "/Prices";
 
   const requirePricesForAdmin = () => {
@@ -90,6 +94,19 @@ export default function NavBar({
     if (!canUseAdmin) return requirePricesForAdmin();
     setShowAdminMenu(false);
     onOpenUsersAdmin && onOpenUsersAdmin();
+  };
+
+  const handleDocumentosClick = () => {
+    setShowAdminMenu(false);
+    setShowMobileMenu(false);
+    
+    if (userRole === 'admin') {
+      if (onOpenDocuments) {
+        onOpenDocuments(); 
+      } else {
+        window.location.href = "/documentos";
+      }
+    }
   };
 
   const handleLogout = () => {
@@ -136,7 +153,6 @@ export default function NavBar({
             <div className="flex-shrink-0">
             </div>
 
-            {/* Desktop Menu - Links */}
             <div className="hidden lg:flex justify-center gap-1 xl:gap-2">
               {links.map((link, i) => {
                 const isActive = currentPath === link.href;
@@ -169,9 +185,39 @@ export default function NavBar({
                   </a>
                 );
               })}
+              
+              {isAuthenticated && userRole === 'admin' && (
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDocumentosClick();
+                  }}
+                  className={`
+                    group relative px-3 xl:px-4 py-2 rounded-xl font-semibold text-sm xl:text-base
+                    transition-all duration-300 overflow-hidden
+                    flex items-center gap-2
+                    ${currentPath === "/documentos" || currentPath.includes("documentos")
+                      ? "text-orange-600 bg-orange-50" 
+                      : "text-gray-600 hover:text-orange-500 hover:bg-orange-50/50"
+                    }
+                  `}
+                >
+                  <span className="relative z-10 whitespace-nowrap">Documentos</span>
+                  
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-orange-500/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 group-hover:left-full transition-all duration-700" />
+                  </div>
+
+                  {currentPath === "/documentos" && (
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full animate-slideUp transition-width duration-300" />
+                  )}
+                </a>
+              )}
             </div>
 
-            {/* Desktop - Auth Section */}
             <div className="hidden lg:flex items-center relative">
               {!isAuthenticated ? (
                 <button
@@ -208,37 +254,52 @@ export default function NavBar({
                         <p className="text-xs text-gray-500 font-medium">ADMINISTRACIÓN</p>
                       </div>
 
-                      <button
-                        onClick={handleUsersClick}
-                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
-                      >
-                        <User className="w-4 h-4 transition-transform group-hover:scale-110" />
-                        <span className="font-medium">Admin Usuarios</span>
-                      </button>
-                      
-                      <button
-                        onClick={handleAdminClick}
-                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
-                      >
-                        <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
-                        <span className="font-medium">Admin Precios</span>
-                      </button>
-                      <button
-                        onClick={handleVpsClick}
-                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
-                      >
-                        <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
-                        <span className="font-medium">Admin VPS</span>
-                      </button>
-                      <button
-                        onClick={handleHourlyClick}
-                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
-                      >
-                        <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
-                        <span className="font-medium">Admin Hora</span>
-                      </button>
+                      {isAdmin && (
+                        <>
+                          <button
+                            onClick={handleUsersClick}
+                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                          >
+                            <User className="w-4 h-4 transition-transform group-hover:scale-110" />
+                            <span className="font-medium">Admin Usuarios</span>
+                          </button>
+                          
+                          <button
+                            onClick={handleAdminClick}
+                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                          >
+                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <span className="font-medium">Admin Precios</span>
+                          </button>
+                          <button
+                            onClick={handleVpsClick}
+                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                          >
+                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <span className="font-medium">Admin VPS</span>
+                          </button>
+                          <button
+                            onClick={handleHourlyClick}
+                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                          >
+                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <span className="font-medium">Admin Hora</span>
+                          </button>
 
-                      <div className="border-t border-gray-100 my-1"></div>
+                          <a
+                            href="/documentos"
+                            onClick={() => {
+                              setShowAdminMenu(false);
+                              handleLinkClick("/documentos");
+                            }}
+                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                          >
+                            📄 <span className="font-medium">Documentos</span>
+                          </a>
+
+                          <div className="border-t border-gray-100 my-1"></div>
+                        </>
+                      )}
 
                       <button
                         onClick={handleLogout}
@@ -289,40 +350,56 @@ export default function NavBar({
               <div className="h-12 sm:h-16"></div>
 
               {/* Mobile Links */}
-              <div className="flex flex-col gap-2 sm:gap-3 mb-4 sm:mb-6">
+              <div className="flex flex-col gap-2">
                 {links.map((link, i) => {
                   const isActive = currentPath === link.href;
                   return (
                     <a
                       key={i}
                       href={link.href}
-                      onClick={() => handleLinkClick(link.href)}
-                      className={`group relative flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl border transition-all hover:scale-[1.02] active:scale-95 overflow-hidden
-                        ${isActive 
-                          ? "bg-gradient-to-r from-orange-100 to-orange-50 border-orange-300" 
-                          : "bg-gradient-to-r from-orange-50 to-transparent hover:from-orange-100 hover:to-orange-50 border-orange-100 hover:border-orange-200"
+                      onClick={() => {
+                        handleLinkClick(link.href);
+                        setShowMobileMenu(false);
+                      }}
+                      className={`
+                        group relative px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg
+                        transition-all duration-300 overflow-hidden
+                        flex items-center gap-3
+                        ${isActive
+                          ? "text-orange-600 bg-orange-50 border border-orange-200" 
+                          : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50 hover:border-orange-100 border border-transparent"
                         }
                       `}
-                      style={{
-                        animation: `slideInRight 0.4s ease-out ${i * 0.1}s backwards`
-                      }}
                     >
-                      <span className={`text-base sm:text-lg font-semibold transition-colors ${
-                        isActive ? "text-orange-600" : "text-gray-700 group-hover:text-orange-600"
-                      }`}>
-                        {link.label}
-                      </span>
-
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        <div className="absolute top-0 -left-full h-full w-1/2 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 group-hover:left-full transition-all duration-1000" />
-                      </div>
+                      <span className="relative z-10 whitespace-nowrap">{link.label}</span>
                     </a>
                   );
                 })}
+
+                {isAuthenticated && userRole === 'admin' && (
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDocumentosClick();
+                    }}
+                    className={`
+                      group relative px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg
+                      transition-all duration-300 overflow-hidden
+                      flex items-center gap-3
+                      ${currentPath === "/documentos" || currentPath.includes("documentos")
+                        ? "text-orange-600 bg-orange-50 border border-orange-200"
+                        : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50 hover:border-orange-100 border border-transparent"
+                      }
+                    `}
+                  >
+                    📄 <span className="relative z-10 whitespace-nowrap">Documentos</span>
+                  </a>
+                )}
               </div>
 
               {/* Mobile Auth Section */}
-              <div className="border-t border-gray-200 pt-4 sm:pt-6">
+              <div className="border-t border-gray-200 pt-4 sm:pt-6 mt-4 sm:mt-6">
                 {!isAuthenticated ? (
                   <button
                     onClick={() => {
@@ -352,52 +429,59 @@ export default function NavBar({
                       <div className="min-w-0 flex-1">
                         <p className="text-xs text-gray-500 font-medium">Usuario</p>
                         <p className="font-semibold text-gray-800 truncate">{username}</p>
+                        {isAdmin && (
+                          <p className="text-xs text-orange-600 font-medium mt-1">Administrador</p>
+                        )}
                       </div>
                     </div>
 
-                    <p className="text-xs text-gray-500 font-medium px-1 pt-2">ADMINISTRACIÓN</p>
-                    
-                    {/* Admin Buttons */}
-                    <button
-                      onClick={() => {
-                        handleUsersClick();
-                        setShowMobileMenu(false);
-                      }}
-                      className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                    >
-                      <User className="w-5 h-5 transition-transform group-hover:scale-110 flex-shrink-0" /> 
-                      <span className="font-medium text-sm sm:text-base">Admin Usuarios</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleAdminClick();
-                        setShowMobileMenu(false);
-                      }}
-                      className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                    >
-                      <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                      <span className="font-medium text-sm sm:text-base">Admin Precios</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleVpsClick();
-                        setShowMobileMenu(false);
-                      }}
-                      className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                    >
-                      <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                      <span className="font-medium text-sm sm:text-base">Admin VPS</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleHourlyClick();
-                        setShowMobileMenu(false);
-                      }}
-                      className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                    >
-                      <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                      <span className="font-medium text-sm sm:text-base">Admin Hora</span>
-                    </button>
+                    {isAdmin && (
+                      <>
+                        <p className="text-xs text-gray-500 font-medium px-1 pt-2">ADMINISTRACIÓN</p>
+                        
+                        {/* Admin Buttons */}
+                        <button
+                          onClick={() => {
+                            handleUsersClick();
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                        >
+                          <User className="w-5 h-5 transition-transform group-hover:scale-110 flex-shrink-0" /> 
+                          <span className="font-medium text-sm sm:text-base">Admin Usuarios</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleAdminClick();
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                        >
+                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                          <span className="font-medium text-sm sm:text-base">Admin Precios</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleVpsClick();
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                        >
+                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                          <span className="font-medium text-sm sm:text-base">Admin VPS</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleHourlyClick();
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                        >
+                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                          <span className="font-medium text-sm sm:text-base">Admin Hora</span>
+                        </button>
+                      </>
+                    )}
 
                     <div className="border-t border-gray-200 my-2"></div>
 
@@ -473,17 +557,6 @@ export default function NavBar({
         }
         .animate-slideUp {
           animation: slideUp 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
         }
 
         @keyframes pulse-slow {

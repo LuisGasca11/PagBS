@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Server, Cpu, HardDrive, Users, Check, Plus, Minus } from "lucide-react";
+import { Server, Cpu, HardDrive, Users, Check, Plus, Minus, DollarSign, Asterisk } from "lucide-react";
 
 export default function VpsPlans({ 
   selectedVps, 
@@ -10,6 +10,7 @@ export default function VpsPlans({
   setLocalUserSelected
 }) {
   const [plans, setPlans] = useState([]);
+  const [showConditions, setShowConditions] = useState(false);
 
   const formatUSD = (num) =>
     new Intl.NumberFormat("en-US", { 
@@ -70,10 +71,9 @@ export default function VpsPlans({
       if (isCurrentlySelected) {
         setLocalUserSelected(false);
       } else {
-        // Al seleccionar Usuario Local, limpiamos todo (incluyendo el VPS)
         setLocalUserSelected(true);
-        setUserCount(0); // Deshabilita Usuarios Cloud
-        setSelectedVps([]); // Deshabilita VPS
+        setUserCount(0);
+        setSelectedVps([]);
       }
       return;
     }
@@ -84,8 +84,6 @@ export default function VpsPlans({
       if (isSelected) {
         setSelectedVps([]);
       } else {
-        // Al seleccionar un VPS, deshabilitamos el "Local User"
-        // Los Usuarios Cloud (userCount) PERMANECEN ACTIVOS.
         setSelectedVps([plan]);
         setLocalUserSelected(false);
       }
@@ -93,15 +91,18 @@ export default function VpsPlans({
   };
 
   const handleUserCountChange = (delta) => {
-    // Los botones de Cloud Users se deshabilitan si 'localUserSelected' es true a través de 'disableThisPlan'
-    // La función interna es simple
     const newCount = Math.max(userCount + delta, 0);
     setUserCount(newCount);
   };
 
   return (
-    <div className="mt-8 sm:mt-12 px-4 sm:px-0">
-      <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">VPS en la Nube</h2>
+    <div className="px-4 sm:px-0">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
+          <Server className="w-6 h-6 text-white" />
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">VPS en la Nube</h2>
+      </div>
 
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">
         {plans.map((p) => {
@@ -121,15 +122,11 @@ export default function VpsPlans({
           let disableThisPlan = false;
           
           if (localUserSelected) {
-            // Si elegí Usuario Local, todo lo demás (Cloud Users y VPS) se desactiva.
             disableThisPlan = !isLocalUserPlan;
           } else if (anyVpsSelected) {
-            // Si elegí un VPS:
             if (isCloudUserPlan) {
-              // El plan Cloud User NUNCA se deshabilita por un VPS.
               disableThisPlan = false; 
             } else {
-              // Deshabilita el Plan Local y los OTROS VPS
               disableThisPlan = isLocalUserPlan || (isVpsPlan && !isSelected);
             }
           }
@@ -139,99 +136,183 @@ export default function VpsPlans({
               key={p.id}
               className={`
                 flex flex-col lg:flex-row lg:items-center lg:justify-between 
-                p-6 sm:p-8 lg:p-10 rounded-2xl
-                transition-all duration-300 shadow-lg
+                p-6 sm:p-8 lg:p-10 rounded-2xl border-2
+                transition-all duration-300 shadow-xl
 
                 ${isSelected
-                  ? "bg-gradient-to-r from-orange-600 to-orange-700 ring-4 ring-orange-300 scale-[1.02]"
-                  : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+                  ? "bg-gradient-to-br from-orange-500 to-orange-600 border-orange-500 ring-4 ring-orange-200 scale-[1.02]"
+                  : "bg-orange-500 border-orange-200 hover:border-orange-400 hover:shadow-2xl"
                 }
 
                 ${disableThisPlan ? "opacity-40 pointer-events-none grayscale-[0.5]" : ""}
               `}
             >
               <div className="flex-1 mb-6 lg:mb-0">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
-                    {isCloudUserPlan ? <Users /> : <Server />}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`
+                    w-12 h-12 rounded-xl flex items-center justify-center shadow-md
+                    ${isSelected 
+                      ? "bg-gradient-to-br from-orange-500 to-orange-600" 
+                      : "bg-gradient-to-br from-orange-400 to-orange-500"
+                    }
+                  `}>
+                    {isCloudUserPlan ? (
+                      <Users className="w-6 h-6 text-white" />
+                    ) : (
+                      <Server className="w-6 h-6 text-white" />
+                    )}
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">{p.nombre}</h3>
+                  <h3 className={`text-xl sm:text-2xl font-bold ${
+                    isSelected ? "text-white" : "text-white"
+                  }`}>
+                    {p.nombre}
+                  </h3>
                 </div>
 
                 {isCloudUserPlan ? (
                   <>
-                    <p className="text-base sm:text-lg mt-2 opacity-90 text-white mb-4">
+                    <p className="text-base sm:text-lg mt-2 text-white mb-6">
                       {p.descripcion || "Usuario individual almacenado en la nube"}
                     </p>
 
                     <div className="flex items-center mt-4 space-x-4">
-                      <span className="font-medium opacity-90 text-white">Usuarios:</span>
+                      <span className="font-semibold text-white">Usuarios:</span>
 
-                      <div className="flex items-center space-x-3 bg-black/20 rounded-full px-4 py-2">
+                      <div className={`
+                        flex items-center space-x-3 rounded-full px-5 py-2 shadow-md
+                        ${isSelected 
+                          ? "bg-white" 
+                          : "bg-white"
+                        }
+                      `}>
                         <button
                           disabled={disableThisPlan}
                           onClick={() => handleUserCountChange(-1)}
                           className={`
                             w-10 h-10 rounded-full flex items-center justify-center text-white
-                            transition-all duration-200
-                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            transition-all duration-200 bg-black/20
+                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-black/30 hover:scale-110 active:scale-95"}
                           `}
                         >
-                          <Minus />
+                          <Minus className="w-5 h-5 text-black" />
                         </button>
 
-                        <span className="text-3xl font-bold min-w-[3rem] text-center text-white">{userCount}</span>
+                        <span className="text-3xl font-bold min-w-[3rem] text-center text-black">
+                          {userCount}
+                        </span>
 
                         <button
                           disabled={disableThisPlan}
                           onClick={() => handleUserCountChange(1)}
                           className={`
                             w-10 h-10 rounded-full flex items-center justify-center text-white
-                            transition-all duration-200
-                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-white/30 hover:scale-110"}
+                            transition-all duration-200 bg-black/20
+                            ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:bg-black/30 hover:scale-110 active:scale-95"}
                           `}
                         >
-                          <Plus />
+                          <Plus className="w-5 h-5 text-black" />
                         </button>
                       </div>
                     </div>
                   </>
                 ) : isLocalUserPlan ? (
-                  <p className="text-base sm:text-lg mt-2 opacity-90 text-white mb-4">
-                    Usuario local (sin costo, sin almacenamiento en la nube)
-                  </p>
+                  <div>
+                    <p className="text-base sm:text-lg mt-2 text-white mb-3">
+                      Usuario local (sin costo, sin almacenamiento en la nube)
+                    </p>
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                      <Check className="w-4 h-4" />
+                      Sin costo adicional
+                    </div>
+                  </div>
                 ) : (
                   <>
-                    <div className="space-y-2 mt-3 text-white">
-                      <div className="flex items-center gap-2">
-                        <Cpu /> {p.vcores} vCores
+                    <div className="space-y-3 mt-4">
+                      <div className="flex items-center gap-3 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                          <Cpu className="w-4 h-4 text-orange-600" />
+                        </div>
+                        <span className="font-medium">{p.vcores} vCores</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Server /> {p.memoria_gb} GB RAM
+                      <div className="flex items-center gap-3 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                          <Server className="w-4 h-4 text-orange-600" />
+                        </div>
+                        <span className="font-medium">{p.memoria_gb} GB RAM</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <HardDrive /> {p.almacenamiento_gb} GB SSD
+                      <div className="flex items-center gap-3 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                          <HardDrive className="w-4 h-4 text-orange-600" />
+                        </div>
+                        <span className="font-medium">{p.almacenamiento_gb} GB SSD</span>
                       </div>
                     </div>
                   </>
                 )}
               </div>
 
-              <div className="flex flex-col items-end gap-4 border-t lg:border-t-0 lg:border-l border-white/20 pt-6 lg:pt-0 lg:pl-8 text-white">
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-5xl font-bold">
+              <div className={`
+                flex flex-col items-end gap-4 border-t lg:border-t-0 lg:border-l 
+                pt-6 lg:pt-0 lg:pl-8
+                ${isSelected ? "border-orange-300" : "border-gray-200"}
+              `}>
+                <div className="text-right">
+                  <div className="flex items-center justify-end gap-2 mb-1">
+                    <p className={`text-4xl sm:text-5xl font-bold ${
+                      isSelected ? "text-white" : "text-white"
+                    }`}>
                       {isCloudUserPlan 
                         ? formatUSD(p.precio_mensual_nube) 
                         : formatMXN(p.precio_mensual_nube)}
                     </p>
-                    <div className="flex items-baseline gap-1">
-                      <p className="opacity-80 text-lg">/ Mes</p>
-                      {(isCloudUserPlan || isLocalUserPlan) && (
-                        <p className="opacity-80 text-lg">/ Usuario</p>
+                    {isCloudUserPlan && (
+                      <span className="px-2 py-1 text-white text-lg font-bold rounded-md">
+                        USD
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center justify-end gap-1">
+                    <p className={`text-base ${
+                      isSelected ? "text-white" : "text-white"
+                    }`}>
+                      / Mes
+                    </p>
+                    {(isCloudUserPlan || isLocalUserPlan) && (
+                      <p className={`text-base ${
+                        isSelected ? "text-white" : "text-white"
+                      }`}>
+                        / Usuario
+                      </p>
+                    )}
+                  </div>
+
+                  {/*{isCloudUserPlan && ( <div className="mt-3 flex gap-2 px-3 py-1.5 bg-white rounded-lg"> <p className="text-xs text-black "> El precio se basa en el número de <br /> usuarios y se encuentra en dólares americanos <br /> de acuerdo al tipo de cambio vigente. </p> <Asterisk className="flex h-5 items-center text-black" /> </div> )}*/}
+
+                 {isCloudUserPlan && (
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowConditions((v) => !v)}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 transition"
+                      >
+                        <Asterisk className="w-4 h-4 text-black shrink-0" />
+                        <span className="text-xs font-medium text-black">
+                          Ver condiciones
+                        </span>
+                      </button>
+
+                      {showConditions && (
+                        <div className="mt-2 px-4 py-3 bg-white rounded-lg max-w-md border border-gray-200">
+                          <p className="text-xs text-black italic leading-relaxed">
+                            El precio se basa en el número de <br />
+                            usuarios y se encuentra en dólares americanos <br />
+                            de acuerdo al tipo de cambio vigente. 
+                          </p>
+                        </div>
                       )}
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {!isCloudUserPlan && (
@@ -239,13 +320,23 @@ export default function VpsPlans({
                     disabled={disableThisPlan}
                     onClick={() => handleSelectPlan(p)}
                     className={`
-                      px-8 py-3 rounded-full shadow-lg font-semibold
-                      transition-all duration-300
-                      ${isSelected ? "bg-white text-orange-600" : "bg-black text-white hover:bg-gray-900"}
-                      ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:scale-105"}
+                      px-8 py-3 rounded-xl font-semibold text-base
+                      transition-all duration-300 shadow-lg
+                      ${isSelected 
+                        ? "bg-white to-orange-600 text-black ring-2 ring-orange-300" 
+                        : "bg-white text-black hover:bg-gray-300"
+                      }
+                      ${disableThisPlan ? "opacity-40 cursor-not-allowed" : "hover:scale-105 active:scale-95"}
                     `}
                   >
-                    {isSelected ? "Seleccionado" : "Seleccionar"}
+                    {isSelected ? (
+                      <span className="flex items-center gap-2">
+                        <Check className="w-5 h-5" />
+                        Seleccionado
+                      </span>
+                    ) : (
+                      "Seleccionar"
+                    )}
                   </button>
                 )}
               </div>
