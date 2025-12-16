@@ -1,22 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { ChevronDown, X, Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const dropdownRef = useRef(null);
   
   const location = useLocation();
   const isContactPage = location.pathname === "/BmktForm";
-
-  const casos = [
-    { label: "Elyssia", link: "https://elyssia.com.mx/" },
-    { label: "KRKN", link: "https://krkn.mx" },
-    { label: "Stick", link: "https://stick.mx/" },
-    { label: "QDWDA", link: "/" },
-  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -24,21 +15,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    };
-
-    if (dropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownOpen]);
+  const handleCasosClick = (e) => {
+    e?.preventDefault();
+    window.location.href = "/CExito";
+  };
 
   return (
     <>
@@ -82,64 +62,19 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#00C8FF] to-[#38FF66] transition-all duration-300 group-hover:w-3/4"></span>
               </a>
 
-              {/* Dropdown Desktop */}
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className={`
-                    relative px-5 py-2 font-medium rounded-lg
-                    flex items-center gap-2 transition-all duration-300
-                    group
-                    ${dropdownOpen 
-                      ? 'text-white bg-white/10' 
-                      : 'text-white/90 hover:text-white hover:bg-white/5'
-                    }
-                  `}
-                >
-                  Casos de Éxito
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
-                  />
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#FF5AE0] to-[#D014FF] transition-all duration-300 group-hover:w-3/4"></span>
-                </button>
-
-                {dropdownOpen && (
-                  <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-56 animate-slideDown">
-                    <div className="relative">
-                      {/* Flecha superior */}
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gradient-to-br from-[#00C8FF] to-[#D014FF] rotate-45"></div>
-                      
-                      <div className="relative p-[1px] rounded-xl bg-gradient-to-br from-[#00C8FF] via-[#FF5AE0] to-[#D014FF] shadow-2xl">
-                        <div className="bg-black/95 backdrop-blur-xl rounded-xl overflow-hidden">
-                          {casos.map((caso, index) => (
-                            <a
-                              key={index}
-                              href={caso.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="
-                                block px-5 py-3 text-white/90 font-medium
-                                hover:text-white hover:bg-gradient-to-r hover:from-[#00C8FF]/10 hover:to-[#FF5AE0]/10
-                                transition-all duration-300
-                                border-b border-white/5 last:border-b-0
-                                group
-                              "
-                            >
-                              <span className="flex items-center justify-between">
-                                {caso.label}
-                                <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                              </span>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <a
+                href="/CasosExito"
+                onClick={(e) => handleCasosClick(e)}
+                className="
+                  relative px-5 py-2 text-white/90 font-medium 
+                  transition-all duration-300 rounded-lg
+                  hover:text-white hover:bg-white/5
+                  group
+                "
+              >
+                Casos de Éxito
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-[#FF5AE0] to-[#D014FF] transition-all duration-300 group-hover:w-3/4"></span>
+              </a>
 
               {/* Botón Contacto */}
               <a
@@ -188,54 +123,20 @@ const Navbar = () => {
               Inicio
             </a>
 
-            {/* Casos de Éxito Mobile */}
-            <div className="space-y-2">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="
-                  w-full flex items-center justify-between px-4 py-3
-                  text-white/90 font-medium rounded-lg
-                  hover:text-white hover:bg-white/10
-                  transition-all duration-300
-                "
-              >
-                Casos de Éxito
-                <ChevronDown 
-                  size={18} 
-                  className={`transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
-
-              {dropdownOpen && (
-                <div className="space-y-2 mt-2">
-                  {casos.map((caso, index) => (
-                    <div
-                      key={index}
-                      className="p-[1px] rounded-lg bg-gradient-to-r from-[#00C8FF] to-[#D014FF] ml-4"
-                    >
-                      <a
-                        href={caso.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setDropdownOpen(false);
-                        }}
-                        className="
-                          block px-4 py-3 text-white font-medium rounded-[7px]
-                          bg-black/95 backdrop-blur-md
-                          hover:bg-gradient-to-r hover:from-[#00C8FF]/20 hover:to-[#FF5AE0]/20
-                          transition-all duration-300
-                          text-center
-                        "
-                      >
-                        {caso.label}
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <a
+              href="/CExito"
+              onClick={(e) => {
+                handleCasosClick(e);
+                setIsOpen(false);
+              }}
+              className="
+                block px-4 py-3 text-white/90 font-medium rounded-lg
+                hover:text-white hover:bg-white/10
+                transition-all duration-300
+              "
+            >
+              Casos de Éxito
+            </a>
 
             <a
               href="/BmktForm"
