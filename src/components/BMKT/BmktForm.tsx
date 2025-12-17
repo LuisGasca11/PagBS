@@ -17,7 +17,7 @@ export default function BmktForm() {
     <>
       <Navbar />
 
-      <section id="contact-section" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section id="contact-section" className="py-20 mt-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-white" />
 
         <div className="max-w-4xl mx-auto relative z-10">
@@ -25,7 +25,7 @@ export default function BmktForm() {
           {/* TÍTULO */}
           <div className="text-center animate-fade-up">
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 text-[#232B34]">
-              ¿Listo para transformar tu almacén?
+              ¿Listo para llevar tu negocio al siguiente nivel?
             </h2>
 
             <p className="text-lg font-semibold mb-12 max-w-2xl mx-auto

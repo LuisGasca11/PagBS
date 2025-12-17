@@ -2,248 +2,249 @@ import React from "react";
 
 export default function RetosFyttsa() {
   return (
-    <div className="font-lexend">
-      <section className="bg-white py-20 px-6 w-full">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-
+    <div className="font-lexend bg-white">
+      {/* Hero Section */}
+      <section className="bg-white py-24 px-6 w-full">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          
           <div className="flex flex-col text-left">
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-gray-900 tracking-widest">
+            <span className="text-indigo-600 font-bold tracking-[0.3em] mb-4 uppercase text-sm">Caso de Éxito</span>
+            <h1 className="text-5xl md:text-6xl font-black mb-6 text-gray-900 tracking-tighter">
               TAURUS
             </h1>
 
-            <p className="text-base md:text-lg mb-2 text-black">
+            <p className="text-lg mb-8">
               <a
                 href="https://www.taurus.com.mx"
-                className="underline hover:text-gray-800 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 font-medium underline decoration-2 underline-offset-4 hover:text-indigo-800 transition-colors"
               >
                 www.taurus.com.mx
               </a>
             </p>
 
-            <div className="space-y-1 mb-6">
+            <div className="space-y-3 mb-10 bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
               <p className="font-semibold text-gray-800">
-                Industria: <span className="font-normal text-black">Venta de productos para el hogar.</span>
+                Industria: <span className="font-normal text-gray-600">Venta de productos para el hogar.</span>
               </p>
               <p className="font-semibold text-gray-800">
-                Ubicación: <span className="font-normal text-black">México.</span>
+                Ubicación: <span className="font-normal text-gray-600">México.</span>
               </p>
             </div>
 
-            <p className="text-base md:text-lg text-black leading-relaxed">
+            <p className="text-lg text-gray-700 leading-relaxed italic border-l-4 border-indigo-600 pl-6">
               Taurus México es una marca reconocida a nivel internacional por su amplia gama de productos 
-              para el hogar, incluyendo electrodomésticos, artículos de cocina, ventilación y más. Con una 
-              sólida presencia física, la empresa decidió dar el siguiente paso hacia la transformación digital 
-              para ofrecer una experiencia de compra moderna, cómoda y eficiente a sus clientes en todo el país.
+              para el hogar. Con una sólida presencia física, la empresa decidió dar el siguiente paso hacia la transformación digital 
+              para ofrecer una experiencia de compra moderna y eficiente.
             </p>
-
           </div>
 
           <div className="flex justify-center md:justify-end">
-            <img
-              src="/bmkt/taurus.webp"
-              alt="Productos Taurus para el hogar"
-              className="rounded-lg w-[420px] max-w-full object-cover"
-            />
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-600 to-cyan-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+              <img
+                src="/bmkt/taurus.webp"
+                alt="Productos Taurus"
+                className="relative rounded-xl w-[450px] shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            </div>
           </div>
-
         </div>
 
-        <div className="max-w-6xl mx-auto mt-20">
+        {/* Retos Section */}
+        <div className="max-w-6xl mx-auto mt-32">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <span className="text-indigo-600 font-bold tracking-[.2em] uppercase text-xs mb-2 block">Problemáticas identificadas</span>
+              <h2 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+                Los <span className="text-indigo-600">Retos</span>
+              </h2>
+            </div>
+            <p className="text-gray-500 max-w-md md:text-right text-sm leading-relaxed">
+              Identificamos los puntos de fricción que limitaban el crecimiento digital de la marca antes de nuestra intervención.
+            </p>
+          </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black tracking-widest">
-            Retos
-          </h2>
-
-          <ul className="space-y-2 text-[20px] md:text-[20px] text-gray-600 leading-relaxed max-w-4xl list-disc pl-6 ml-7">
-            <li>Taurus ya contaba con una tienda online desarrollada en WordPress, por lo que su rendimiento y escalabilidad era limitada.</li>
-            <li>El catálogo de productos no contaba con una categorización y orden en la tienda.</li>
-            <li>No contaban con un canal de atención al cliente para la atención de dudas sobre los productos.</li>
-            <li>La atención de solicitudes de garantía era deficiente por lo que buscaban integrar un medio de atención dentro de la tienda en línea.</li>
-            <li>Querían integrar un programa de recompensas para fidelizar a los clientes.</li>
-          </ul>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: "⚙️",
+                title: "Limitación Tecnológica",
+                desc: "El ecosistema en WordPress presentaba fallos de escalabilidad y lentitud en picos de tráfico.",
+              },
+              {
+                icon: "📦",
+                title: "Caos en Catálogo",
+                desc: "Falta de una estructura jerárquica, dificultando que el cliente encontrara productos específicos.",
+              },
+              {
+                icon: "💬",
+                title: "Brecha de Atención",
+                desc: "Inexistencia de un canal formal de soporte, generando desconfianza en la post-venta.",
+              },
+              {
+                icon: "🛡️",
+                title: "Garantías Manuales",
+                desc: "Procesos lentos y deficientes que afectaban la reputación de la marca en el servicio técnico.",
+              },
+              {
+                icon: "📉",
+                title: "Fuga de Clientes",
+                desc: "No existían incentivos de lealtad, perdiendo la oportunidad de generar recompras recurrentes.",
+              }
+            ].map((reto, i) => (
+              <div 
+                key={i} 
+                className={`group p-8 rounded-3xl border transition-all duration-500 hover:-translate-y-2 
+                  ${i === 0 ? 'md:col-span-2 bg-indigo-900 text-white border-indigo-800 shadow-xl shadow-indigo-200' 
+                            : 'bg-white border-slate-100 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50'}`}
+              >
+                <div className={`text-3xl mb-4 p-3 rounded-2xl inline-block ${i === 0 ? 'bg-indigo-800' : 'bg-indigo-50'}`}>
+                  {reto.icon}
+                </div>
+                <h3 className={`text-xl font-bold mb-3 ${i === 0 ? 'text-white' : 'text-gray-900'}`}>
+                  {reto.title}
+                </h3>
+                <p className={`text-sm leading-relaxed ${i === 0 ? 'text-indigo-100' : 'text-gray-500'}`}>
+                  {reto.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section 
-        className="py-20 px-6"
-        style={{ backgroundColor: '#f6f6e9' }}
-      >
-        <div className="max-w-4xl mx-auto">
+      {/* Imagen Destacada con fondo Indigo muy tenue */}
+      <section className="py-24 px-6 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
           <div className="flex justify-center">
             <img
               src="/bmkt/middle.webp"
-              alt="Imagen centrada"
-              className="rounded-lg w-full max-w-2xl object-cover"
+              alt="Ecosistema Digital"
+              className="rounded-3xl shadow-2xl w-full object-cover border-8 border-white"
             />
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-20 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start">
+      {/* Soluciones Section */}
+      <section className="bg-white py-24 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start gap-12">
+          <div className="md:w-1/2 flex flex-col text-left">
+            <h2 className="text-5xl font-black mb-12 text-gray-900 tracking-tight">
+              Nuestras <span className="text-indigo-600">Soluciones</span>
+            </h2>
 
-          <div className="md:w-1/2 flex flex-col text-left md:ml-40">
-            <h1 className="text-5xl md:text-5xl font-bold mb-5 text-gray-900 tracking-wider">
-              Soluciones
-            </h1>
-
-            <div className="mb-12 w-full">
-              <h2 className="text-xl md:text-2xl mb-3 text-gray-800 tracking-wider font-semibold">
-                Migración a Shopify
-              </h2>
-              <div className="w-24 h-px bg-black mb-5"></div>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Se realizó una migración estructurada desde WordPress hacia Shopify, manteniendo la identidad visual y mejorando la navegación, velocidad y seguridad de la tienda.
-              </p>
-            </div>
-
-            <div className="mb-12 w-full">
-              <h2 className="text-xl md:text-2xl mb-3 text-gray-800 tracking-wider font-semibold">
-                Catálogo intuitivo
-              </h2>
-              <div className="w-24 h-px bg-black mb-5"></div>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Se organizó el extenso catálogo en categorías claras con filtros que mejoran la experiencia del usuario al buscar productos específicos.
-              </p>
-            </div>
-
-            <div className="w-full">
-              <h2 className="text-xl md:text-2xl mb-3 text-gray-800 tracking-wider font-semibold">
-                Atención al cliente integrada
-              </h2>
-              <div className="w-24 h-px bg-black mb-5"></div>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Se implementó Zendesk directamente en la tienda para ofrecer soporte en tiempo real mediante chat y correo.
-              </p>
+            <div className="space-y-16">
+              {[
+                { title: "Migración a Shopify", desc: "Migración estructurada manteniendo la identidad visual y mejorando radicalmente la velocidad y seguridad." },
+                { title: "Catálogo intuitivo", desc: "Categorías claras y filtros avanzados que optimizan la búsqueda del usuario final." },
+                { title: "Atención al cliente integrada", desc: "Implementación de Zendesk para soporte en tiempo real vía chat y correo centralizado." }
+              ].map((sol, i) => (
+                <div key={i} className="group">
+                  <h3 className="text-2xl mb-3 text-gray-900 font-bold group-hover:text-indigo-600 transition-colors">
+                    {sol.title}
+                  </h3>
+                  <div className="w-16 h-1 bg-indigo-600 mb-5 transition-all group-hover:w-24"></div>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    {sol.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="md:w-1/2 flex justify-center relative md:ml-[-20px] md:mr-32">
+          <div className="md:w-1/2 flex justify-center sticky top-24">
             <img
               src="/bmkt/movil.webp"
-              alt="Mockup principal"
-              className="w-96 md:w-[550px] rounded-lg object-cover"
+              alt="Mockup Mobile"
+              className="w-[480px] rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] object-cover"
             />
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start gap-2 mt-24">
+        {/* Soluciones Parte 2 */}
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-start gap-12 mt-32">
+          <div className="md:w-1/2 flex flex-col text-left">
+            <div className="space-y-16">
+              {[
+                { title: "Sistema de recompensas", desc: "Configuración de Smile.io para ganar puntos por compras, incentivando la recompra y fidelización." },
+                { title: "Garantías Automatizadas", desc: "Sección especial para solicitudes de garantía, facilitando el seguimiento y la gestión interna." }
+              ].map((sol, i) => (
+                <div key={i} className="group">
+                  <h3 className="text-2xl mb-3 text-gray-900 font-bold group-hover:text-indigo-600 transition-colors">
+                    {sol.title}
+                  </h3>
+                  <div className="w-16 h-1 bg-indigo-600 mb-5 transition-all group-hover:w-24"></div>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    {sol.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <div className="md:w-1/2 flex justify-center md:ml-50">
+          <div className="md:w-1/2 flex justify-center">
             <img
               src="/bmkt/reviews.webp"
-              alt="Mockup reviews"
-              className="w-72 md:w-[500px] rounded-lg object-cover"
+              alt="Reviews Mockup"
+              className="w-[480px] rounded-3xl shadow-[0_20px_50px_rgba(79,70,229,0.15)] object-cover"
             />
           </div>
-
-          <div className="md:w-1/2 flex flex-col text-left md:mr-28">
-
-            <div className="mb-12 w-full">
-              <h2 className="text-xl md:text-2xl mb-3 text-gray-800 tracking-wider font-semibold">
-                Sistema de recompensas
-              </h2>
-              <div className="w-24 h-px bg-black mb-5"></div>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Se configuró Smile que permite a los clientes ganar puntos por sus compras y otras interacciones, incentivando la recompra.
-              </p>
-            </div>
-
-            <div className="w-full">
-              <h2 className="text-xl md:text-2xl mb-3 text-gray-800 tracking-wider font-semibold">
-                Proceso de garantías automatizado
-              </h2>
-              <div className="w-24 h-px bg-black mb-5"></div>
-              <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
-                Se habilitó una sección especial para que los clientes soliciten garantías desde la tienda, facilitando el seguimiento y la gestión interna.
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 
-      <section className="py-10 px-6 bg-white">
+      {/* Herramientas con toques indigo */}
+      <section className="py-24 px-6 bg-slate-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900 tracking-widest">
-            Herramientas
+          <h2 className="text-4xl font-black text-center mb-20 text-gray-900 tracking-tight">
+            Tecnologías <span className="text-indigo-600">Utilizadas</span>
           </h2>
           
-          <div className="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-16 flex-wrap">
-            
-            <div className="text-center">
-              <img 
-                src="/bmkt/shp.webp" 
-                alt="Shopify" 
-                className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-4"
-              />
-              <h3 className="text-lg md:text-xl font-semibold text-gray-800">Shopify</h3>
-            </div>
-            
-            <div className="text-center">
-              <img 
-                src="/bmkt/zen.webp" 
-                alt="Zendesk" 
-                className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-4"
-              />
-              <h3 className="text-lg md:text-xl font-semibold text-gray-800">Zendesk</h3>
-            </div>
-            
-            <div className="text-center">
-              <img 
-                src="/bmkt/smi.webp" 
-                alt="Smile" 
-                className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-4"
-              />
-              <h3 className="text-lg md:text-xl font-semibold text-gray-800">Smile</h3>
-            </div>
-            
-            <div className="text-center">
-              <img 
-                src="/bmkt/form.webp" 
-                alt="Form Builder" 
-                className="w-20 h-20 md:w-24 md:h-24 object-contain mx-auto mb-4"
-              />
-              <h3 className="text-lg md:text-xl font-semibold text-gray-800">Form Builder</h3>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { name: "Shopify", img: "/bmkt/shp.webp" },
+              { name: "Zendesk", img: "/bmkt/zen.webp" },
+              { name: "Smile", img: "/bmkt/smi.webp" },
+              { name: "Form Builder", img: "/bmkt/form.webp" }
+            ].map((tool, i) => (
+              <div key={i} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 text-center border border-indigo-50">
+                <img src={tool.img} alt={tool.name} className="w-16 h-16 object-contain mx-auto mb-4" />
+                <h3 className="text-sm font-bold text-gray-800 uppercase tracking-widest">{tool.name}</h3>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          
-          <div className="bg-gradient-to-r from-gray-800 to-gray-950 text-white rounded-2xl mb-20 py-16 px-8">
+      {/* Resultados Section - Gradiente Indigo */}
+      <section className="bg-white py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-indigo-900 rounded-[3rem] overflow-hidden relative p-12 md:p-20 shadow-2xl">
+            {/* Círculos decorativos de fondo */}
+            <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-indigo-500 rounded-full blur-[120px] opacity-20"></div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-10 tracking-wider">
-              Resultados
-            </h1>
+            <h2 className="text-white text-4xl md:text-5xl font-black mb-16 text-center">
+              Resultados <span className="text-indigo-400">Impactantes</span>
+            </h2>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              
-              <div className="flex flex-col items-center">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
-                  Incrementó 30% la retención de usuarios y su conversión.
-                </h2>
-              </div>
-              
-              <div className="flex flex-col items-center">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
-                  Aumentó un 63% la eficiencia en la atención al cliente gracias a los canales de comunicación integrados.
-                </h2>
-              </div>
-              
-              <div className="flex flex-col items-center">
-                <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
-                  Mejoró la organización de las solicitudes de garantía y por ende su atención.
-                </h2>
-              </div>
+            <div className="grid md:grid-cols-3 gap-12 relative z-10">
+              {[
+                "Incremento del 30% en retención y conversión.",
+                "63% más de eficiencia en atención al cliente.",
+                "Automatización total en gestión de garantías."
+              ].map((res, i) => (
+                <div key={i} className="text-center md:text-left border-l border-indigo-500/30 pl-6">
+                  <p className="text-white text-2xl font-bold leading-snug">{res}</p>
+                </div>
+              ))}
             </div>
           </div>
           
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
-            La renovación de la tienda en línea de Taurus México demuestra cómo una migración bien ejecutada a Shopify, combinada con integraciones estratégicas, puede fortalecer la relación con los clientes, automatizar procesos y abrir nuevas oportunidades de crecimiento digital.
+          <p className="text-xl text-gray-500 leading-relaxed max-w-4xl mx-auto text-center mt-16 font-medium">
+            La transformación de Taurus México demuestra cómo una migración estratégica a Shopify 
+            fortalece la relación con el cliente y abre nuevas oportunidades de crecimiento digital masivo.
           </p>
         </div>
       </section>

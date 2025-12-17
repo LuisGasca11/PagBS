@@ -24,12 +24,17 @@ const BmktFooter = ({
           items-start md:items-center"
         >
           <div className="flex flex-col items-center sm:items-start gap-6 opacity-0 animate-fade-up">
-            <img 
-              src={logoSuperior}
-              alt="Logo superior" 
-              className="h-10 sm:h-12 transition-all duration-300 hover:scale-105"
-            />
-
+            <a 
+              href="https://blck-sheep.com/"
+              rel="noopener noreferrer"
+            >
+              <img 
+                src={logoSuperior}
+                href="/Body#inicio"
+                alt="Logo superior" 
+                className="h-10 sm:h-12 transition-all duration-300 hover:scale-105"
+              />
+            </a>
             <div className={`w-24 h-[3px] rounded-full ${grad} shadow-[0_0_12px_rgba(255,90,224,0.5)]`} />
           </div>  
 
@@ -38,6 +43,35 @@ const BmktFooter = ({
             style={{ animationDelay: "0.2s" }}
           >
             <div className="flex flex-col gap-3 items-center text-center w-full">
+
+
+              {showPartnerLinks && (
+                <a 
+                  href="/Landing#inicio"
+                  className="
+                    text-white text-sm md:text-[14px] font-medium 
+                    hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r
+                    hover:from-[#38FF66] hover:via-[#FF5AE0] hover:to-[#D014FF]
+                    transition-all duration-300 hover:-translate-y-[2px]
+                  "
+                >
+                  Inicio
+                </a>
+              )}
+
+              {showLearnMoreLinks && (
+                <a 
+                href="/CExito"
+                className="
+                    text-white text-sm md:text-[14px] font-medium
+                    hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r
+                    hover:from-[#FF5AE0] hover:to-[#00C8FF]
+                    transition-all duration-300 hover:-translate-y-[2px]
+                  "
+                  >
+                  Casos de éxito
+                </a>
+              )}
 
               {showPartnerLinks && (
                 <a 
@@ -52,56 +86,32 @@ const BmktFooter = ({
                   Contáctanos
                 </a>
               )}
-
-              {showPartnerLinks && (
-                <a 
-                  href="https://club.microsip.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    text-white text-sm md:text-[14px] font-medium 
-                    hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r
-                    hover:from-[#38FF66] hover:via-[#FF5AE0] hover:to-[#D014FF]
-                    transition-all duration-300 hover:-translate-y-[2px]
-                  "
-                >
-                  lll
-                </a>
-              )}
-
-              {showLearnMoreLinks && (
-                <a 
-                  href="/MicroPage"
-                  className="
-                    text-white text-sm md:text-[14px] font-medium
-                    hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r
-                    hover:from-[#FF5AE0] hover:to-[#00C8FF]
-                    transition-all duration-300 hover:-translate-y-[2px]
-                  "
-                >
-                  lll
-                </a>
-              )}
             </div>
           </div>
 
           <div className="flex flex-col items-center sm:items-end order-2 sm:order-3 gap-3">
             
-            <img 
-              src={logoInferior}
-              alt="Logo inferior" 
-              className="
-                h-10 sm:h-12 transition-all duration-300 hover:scale-105
-                drop-shadow-[0_0_12px_rgba(255,90,224,0.6)]
-              "
-            />
+            <a 
+              href="https://blck-sheep.com/Landing"
+              rel="noopener noreferrer"
+            >
+              <img 
+                src={logoInferior}
+                href="/Landing#inicio"
+                alt="Logo inferior" 
+                className="
+                  h-10 sm:h-12 transition-all duration-300 hover:scale-105
+                  drop-shadow-[0_0_12px_rgba(255,90,224,0.6)]
+                "
+              />
+            </a>
 
             {showSocialMedia && (
               <div 
                 className="flex flex-col items-center sm:items-end opacity-0 animate-fade-up"
                 style={{ animationDelay: "0.1s" }}
               >
-                <div className={`mt-1 w-20 h-[3px] rounded-full ${grad} shadow-[0_0_10px_rgba(0,200,255,0.5)]`} />
+            <div className={`w-24 h-[3px] rounded-full ${grad} shadow-[0_0_12px_rgba(255,90,224,0.5)]`} />
               </div>
             )}
           </div>  

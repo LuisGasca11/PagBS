@@ -17,8 +17,10 @@ import { FooterSection } from './components/Footer/FooterV0';
 import BmktPage from './components/BMKT/BmktPage';
 import Landing from './components/BMKT/Landing';
 import BmktForm from './components/BMKT/BmktForm';
-import { CasosExito } from './components/BMKT/CasosExito';
 import CExito from './components/BMKT/CExito';
+import RetosElyssia from './components/BMKT/RetosElyssia';
+import RetosRNME from './components/BMKT/RetosRNME';
+import RetosFyttsa from './components/BMKT/RetosFyttsa';
 
 //Microsip
 import MicroPage from './components/Microsip/MicroPage';
@@ -71,8 +73,10 @@ function AppContent() {
 
     "/BmktPage",
     "/Landing",
-    "/CasosExito",
     "/CExito",
+    "/RetosElyssia",
+    "/RetosRNME",
+    "/RetosFyttsa",
     "/BmktForm",
   ];
 
@@ -102,8 +106,10 @@ function AppContent() {
 
         <Route path="/BmktPage" element={<BmktPage />} />
         <Route path="/Landing" element={<Landing />} />
-        <Route path="/CasosExito" element={<CasosExito />} />
         <Route path="/CExito" element={<CExito />} />
+        <Route path="/RetosElyssia" element={<RetosElyssia />} />
+        <Route path="/RetosRNME" element={<RetosRNME />} />
+        <Route path="/RetosFyttsa" element={<RetosFyttsa />} />
 
         <Route path="/sat" element={<Sat />} />
         <Route path="/krkn" element={<Krkn />} />

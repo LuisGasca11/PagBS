@@ -81,7 +81,7 @@ const Navbar = () => {
                 href="/BmktForm"
                 className="
                   relative ml-4 px-7 py-2.5 rounded-full font-semibold text-white
-                  bg-gradient-to-r from-[#00C8FF] via-[#38FF66] to-[#FF5AE0]
+                  bg-gradient-to-r from-[#00C8FF] via-[#FF5AE0] to-[#D014FF]
                   hover:shadow-[0_0_25px_rgba(0,200,255,0.5)]
                   hover:scale-105 active:scale-95
                   transition-all duration-300
