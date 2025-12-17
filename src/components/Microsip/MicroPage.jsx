@@ -231,7 +231,7 @@ const MicroPage = () => {
                                 <span className="inline-block animate-slide-in-left-2">el potencial</span>
                             </h1>
 
-                            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 leading-relaxed animate-slide-in-right">
+                            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-400 leading-relaxed">
                                 Toma el control, realiza decisiones informadas y alcanza todas tus metas 
                                 con un <span className="font-bold">ERP</span> hecho para tu empresa. 
                                 <span className="font-bold"> Microsip</span>: el secreto de los empresarios exitosos.
@@ -487,9 +487,8 @@ const MicroPage = () => {
                     100% { transform: translateY(0); }
                 }
 
-                /* SCROLL ANIMATION (Usada por IntersectionObserver) */
                 .scroll-animate {
-                    opacity: 0;
+                    opacity: 1;
                 }
                 .animate-fade-in-up {
                     opacity: 1;
@@ -497,8 +496,9 @@ const MicroPage = () => {
                     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
                 }
                 .scroll-animate.animate-fade-in-up {
-                    animation: fadeInUp 0.8s ease-out forwards;
+                animation: fadeInUp 0.8s ease-out forwards;
                 }
+
                 @keyframes fadeInUp {
                     from { opacity: 0; transform: translateY(50px); }
                     to { opacity: 1; transform: translateY(0); }

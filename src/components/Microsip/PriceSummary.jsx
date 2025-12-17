@@ -1,5 +1,5 @@
 import React from "react";
-import { RefreshCw, CheckCircle, DollarSign, Tag, Calculator } from "lucide-react";
+import { RefreshCw, CheckCircle, DollarSign, Tag, Calculator, Percent } from "lucide-react";
 
 export default function PriceSummary({
   totals,
@@ -56,6 +56,40 @@ export default function PriceSummary({
   const selectedModules = Object.entries(moduleSelections)
       .sort(([nameA], [nameB]) => nameA.localeCompare(nameB));
 
+  // Calcular descuentos aplicados
+  const getDiscountInfo = () => {
+    const moduleCount = Object.keys(moduleSelections).length;
+    
+    // Descuento por cantidad de módulos
+    let volumeDiscount = 0;
+    let volumeText = "";
+    if (moduleCount >= 5) {
+      volumeDiscount = 15;
+      volumeText = "5 o más módulos";
+    } else if (moduleCount >= 3) {
+      volumeDiscount = 10;
+      volumeText = "3-4 módulos";
+    } else if (moduleCount === 2) {
+      volumeDiscount = 5;
+      volumeText = "2 módulos";
+    }
+
+    // Descuento por frecuencia de pago
+    let freqDiscount = 0;
+    let freqText = "";
+    if (paymentFrequency === "Anual") {
+      freqDiscount = 10;
+      freqText = "Pago anual";
+    } else if (paymentFrequency === "Semestral") {
+      freqDiscount = 5;
+      freqText = "Pago semestral";
+    }
+
+    return { volumeDiscount, volumeText, freqDiscount, freqText };
+  };
+
+  const discountInfo = getDiscountInfo();
+  const hasDiscounts = discountInfo.volumeDiscount > 0 || discountInfo.freqDiscount > 0;
 
   return (
     <div className="bg-white rounded-3xl shadow-2xl p-8 mt-8 border border-gray-100">
@@ -88,7 +122,6 @@ export default function PriceSummary({
           </div>
       )}
 
-
       <div className="flex items-center justify-between mb-6 p-3 bg-orange-50/50 rounded-xl border border-orange-100">
         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <CheckCircle className="w-5 h-5 text-orange-600"/> Frecuencia de pago:
@@ -100,8 +133,8 @@ export default function PriceSummary({
           className="px-4 py-2 border border-orange-300 rounded-xl bg-white text-gray-800 font-medium shadow-sm focus:ring-orange-500 focus:border-orange-500 transition-all cursor-pointer"
         >
           <option value="Mensual">Mensual</option>
-          <option value="Semestral">Semestral (5% descuento)</option>
-          <option value="Anual">Anual (10% descuento)</option>
+          <option value="Semestral">Semestral (5% desc. en módulos)</option>
+          <option value="Anual">Anual (10% desc. en módulos)</option>
         </select>
       </div>
 
@@ -126,10 +159,40 @@ export default function PriceSummary({
           </div>
         )}
 
-        {totals.discountAmount > 0 && (
-          <div className="flex justify-between text-red-600 font-bold bg-red-50 p-2 rounded-lg border border-red-200">
-            <span>Descuento por {paymentFrequency}:</span>
-            <span>- {formatMXN(totals.discountAmount)}</span>
+        {/* Sección de descuentos solo para módulos */}
+        {selectedModules.length > 0 && hasDiscounts && (
+          <div className="bg-green-50 rounded-xl p-4 border border-green-200 space-y-3">
+            <div className="flex items-center gap-2 text-green-800 font-bold mb-2">
+              <Percent className="w-5 h-5"/>
+              <span>Descuentos aplicados a módulos:</span>
+            </div>
+
+            {discountInfo.volumeDiscount > 0 && (
+              <div className="flex justify-between items-center text-sm pl-7">
+                <span className="text-green-700">
+                  • Por cantidad ({discountInfo.volumeText}):
+                </span>
+                <span className="font-bold text-green-800">
+                  {discountInfo.volumeDiscount}% = {formatMXN(totals.volumeDiscountAmount || 0)}
+                </span>
+              </div>
+            )}
+
+            {discountInfo.freqDiscount > 0 && (
+              <div className="flex justify-between items-center text-sm pl-7">
+                <span className="text-green-700">
+                  • Por frecuencia ({discountInfo.freqText}):
+                </span>
+                <span className="font-bold text-green-800">
+                  {discountInfo.freqDiscount}% = {formatMXN(totals.freqDiscountAmount || 0)}
+                </span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center pt-2 border-t border-green-300 font-bold text-green-900">
+              <span>Total descuento en módulos:</span>
+              <span className="text-lg">- {formatMXN(totals.discountAmount)}</span>
+            </div>
           </div>
         )}
 

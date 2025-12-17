@@ -48,8 +48,9 @@ const Carousel = () => {
       title: "K'MARENA",
       description: "",
       features: [],
-      image: "tv.png",
+      image: "kma.png",
       link: "https://kmarena.com/",
+      imageSize: "w-52 h-52 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-40",
     },
   ];
 
@@ -72,7 +73,7 @@ const Carousel = () => {
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-14">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
-            NUESTROS <span className="text-white">PROYECTOS</span>
+            NUESTROS <span className="text-white">PRODUCTOS</span>
           </h2>
 
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-5xl mx-auto leading-relaxed px-2">

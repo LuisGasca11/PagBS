@@ -168,7 +168,7 @@ export default function VpsPlans({
                     {p.nombre}
                   </h3>
                 </div>
-
+                  
                 {isCloudUserPlan ? (
                   <>
                     <p className="text-base sm:text-lg mt-2 text-white mb-6">
@@ -214,6 +214,18 @@ export default function VpsPlans({
                         </button>
                       </div>
                     </div>
+                    
+                    {isCloudUserPlan && (
+                      <div className="mt-6 pt-4 border-t border-white/40">
+                        <div className="flex items-start gap-2 max-w-3xl">
+                          <Asterisk className="w-4 h-4 text-white mt-0.5 flex-shrink-0" />
+                          <p className="text-xs sm:text-sm text-white leading-relaxed whitespace-nowrap italic">
+                            El precio se basa en el número de usuarios y se encuentra en dólares
+                            americanos de acuerdo al tipo de cambio vigente.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : isLocalUserPlan ? (
                   <div>
@@ -286,33 +298,6 @@ export default function VpsPlans({
                       </p>
                     )}
                   </div>
-
-                  {/*{isCloudUserPlan && ( <div className="mt-3 flex gap-2 px-3 py-1.5 bg-white rounded-lg"> <p className="text-xs text-black "> El precio se basa en el número de <br /> usuarios y se encuentra en dólares americanos <br /> de acuerdo al tipo de cambio vigente. </p> <Asterisk className="flex h-5 items-center text-black" /> </div> )}*/}
-
-                 {isCloudUserPlan && (
-                    <div className="mt-3">
-                      <button
-                        type="button"
-                        onClick={() => setShowConditions((v) => !v)}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg hover:bg-gray-100 transition"
-                      >
-                        <Asterisk className="w-4 h-4 text-black shrink-0" />
-                        <span className="text-xs font-medium text-black">
-                          Ver condiciones
-                        </span>
-                      </button>
-
-                      {showConditions && (
-                        <div className="mt-2 px-4 py-3 bg-white rounded-lg max-w-md border border-gray-200">
-                          <p className="text-xs text-black italic leading-relaxed">
-                            El precio se basa en el número de <br />
-                            usuarios y se encuentra en dólares americanos <br />
-                            de acuerdo al tipo de cambio vigente. 
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
 
                 {!isCloudUserPlan && (
