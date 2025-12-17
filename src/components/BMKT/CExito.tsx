@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, ChevronDown, ExternalLink } from "lucide-react";
 import Navbar from "./Navbmkt";
 import BmktFooter from "./BmktFooter";
@@ -39,8 +39,8 @@ const projects = [
     internalLink: "/BmktPa",
     title: "FYTTSUITE",
     tagline: "",
-    media: "/fyttsuite.png",
-    mediaType: "image",
+    media: "/FyttsaVid.mp4",
+    mediaType: "video",
     accent: "from-gray-700 to-gray-900",
     size: "col-span-1 md:col-span-2"
   },
@@ -49,6 +49,18 @@ const projects = [
 export default function CExito() {
   const [showAll, setShowAll] = useState(false);
   const displayed = showAll ? projects : projects.slice(0, 4);
+  const [scrollY, setScrollY] = useState(0);
+
+
+   useEffect(() => {
+          const handleScroll = () => setScrollY(window.scrollY);
+          window.addEventListener("scroll", handleScroll);
+          document.title = "Casos de Éxito | BMKT";
+          return () => {
+              window.removeEventListener("scroll", handleScroll);
+              document.title = "Black-Sheep";
+          };
+      }, []);
 
   return (
     <div className="bg-black text-white font-lexend selection:bg-indigo-500 selection:text-white">
@@ -149,9 +161,9 @@ export default function CExito() {
       <section className="py-40 px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-5" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-5xl md:text-8xl font-black tracking-tighter mb-10 leading-[0.9]">
-            ¿TU PROYECTO <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">SIGUE AQUÍ?</span>
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-10 leading-[0.9]">
+            ¿TU PROYECTO NO <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">ESTA AQUÍ?</span>
           </h2>
           <button 
             onClick={() => window.location.href = "/BmktForm"}

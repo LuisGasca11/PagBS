@@ -1,52 +1,136 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import pool from "../db.js";
 import { authRequired, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/", authRequired, adminOnly, async (req, res) => {
+const uploadDir = "uploads/perfiles";
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (_req, file, cb) => {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, `perfil-${unique}${path.extname(file.originalname)}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    if (ext && mime) return cb(null, true);
+    cb(new Error("Solo se permiten imágenes"));
+  },
+});
+
+router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
-    SELECT id_usuario, usuario, rol, activo, fecha_creacion
+    SELECT id_usuario, usuario, rol, activo, nombre, correo, foto, fecha_creacion
     FROM usuarios
     ORDER BY id_usuario
   `);
   res.json(rows);
 });
 
+router.post(
+  "/:id/upload-foto",
+  authRequired,
+  upload.single("foto"),
+  async (req, res) => {
+    try {
+      const targetUserId = Number(req.params.id);
+
+      // seguridad:
+      if (
+        req.user.rol !== "admin" &&
+        targetUserId !== req.user.id_usuario
+      ) {
+        return res.status(403).json({ error: "No autorizado" });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: "No se proporcionó imagen" });
+      }
+
+      const publicBase = process.env.API_PUBLIC_URL;
+
+      const { rows } = await pool.query(
+        "SELECT foto FROM usuarios WHERE id_usuario = $1",
+        [targetUserId]
+      );
+
+      if (rows[0]?.foto?.startsWith(publicBase)) {
+        const relativePath = rows[0].foto.replace(publicBase, "");
+        const oldPath = path.join(process.cwd(), relativePath);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
+
+      const fotoUrl = `${publicBase}/uploads/perfiles/${req.file.filename}`;
+
+      await pool.query(
+        `UPDATE usuarios
+         SET foto = $1, fecha_actualizacion = now()
+         WHERE id_usuario = $2`,
+        [fotoUrl, targetUserId]
+      );
+
+      res.json({ ok: true, foto: fotoUrl });
+    } catch (err) {
+      console.error("UPLOAD FOTO:", err);
+      res.status(500).json({ error: "Error al subir la foto" });
+    }
+  }
+);
+
 router.post("/", authRequired, adminOnly, async (req, res) => {
-  const { usuario, password, rol = "user" } = req.body;
+  const { usuario, password, rol = "user", activo = true, nombre, correo, foto } = req.body;
 
   const hash = await bcrypt.hash(password, 10);
 
   await pool.query(
-    `INSERT INTO usuarios (usuario, password_hash, rol)
-     VALUES ($1, $2, $3)`,
-    [usuario, hash, rol]
+    `INSERT INTO usuarios (usuario, password_hash, rol, activo, nombre, correo, foto)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [usuario, hash, rol, activo, nombre, correo, foto || null]
   );
 
   res.json({ ok: true });
 });
 
+
 router.put("/:id", authRequired, adminOnly, async (req, res) => {
   const { id } = req.params;
-  const { usuario, password, activo, rol } = req.body;
+  const { usuario, password, activo, rol, nombre, correo, foto } = req.body;
 
-  const values = [usuario, activo, rol];
+  const values = [usuario, activo, rol, nombre, correo, foto ?? null];
   let query = `
     UPDATE usuarios
     SET usuario = $1,
         activo = $2,
         rol = $3,
+        nombre = $4,
+        correo = $5,
+        foto = COALESCE($6, foto),
         fecha_actualizacion = now()
   `;
 
   if (password) {
     const hash = await bcrypt.hash(password, 10);
-    query += `, password_hash = $4 WHERE id_usuario = $5`;
+    query += `, password_hash = $7 WHERE id_usuario = $8`;
     values.push(hash, id);
   } else {
-    query += ` WHERE id_usuario = $4`;
+    query += ` WHERE id_usuario = $7`;
     values.push(id);
   }
 
@@ -56,16 +140,20 @@ router.put("/:id", authRequired, adminOnly, async (req, res) => {
 
 router.delete("/:id", authRequired, adminOnly, async (req, res) => {
   if (Number(req.params.id) === req.user.id_usuario) {
-    return res.status(400).json({
-      message: "No puedes borrar tu propio usuario",
-    });
+    return res.status(400).json({ message: "No puedes borrar tu propio usuario" });
   }
 
-  await pool.query(
-    "DELETE FROM usuarios WHERE id_usuario = $1",
+  const { rows } = await pool.query(
+    "SELECT foto FROM usuarios WHERE id_usuario = $1",
     [req.params.id]
   );
 
+  if (rows[0]?.foto?.startsWith("/uploads/perfiles/")) {
+    const photoPath = path.join(process.cwd(), rows[0].foto);
+    if (fs.existsSync(photoPath)) fs.unlinkSync(photoPath);
+  }
+
+  await pool.query("DELETE FROM usuarios WHERE id_usuario = $1", [req.params.id]);
   res.json({ ok: true });
 });
 

@@ -4,20 +4,34 @@ import { ArrowDown, Award, CheckCircle, Sparkles } from "lucide-react";
 import DownloadPresentation from './DownloadPresentation';
 import NavBar from './NavbarMicro';
 import MicrosipFooter from './MicrosipFooter';
+import { loadSession, clearSession } from "./utils/auth";
+import LoginModal from './LoginModal';
 
 const MicroPage = () => {
+    const [pricesDB, setPricesDB] = useState({});
+    const [hourlyPricesDB, setHourlyPricesDB] = useState({});
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [username, setUsername] = useState("");
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showLoginSuccess, setShowLoginSuccess] = useState(false);
+    const [showAdminPanel, setShowAdminPanel] = useState(false);
+    const [showAdminVpsPanel, setShowAdminVpsPanel] = useState(false);
+    const [showAdminHourlyPanel, setShowAdminHourlyPanel] = useState(false);
+    const [showAdminUsersPanel, setShowAdminUsersPanel] = useState(false);
+    const [showAdminDocumentsPanel, setShowAdminDocumentsPanel] = useState(false);
+    const [sessionWarning, setSessionWarning] = useState(false);
+    const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
+    const [logoutClosing, setLogoutClosing] = useState(false);
+    const [selectedVps, setSelectedVps] = useState([]);
+    const [userCount, setUserCount] = useState(0);
+    const [vpsPlans, setVpsPlans] = useState([]);
+    const [userRole, setUserRole] = useState(null);
+    const [tabKey, setTabKey] = useState(0);
     const [hoveredIcon, setHoveredIcon] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState('todos');
     const [scrollY, setScrollY] = useState(0);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [username, setUsername] = useState("");
 
-    // Referencia para la sección de módulos (para animación de scroll)
     const whySectionRef = React.useRef(null);
-    
-    // Lista de módulos con su imagen y otros datos...
-    // (Asegúrate de que esta lista se maneje correctamente, aquí la omito para enfocarme en las animaciones)
-    // const modules = [ ... ]; 
 
     useEffect(() => {
         document.title = "MICROSIP ERP - Blog ";
@@ -31,7 +45,6 @@ const MicroPage = () => {
         };
     }, []);
 
-    // ANIMACIÓN DE SCROLL: Usa IntersectionObserver
     useEffect(() => {
         const observerOptions = {
             threshold: 0.1,
@@ -41,14 +54,12 @@ const MicroPage = () => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Usaremos la clase `scroll-animate` para detectar y añadir la animación
                     entry.target.classList.add('animate-fade-in-up');
-                    observer.unobserve(entry.target); // Dejar de observar después de la animación
+                    observer.unobserve(entry.target); 
                 }
             });
         }, observerOptions);
 
-        // Observar todos los elementos marcados con .scroll-animate
         document.querySelectorAll('.scroll-animate').forEach(el => {
             observer.observe(el);
         });
@@ -56,10 +67,73 @@ const MicroPage = () => {
         return () => observer.disconnect();
     }, []);
 
+    useEffect(() => {
+        const session = loadSession();
+
+        if (session?.user) {
+            setIsAuthenticated(true);
+            setUsername(session.user.usuario);
+            setUserRole(session.user.rol); 
+        }
+    }, []);
+
+    const handleLoginSuccess = (user) => {
+        setIsAuthenticated(true);
+        setUsername(user.usuario);
+        setUserRole(user.rol);
+        setShowLoginModal(false);
+        setShowLoginSuccess(true);
+        
+        setTimeout(() => {
+            setShowLoginSuccess(false);
+        }, 2000);
+    };
+
     const handleLogout = () => {
-        setIsAuthenticated(false);
-        setUsername("");
-    }   
+        setShowLogoutAnimation(true);
+        setTimeout(() => setLogoutClosing(true), 900);
+        setTimeout(() => {
+            clearSession();
+            setIsAuthenticated(false);
+            setUsername("");
+            setUserRole(null);
+            setShowLogoutAnimation(false);
+            setLogoutClosing(false);
+        }, 1300);
+    };
+
+    const handleAdminClick = () => {
+        if (isAuthenticated && userRole === 'admin') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'fixed top-20 right-4 z-[9999] bg-orange-500 text-white px-6 py-4 rounded-xl shadow-2xl animate-slide-in-right max-w-sm';
+            messageDiv.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <svg class="w-6 h-6 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <div>
+                        <p class="font-bold">¡Hola ${username}!</p>
+                        <p class="text-sm mt-1">Para usar los paneles de administración, dirígete a la página de <strong>Precios</strong>.</p>
+                        <a href="/Prices" class="inline-block mt-2 text-sm bg-white text-orange-600 px-3 py-1 rounded-lg font-bold hover:bg-gray-100 transition">
+                            Ir a Precios →
+                        </a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(messageDiv);
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+    };
+
+    const handleOpenDocuments = () => {
+        if (userRole === 'admin') {
+            window.location.href = "/Prices?tab=documentos";
+        }
+    };
 
     const ImageWithFallback = ({ module }) => {
         const [imageError, setImageError] = useState(false);
@@ -83,7 +157,6 @@ const MicroPage = () => {
         );
     };
 
-
     const scrollToWhy = () => {
         whySectionRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -91,7 +164,6 @@ const MicroPage = () => {
     return (
         <div className="min-h-screen transition-colors duration-300 overflow-x-hidden">
             
-            {/* ... Navbar y Logo Fijo (Manteniendo la animación de scrollY) ... */}
             <div className="relative w-full">
                 <a
                     href="/MicroPage"
@@ -109,28 +181,56 @@ const MicroPage = () => {
                 <NavBar
                     isAuthenticated={isAuthenticated}
                     username={username}
-                    onLoginClick={() => {}}
+                    userRole={userRole}
+                    onLoginClick={() => setShowLoginModal(true)}
                     onLogoutClick={handleLogout}
-                    onOpenAdmin={() => {}}
-                    onOpenVpsAdmin={() => {}}
-                    onOpenHourlyAdmin={() => {}}
+                    onOpenAdmin={handleAdminClick}
+                    onOpenVpsAdmin={handleAdminClick}
+                    onOpenHourlyAdmin={handleAdminClick}
+                    onOpenUsersAdmin={handleAdminClick}
+                    onOpenDocuments={handleOpenDocuments}
                 />
             </div>
 
+            {/* Modal de Login */}
+            {showLoginModal && (
+                <LoginModal
+                    onClose={() => setShowLoginModal(false)}
+                    onSuccess={handleLoginSuccess}
+                />
+            )}
+
+            {showLoginSuccess && (
+                <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-xl text-sm z-50 animate-bounce-in">
+                    ¡Bienvenido, {username}!
+                </div>
+            )}
+
+            {showLogoutAnimation && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fadeIn">
+                    <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl animate-scaleIn mx-4">
+                        <div className="flex flex-col items-center gap-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-red-100 flex items-center justify-center animate-pulse">
+                                <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                            </div>
+                            <p className="text-base sm:text-lg font-semibold text-gray-800">Cerrando sesión...</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <main>
-                {/* SECCIÓN HERO (ANIMACIONES DE ENTRADA) */}
                 <section className="w-full bg-white py-12 sm:py-16 md:py-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                         
-                        {/* Texto */}
                         <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
                             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl py-10 text-black font-extrabold leading-tight">
-                                {/* Animación: Desplazarse desde la izquierda */}
                                 <span className="text-orange-500 inline-block animate-slide-in-left-1">Maximiza</span><br />
                                 <span className="inline-block animate-slide-in-left-2">el potencial</span>
                             </h1>
 
-                            {/* Animación: Desplazarse desde la derecha (ligeramente más tarde) */}
                             <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 leading-relaxed animate-slide-in-right">
                                 Toma el control, realiza decisiones informadas y alcanza todas tus metas 
                                 con un <span className="font-bold">ERP</span> hecho para tu empresa. 
@@ -138,19 +238,17 @@ const MicroPage = () => {
                             </p>
 
                             <div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-4 justify-center lg:justify-start">
-                                {/* Botón 1: Con animación de pulse y retraso */}
                                 <a 
                                     href="/FormMicro" 
                                     className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-orange-600 transition text-center 
-                                    animate-fade-in delay-500 pulse-animation" // CLASE AGREGADA
+                                    animate-fade-in delay-500 pulse-animation"
                                 >
                                     ADQUIERE MICROSIP
                                 </a>
-                                {/* Botón 2: Con retraso ligeramente mayor */}
                                 <button
                                     onClick={scrollToWhy}
                                     className="border border-gray-400 text-gray-700 font-semibold px-6 py-3 rounded-lg hover:border-black transition text-center 
-                                    animate-fade-in delay-700" // CLASE AGREGADA
+                                    animate-fade-in delay-700" 
                                 >
                                     ¿POR QUÉ ELEGIR EL ERP MICROSIP?
                                 </button>
@@ -159,20 +257,17 @@ const MicroPage = () => {
 
                         {/* Imagen */}
                         <div className="flex justify-center mt-8 lg:mt-0">
-                            {/* Animación: Flotar sutilmente */}
                             <img 
                                 src="/cart.png" 
                                 alt="Microsip demo"
-                                className="w-full max-w-md lg:max-w-xl object-contain drop-shadow-xl animate-float-subtle" // CLASE AGREGADA
+                                className="w-full max-w-md lg:max-w-xl object-contain drop-shadow-xl animate-float-subtle" 
                             />
                         </div>
                     </div>
 
-                    {/* Logos de prensa - Animación simple al aparecer */}
                     <div className="w-full bg-gray-100 border-t mt-12 sm:mt-16 pt-6 sm:pt-10 pb-6 sm:pb-10">
                         <div className="max-w-6xl mx-auto px-4 sm:px-6">
                             <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-6 sm:gap-10 scroll-animate">
-                                {/* ... Logos ... */}
                                 <div className="text-sm sm:text-base text-gray-500 text-center sm:text-left whitespace-nowrap">
                                     Encuéntranos en:
                                 </div>
@@ -195,15 +290,12 @@ const MicroPage = () => {
                     </div>
                 </section>
 
-                {/* SECCIÓN WHY (ANIMACIONES DE SCROLL) */}
                 <section ref={whySectionRef} className="w-full bg-white text-black py-12 sm:py-16 md:py-24 px-4 sm:px-6">
                     <div className="max-w-7xl mx-auto">
-                        {/* El título principal se anima al hacer scroll */}
                         <h1 className="text-center text-2xl sm:text-3xl md:text-4xl font-bold mb-12 sm:mb-16 md:mb-20 scroll-animate">
                             ¿Por qué elegir el ERP Microsip?
                         </h1>
 
-                        {/* BLOQUE 1 (scroll-animate en el contenedor padre) */}
                         <div className="grid md:grid-cols-2 items-center gap-8 md:gap-12 mb-16 sm:mb-24 md:mb-32 scroll-animate">
                             <div className="text-center md:text-left md:pl-8 lg:pl-20">
                                 <h2 className="text-2xl sm:text-3xl font-bold mb-4">
@@ -338,7 +430,6 @@ const MicroPage = () => {
                 <MicrosipFooter />
             </main>
 
-            {/* DEFINICIÓN DE ANIMACIONES CSS (Tailwind Custom Classes) */}
             <style jsx global>{`
                 /* General Fade-in for Hero Buttons */
                 .animate-fade-in {
@@ -415,12 +506,37 @@ const MicroPage = () => {
 
                 /* Pulse Effect for Primary Button */
                 .pulse-animation {
-                    animation: pulse-ring 2s ease-out infinite, fadeIn 0.8s ease-out forwards; /* Combinamos pulse y fade-in */
+                    animation: pulse-ring 2s ease-out infinite, fadeIn 0.8s ease-out forwards;
                 }
                 @keyframes pulse-ring {
                     0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5); }
                     80% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
                     100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+                }
+
+                /* Animaciones adicionales para el login */
+                @keyframes bounce-in {
+                    0% { opacity: 0; transform: scale(0.5); }
+                    70% { opacity: 1; transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+                .animate-bounce-in {
+                    animation: bounce-in 0.4s ease-out;
+                }
+
+                /* Animación para mensajes emergentes */
+                @keyframes slide-in-right-message {
+                    from {
+                        opacity: 0;
+                        transform: translateX(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+                .animate-slide-in-right {
+                    animation: slide-in-right-message 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
 
             `}</style>

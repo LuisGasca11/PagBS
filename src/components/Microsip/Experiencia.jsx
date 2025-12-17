@@ -1,225 +1,168 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NavBar from "./NavbarMicro";
 import MicrosipFooter from "./MicrosipFooter";
+import { loadSession, clearSession } from "./utils/auth";
+
+function useInView(options = {}) {
+    const ref = useRef(null);
+    const [isInView, setIsView] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setIsView(true);
+            }
+        }, { threshold: 0.1, ...options });
+
+        if (ref.current) observer.observe(ref.current);
+        return () => {
+            if (ref.current) observer.unobserve(ref.current);
+        };
+    }, []);
+
+    return [ref, isInView];
+}
 
 export default function Experiencia() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [username, setUsername] = useState("");
-
     const [scrollY, setScrollY] = useState(0);
+
+    const [heroRef, heroInView] = useInView();
+    const [aboutRef, aboutInView] = useInView();
+    const [ctaRef, ctaInView] = useInView();
 
     useEffect(() => {
         const handleScroll = () => setScrollY(window.scrollY);
         window.addEventListener("scroll", handleScroll);
-
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    useEffect(() => {
         document.title = "Experiencia";
-        
-        const handleScroll = () => setScrollY(window.scrollY);
-        window.addEventListener('scroll', handleScroll);
-        
         return () => {
-        document.title = "Black-Sheep";
-        window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener("scroll", handleScroll);
+            document.title = "Black-Sheep";
         };
     }, []);
 
+      useEffect(() => {
+    const session = loadSession();
+
+    if (session?.user) {
+        setIsAuthenticated(true);
+        setUsername(session.user.usuario);
+    }
+    }, []);
+
     const handleLogout = () => {
-        setIsAuthenticated(false);
-        setUsername("");
-    }   
+    clearSession();
+    setIsAuthenticated(false);
+    setUsername("");
+    };
 
-  return (
-    <>
-        <div className="relative w-full mb-3">
-            <a
-              href="/MicroPage"
-              className={`fixed top-4 left-4 z-[60] transition-all duration-300 
-                ${scrollY > 80 ? "scale-75 translate-y-[-10px]" : "scale-100"}
-              `}
-            >
-              <img
-                src="/msppart.webp"
-                alt="logo"
-                className="h-10 sm:h-12 object-contain"
-              />
-            </a>
-        
-            <NavBar
-              isAuthenticated={isAuthenticated}
-              username={username}
-              onLoginClick={() => {}}
-              onLogoutClick={handleLogout}
-              onOpenAdmin={() => {}}
-              onOpenVpsAdmin={() => {}}
-              onOpenHourlyAdmin={() => {}}
-            />
-        </div>
+    return (
+        <>
+            <div className="relative w-full mb-14">
+                <a
+                    href="/MicroPage"
+                    className={`fixed top-4 left-4 z-[60] transition-all duration-500 
+                        ${scrollY > 80 ? "scale-75 translate-y-[-10px] opacity-80" : "scale-100 opacity-100"}
+                    `}
+                >
+                    <img src="/msppart.webp" alt="logo" className="h-10 sm:h-12 object-contain" />
+                </a>
 
-        <section className="w-full bg-white px-6 sm:px-10 lg:px-20 py-16">
-            <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10">
-                
-                <div className="max-w-2xl">
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
-                    ¿Qué es el ERP<br />Microsip?
-                </h1>
-
-                <p className="mt-6 text-gray-400 text-[17px] leading-relaxed">
-                    Somos un sistema desarrollado para controlar los procesos administrativos y operativos 
-                    de las PyMEs. Durante más de 35 años hemos <strong> maximizado el potencial </strong>  
-                    de más de 100 mil empresas. Contamos con presencia en toda la República Mexicana con 
-                    <strong> 8 oficinas regionales </strong>y más de <strong>350 partners certificados</strong>.
-                </p>
-                </div>
-
-                <div className="flex-shrink-0">
-                <img
-                    src="/micro.png"
-                    alt="Microsip Logo"
-                    className="w-72 sm:w-96 h-auto object-contain"
+                <NavBar
+                    isAuthenticated={isAuthenticated}
+                    username={username}
+                    onLoginClick={() => { }}
+                    onLogoutClick={handleLogout}
+                    onOpenAdmin={() => { }}
+                    onOpenVpsAdmin={() => { }}
+                    onOpenHourlyAdmin={() => { }}
                 />
-                </div>
             </div>
-        </section>  
 
-       <section className="w-full bg-white px-6 sm:px-10 lg:px-20 py-16">
-            <div className="flex flex-col justify-center text-center">
+            <section ref={heroRef} className="w-full bg-white px-6 sm:px-10 lg:px-20 py-16 overflow-hidden">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-10 max-w-7xl mx-auto">
 
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
-                    ¿En qué creemos?
-                </h2>
+                    <div className={`max-w-2xl transition-all duration-1000 transform ${heroInView ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
+                        <h1 className="text-4xl sm:text-7xl font-extrabold text-gray-900 leading-tight">
+                            ¿Qué es el ERP<br />
+                            <span className="text-orange-500/90">MICROSIP?</span>
+                        </h1>
 
-                <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed mb-10">
-                    En el éxito de nuestros clientes y partners y tenemos valores que nos comprometen 
-                    y guían diariamente:
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 max-w-5xl mx-auto">
-
-                    <div className="text-left">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">Gratitud</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                            Agradecemos todas las oportunidades, las circunstancias y los factores que 
-                            nos han hecho crecer, desarrollarnos y mejorar el ERP Microsip.
+                        <p className="mt-10 text-gray-500 text-[17px] leading-relaxed">
+                            El sistema ERP <strong>MICROSIP</strong> fue desarrollado para controlar los procesos administrativos y operativos de las PyMEs.
+                            Durante más de 35 años MICROSIP ha <strong>maximizado el potencial</strong> de más de 100 mil empresas.
+                            Cuenta con presencia en toda la República Mexicana con <strong>8 oficinas regionales</strong> y más de <strong>350 partners certificados como black_sheep®</strong>.
                         </p>
                     </div>
 
-                    <div className="text-left">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">Pasión</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                            El ingrediente perfecto para convertir lo ordinario en extraordinario.
-                        </p>
+                    <div className={`flex ml-20 transition-all duration-1000 delay-300 transform ${heroInView ? 'translate-x-0 opacity-100 rotate-0' : 'translate-x-20 opacity-0 rotate-6'}`}>
+                        <img
+                            src="/micro3d.png"
+                            alt="Microsip Logo"
+                            className="w-[600px] h-auto object-contain drop-shadow-2xl ml-10"
+                        />
                     </div>
-
-                    <div className="text-left">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">Servicio</h3>
-                        <p className="text-gray-600 leading-relaxed">
-                            Nos ponemos al servicio de los demás, colaboramos para facilitar el trabajo 
-                            de nuestros compañeros, partners, clientes y el entorno.
-                        </p>
-                    </div>
-
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section className="w-full bg-white px-6 sm:px-10 lg:px-20">
-            <div className="max-w-6xl mx-auto">
-                
-                <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 text-left mb-3">
-                ¿Qué buscamos?
-                </h2>
+            <section ref={aboutRef} className="w-full bg-[#f8fafc] px-6 sm:px-10 lg:px-20 py-24">
+                <div className="max-w-6xl mx-auto">
 
-                <p className="text-gray-600 text-lg mb-16">
-                Ser auténticos practicando los comportamientos que consideramos indispensables:
-                </p>
+                    <div className={`text-center mb-16 transition-all duration-1000 ${aboutInView ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
+                        <h2 className="text-3xl sm:text-6xl font-extrabold text-gray-900 mb-4">
+                            NOSOTROS
+                        </h2>
+                        <div className="w-20 h-1 bg-orange-500 mx-auto mb-6 rounded-full"></div>
+                        <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
+                            Somos una empresa con una sólida trayectoria, enfocada en transformar
+                            procesamientos empresariales mediante tecnología.
+                        </p>
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
-                <img
-                    src="/client.png"
-                    alt="Cliente"
-                    className="w-60 sm:w-72 mx-auto md:mx-0"
-                />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                        {/* Columna 1 */}
+                        <div className={`bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-700 delay-100 transform ${aboutInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
+                            <h3 className="text-[20px] font-extrabold text-gray-900 mb-4 uppercase text-center">Nuestra Experiencia</h3>
+                            <ul className="space-y-3 text-gray-600 text-lg leading-relaxed">
+                                <li>• Más de 15 años como expertos en Microsip.</li>
+                                <li>• Somos desarrolladores y clientes MICROSIP</li>
+                            </ul>
+                        </div>
 
-                <div>
-                    <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
-                    Centricidad en el cliente
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                    Nuestros clientes son el epicentro de todas las decisiones.
+                        {/* Columna 2 */}
+                        <div className={`bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-700 delay-300 transform ${aboutInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
+                            <h3 className="text-[20px] font-extrabold text-center  uppercase text-gray-900 mb-4">Nuestra Esencia</h3>
+                            <ul className="space-y-3 text-gray-600 text-lg leading-relaxed">
+                                <li>• 3ra generación con mentalidad digital.</li>
+                                <li>• Adaptamos la tecnología a tu negocio.</li>
+                            </ul>
+                        </div>
+
+                        {/* Columna 3 */}
+                        <div className={`bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-700 delay-500 transform ${aboutInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
+                            <h3 className="text-[20px] font-extrabold text-gray-900 mb-4 ¿Qué nos diferencia? uppercase">¿Qué nos diferencia?</h3>
+                            <ul className="space-y-3 text-gray-600 text-lg leading-relaxed">
+                                <li>• Enfoque consultivo y cercano.</li>
+                                <li>• Visión a largo plazo y estabilidad.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section ref={ctaRef} className="w-full bg-white px-4 py-20 overflow-hidden">
+                <div className={`w-full max-w-7xl mx-auto text-center transition-all duration-1000 transform ${ctaInView ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}>
+
+                    <p className="text-gray-400 text-base md:text-xl lg:text-2xl italic leading-relaxed whitespace-nowrap inline-block w-full text-center">
+                        Toma el control, realiza decisiones informadas y alcanza todas tus metas con un ERP hecho para tu empresa.
                     </p>
+
+                    <div className="mt-8 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent w-full"></div>
                 </div>
-                </div>
+            </section>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-20">
-                <img
-                    src="/feedback.png"
-                    alt="Feedback"
-                    className="w-60 sm:w-72 mx-auto md:mx-0"
-                />
-
-                <div>
-                    <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
-                    Apertura al feedback
-                    </h3>
-                    <p className="text-gray-600 leading-relaxed">
-                    Sabemos que el primer paso para el progreso es la capacidad de recibir retroalimentación
-                    y brindarla con asertividad.
-                    </p>
-                </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                    <img
-                        src="/data.png"
-                        alt="Datos"
-                        className="w-60 sm:w-72 mx-auto md:mx-0"
-                    />
-
-                    <div>
-                        <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
-                        Obsesión por los datos
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed">
-                        Medimos y orientamos nuestros proyectos con antecedentes e información documentada y respaldada.
-                        </p>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                    <img
-                        src="/confidence.png"
-                        alt="Datos"
-                        className="w-60 sm:w-72 mx-auto md:mx-0"
-                    />
-
-                    <div>
-                        <h3 className="text-3xl font-extrabold text-gray-900 mb-3">
-                        Confianza y colaboración
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed">
-                        Valoramos, impulsamos y desarrollamos el talento individual y grupal.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section className="w-full bg-white px-6 sm:px-10 lg:px-20 py-20">
-            <div className="max-w-4xl mx-auto text-center">
-                    <div>
-                        <p className="text-gray-400 leading-relaxed text-center">
-                        Toma el control, realiza decisiones informadas y alcanza todas tus metas con un ERP hecho para tu empresa. ¡Conoce la solución!
-                        </p>
-                    </div>
-                </div>
-        </section>
-
-        <MicrosipFooter />
-    </>
-  );
+            <MicrosipFooter />
+        </>
+    );
 }

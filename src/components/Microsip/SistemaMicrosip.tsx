@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavBar from "./NavbarMicro";
 import MicrosipFooter from "./MicrosipFooter";
+import { loadSession, clearSession } from "./utils/auth";
 
 const modules = [
   {
@@ -60,6 +61,21 @@ const SistemaMicrosip = () => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
+
+    useEffect(() => {
+    const session = loadSession();
+
+    if (session?.user) {
+        setIsAuthenticated(true);
+        setUsername(session.user.usuario);
+    }
+    }, []);
+
+    const handleLogout = () => {
+    clearSession();
+    setIsAuthenticated(false);
+    setUsername("");
+    };
 
   return (
     <>

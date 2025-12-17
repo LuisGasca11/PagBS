@@ -65,33 +65,89 @@ export default function NavBar({
   }, [showMobileMenu]);
 
   const isAdmin = userRole === 'admin';
+  const isPrices = currentPath === "/Prices";
 
-  const canUseAdmin = currentPath === "/Prices";
-
-  const requirePricesForAdmin = () => {
-    alert("Para utilizar el panel de administración dirígete a la página de Precios.");
+  const showNotAvailableMessage = () => {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `
+      fixed top-20 right-4 z-[9999] 
+      bg-gradient-to-r from-orange-500 to-orange-600 
+      text-white px-6 py-4 rounded-xl shadow-2xl max-w-md 
+      border border-orange-300 animate-slide-in-right
+    `;
+    messageDiv.innerHTML = `
+      <div class="flex items-start gap-3">
+        <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="font-bold">Panel no disponible</p>
+          <p class="text-sm opacity-90 mt-1">
+            Los paneles de administración solo se pueden usar en la sección de <strong>Precios</strong>.
+            <br>
+            <span class="text-xs opacity-80">Tu sesión está activa y puedes seguir navegando.</span>
+          </p>
+        </div>
+        <button onclick="this.parentElement.parentElement.remove()" class="text-white/80 hover:text-white ml-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+      if (messageDiv.parentNode) {
+        messageDiv.classList.add('animate-fade-out-up');
+        setTimeout(() => {
+          if (messageDiv.parentNode) {
+            messageDiv.parentNode.removeChild(messageDiv);
+          }
+        }, 300);
+      }
+    }, 5000);
   };
 
   const handleAdminClick = () => {
-    if (!canUseAdmin) return requirePricesForAdmin();
+    if (!isPrices) {
+      showNotAvailableMessage();
+      setShowAdminMenu(false);
+      return;
+    }
     setShowAdminMenu(false);
     onOpenAdmin && onOpenAdmin();
   };
 
   const handleVpsClick = () => {
-    if (!canUseAdmin) return requirePricesForAdmin();
+    if (!isPrices) {
+      showNotAvailableMessage();
+      setShowAdminMenu(false);
+      return;
+    }
     setShowAdminMenu(false);
     onOpenVpsAdmin && onOpenVpsAdmin();
   };
 
   const handleHourlyClick = () => {
-    if (!canUseAdmin) return requirePricesForAdmin();
+    if (!isPrices) {
+      showNotAvailableMessage();
+      setShowAdminMenu(false);
+      return;
+    }
     setShowAdminMenu(false);
     onOpenHourlyAdmin && onOpenHourlyAdmin();
   };
 
   const handleUsersClick = () => {
-    if (!canUseAdmin) return requirePricesForAdmin();
+    if (!isPrices) {
+      showNotAvailableMessage();
+      setShowAdminMenu(false);
+      return;
+    }
     setShowAdminMenu(false);
     onOpenUsersAdmin && onOpenUsersAdmin();
   };
@@ -100,7 +156,7 @@ export default function NavBar({
     setShowAdminMenu(false);
     setShowMobileMenu(false);
     
-    if (userRole === 'admin') {
+    if (isAdmin) {
       if (onOpenDocuments) {
         onOpenDocuments(); 
       } else {
@@ -122,6 +178,12 @@ export default function NavBar({
   const handleLinkClick = (href) => {
     setCurrentPath(href);
     setShowMobileMenu(false); 
+  };
+
+  // Función mejorada para manejar el click de login
+  const handleLoginClick = () => {
+    setShowMobileMenu(false);
+    onLoginClick && onLoginClick();
   };
 
   return (
@@ -149,7 +211,6 @@ export default function NavBar({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5">
           <div className="flex justify-between items-center gap-4">
             
-            {/* Logo */}
             <div className="flex-shrink-0">
             </div>
 
@@ -186,7 +247,7 @@ export default function NavBar({
                 );
               })}
               
-              {isAuthenticated && userRole === 'admin' && (
+              {isAuthenticated && isAdmin && (
                 <a
                   href="#"
                   onClick={(e) => {
@@ -221,7 +282,7 @@ export default function NavBar({
             <div className="hidden lg:flex items-center relative">
               {!isAuthenticated ? (
                 <button
-                  onClick={canUseAdmin ? onLoginClick : requirePricesForAdmin}
+                  onClick={handleLoginClick}
                   className="group relative flex items-center gap-2 px-4 xl:px-5 py-2 xl:py-2.5 rounded-xl text-white backdrop-blur-xl transition-all shadow-lg overflow-hidden bg-orange-500 hover:shadow-xl hover:bg-orange-600 hover:scale-105 active:scale-95 cursor-pointer"
                 >
                   <LogIn className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -252,51 +313,77 @@ export default function NavBar({
                     <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border-2 border-gray-100 flex flex-col py-2 animate-slideDown">
                       <div className="px-4 py-3 border-b border-gray-100">
                         <p className="text-xs text-gray-500 font-medium">ADMINISTRACIÓN</p>
+                        <p className={`text-xs mt-1 ${isPrices ? "text-green-600" : "text-orange-500"}`}>
+                          {isPrices ? "✅ Disponible aquí" : "⚠️ Solo en /Prices"}
+                        </p>
                       </div>
 
                       {isAdmin && (
                         <>
                           <button
                             onClick={handleUsersClick}
-                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                            className={`px-4 py-2.5 text-sm flex gap-3 items-center transition-all duration-150 group
+                              ${isPrices 
+                                ? "text-gray-700 hover:bg-orange-50 hover:text-orange-600 cursor-pointer" 
+                                : "text-gray-400 cursor-not-allowed"
+                              }`}
+                            disabled={!isPrices}
                           >
-                            <User className="w-4 h-4 transition-transform group-hover:scale-110" />
+                            <User className={`w-4 h-4 ${isPrices ? "group-hover:scale-110" : ""}`} />
                             <span className="font-medium">Admin Usuarios</span>
+                            {!isPrices && (
+                              <span className="ml-auto text-xs text-gray-400">🔒</span>
+                            )}
                           </button>
                           
                           <button
                             onClick={handleAdminClick}
-                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                            className={`px-4 py-2.5 text-sm flex gap-3 items-center transition-all duration-150 group
+                              ${isPrices 
+                                ? "text-gray-700 hover:bg-orange-50 hover:text-orange-600 cursor-pointer" 
+                                : "text-gray-400 cursor-not-allowed"
+                              }`}
+                            disabled={!isPrices}
                           >
-                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <Settings className={`w-4 h-4 ${isPrices ? "group-hover:rotate-90" : ""}`} /> 
                             <span className="font-medium">Admin Precios</span>
+                            {!isPrices && (
+                              <span className="ml-auto text-xs text-gray-400">🔒</span>
+                            )}
                           </button>
+                          
                           <button
                             onClick={handleVpsClick}
-                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                            className={`px-4 py-2.5 text-sm flex gap-3 items-center transition-all duration-150 group
+                              ${isPrices 
+                                ? "text-gray-700 hover:bg-orange-50 hover:text-orange-600 cursor-pointer" 
+                                : "text-gray-400 cursor-not-allowed"
+                              }`}
+                            disabled={!isPrices}
                           >
-                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <Settings className={`w-4 h-4 ${isPrices ? "group-hover:rotate-90" : ""}`} /> 
                             <span className="font-medium">Admin VPS</span>
+                            {!isPrices && (
+                              <span className="ml-auto text-xs text-gray-400">🔒</span>
+                            )}
                           </button>
+                          
                           <button
                             onClick={handleHourlyClick}
-                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                            className={`px-4 py-2.5 text-sm flex gap-3 items-center transition-all duration-150 group
+                              ${isPrices 
+                                ? "text-gray-700 hover:bg-orange-50 hover:text-orange-600 cursor-pointer" 
+                                : "text-gray-400 cursor-not-allowed"
+                              }`}
+                            disabled={!isPrices}
                           >
-                            <Settings className="w-4 h-4 transition-transform group-hover:rotate-90" /> 
+                            <Settings className={`w-4 h-4 ${isPrices ? "group-hover:rotate-90" : ""}`} /> 
                             <span className="font-medium">Admin Hora</span>
+                            {!isPrices && (
+                              <span className="ml-auto text-xs text-gray-400">🔒</span>
+                            )}
                           </button>
-
-                          <a
-                            href="/documentos"
-                            onClick={() => {
-                              setShowAdminMenu(false);
-                              handleLinkClick("/documentos");
-                            }}
-                            className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
-                          >
-                            📄 <span className="font-medium">Documentos</span>
-                          </a>
-
+                          
                           <div className="border-t border-gray-100 my-1"></div>
                         </>
                       )}
@@ -375,41 +462,13 @@ export default function NavBar({
                     </a>
                   );
                 })}
-
-                {isAuthenticated && userRole === 'admin' && (
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleDocumentosClick();
-                    }}
-                    className={`
-                      group relative px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg
-                      transition-all duration-300 overflow-hidden
-                      flex items-center gap-3
-                      ${currentPath === "/documentos" || currentPath.includes("documentos")
-                        ? "text-orange-600 bg-orange-50 border border-orange-200"
-                        : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50 hover:border-orange-100 border border-transparent"
-                      }
-                    `}
-                  >
-                    📄 <span className="relative z-10 whitespace-nowrap">Documentos</span>
-                  </a>
-                )}
               </div>
 
               {/* Mobile Auth Section */}
               <div className="border-t border-gray-200 pt-4 sm:pt-6 mt-4 sm:mt-6">
                 {!isAuthenticated ? (
                   <button
-                    onClick={() => {
-                      if (canUseAdmin) {
-                        onLoginClick();
-                        setShowMobileMenu(false);
-                      } else {
-                        requirePricesForAdmin();
-                      }
-                    }}
+                    onClick={handleLoginClick}
                     className="w-full relative flex items-center justify-center gap-3 px-6 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-white transition-all shadow-lg group overflow-hidden bg-gradient-to-r from-orange-500 to-orange-600 hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer"
                   >
                     <LogIn className="w-5 h-5 transition-transform group-hover:translate-x-1" />
@@ -430,7 +489,12 @@ export default function NavBar({
                         <p className="text-xs text-gray-500 font-medium">Usuario</p>
                         <p className="font-semibold text-gray-800 truncate">{username}</p>
                         {isAdmin && (
-                          <p className="text-xs text-orange-600 font-medium mt-1">Administrador</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <p className="text-xs text-orange-600 font-medium">Administrador</p>
+                            <span className={`text-xs px-1.5 py-0.5 rounded ${isPrices ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-600"}`}>
+                              {isPrices ? "✅ Paneles activos" : "⚠️ Ve a Precios"}
+                            </span>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -439,53 +503,67 @@ export default function NavBar({
                       <>
                         <p className="text-xs text-gray-500 font-medium px-1 pt-2">ADMINISTRACIÓN</p>
                         
-                        {/* Admin Buttons */}
-                        <button
-                          onClick={() => {
-                            handleUsersClick();
-                            setShowMobileMenu(false);
-                          }}
-                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                        >
-                          <User className="w-5 h-5 transition-transform group-hover:scale-110 flex-shrink-0" /> 
-                          <span className="font-medium text-sm sm:text-base">Admin Usuarios</span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleAdminClick();
-                            setShowMobileMenu(false);
-                          }}
-                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                        >
-                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                          <span className="font-medium text-sm sm:text-base">Admin Precios</span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleVpsClick();
-                            setShowMobileMenu(false);
-                          }}
-                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                        >
-                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                          <span className="font-medium text-sm sm:text-base">Admin VPS</span>
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleHourlyClick();
-                            setShowMobileMenu(false);
-                          }}
-                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                        >
-                          <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
-                          <span className="font-medium text-sm sm:text-base">Admin Hora</span>
-                        </button>
+                        {isPrices ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                handleUsersClick();
+                                setShowMobileMenu(false);
+                              }}
+                              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                            >
+                              <User className="w-5 h-5 transition-transform group-hover:scale-110 flex-shrink-0" /> 
+                              <span className="font-medium text-sm sm:text-base">Admin Usuarios</span>
+                            </button>
+                            
+                            <button
+                              onClick={() => {
+                                handleAdminClick();
+                                setShowMobileMenu(false);
+                              }}
+                              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                            >
+                              <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                              <span className="font-medium text-sm sm:text-base">Admin Precios</span>
+                            </button>
+                            
+                            <button
+                              onClick={() => {
+                                handleVpsClick();
+                                setShowMobileMenu(false);
+                              }}
+                              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                            >
+                              <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                              <span className="font-medium text-sm sm:text-base">Admin VPS</span>
+                            </button>
+                            
+                            <button
+                              onClick={() => {
+                                handleHourlyClick();
+                                setShowMobileMenu(false);
+                              }}
+                              className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                            >
+                              <Settings className="w-5 h-5 transition-transform group-hover:rotate-90 flex-shrink-0" /> 
+                              <span className="font-medium text-sm sm:text-base">Admin Hora</span>
+                            </button>
+                          </>
+                        ) : (
+                          <div className="px-4 sm:px-5 py-3 bg-orange-50 rounded-xl border border-orange-200">
+                            <p className="text-sm text-orange-600 font-medium">
+                              ⚠️ Los paneles solo están disponibles en la página de <strong>Precios</strong>
+                            </p>
+                            <p className="text-xs text-gray-600 mt-1">
+                              Ve a <a href="/Prices" className="text-orange-500 font-bold" onClick={() => setShowMobileMenu(false)}>/Prices</a> para usar las funciones de administración.
+                            </p>
+                          </div>
+                        )}
                       </>
                     )}
 
                     <div className="border-t border-gray-200 my-2"></div>
 
-                    {/* Logout */}
                     <button
                       onClick={() => {
                         handleLogout();
@@ -500,7 +578,6 @@ export default function NavBar({
                 )}
               </div>
 
-              {/* Decorative Elements */}
               <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-orange-200/30 to-transparent rounded-full blur-3xl opacity-50 animate-pulse-slow"></div>
               <div className="absolute bottom-0 left-0 w-32 sm:w-40 h-32 sm:h-40 bg-gradient-to-tr from-orange-300/20 to-transparent rounded-full blur-3xl opacity-50 animate-pulse-slow animation-delay-500"></div>
             </div>
@@ -567,12 +644,50 @@ export default function NavBar({
           animation: pulse-slow 3s infinite ease-in-out;
         }
 
+        @keyframes slide-in-right {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .animate-slide-in-right {
+          animation: slide-in-right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes fade-out-up {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+        }
+        .animate-fade-out-up {
+          animation: fade-out-up 0.3s ease-out forwards;
+        }
+
         .transition-width {
           transition-property: width;
         }
 
         .animation-delay-500 {
           animation-delay: 0.5s;
+        }
+
+        button:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        button:disabled:hover {
+          transform: none !important;
+          background-color: inherit !important;
         }
       `}</style>
     </>

@@ -151,13 +151,15 @@ export default function AdminDocuments({ token, isAdmin, onClose }) {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => handlePreview(d.id_documento)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                              title="Vista previa"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
+                            {d.tipo_mime === "application/pdf" && (
+                              <button
+                                onClick={() => handlePreview(d.id_documento)}
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="Vista previa (PDF)"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            )}
                             <button
                               onClick={() => handleDownload(d.id_documento)}
                               className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"

@@ -101,7 +101,7 @@ export default function VpsPlans({
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
           <Server className="w-6 h-6 text-white" />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">VPS en la Nube</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Servicios en la Nube</h2>
       </div>
 
       <div className="space-y-4 sm:space-y-6 lg:space-y-8">

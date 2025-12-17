@@ -45,11 +45,11 @@ const Carousel = () => {
     },
     {
       id: 6,
-      title: "FyttsaTV",
+      title: "K'MARENA",
       description: "",
       features: [],
       image: "tv.png",
-      link: "https://fyttsatv.com/",
+      link: "https://kmarena.com/",
     },
   ];
 

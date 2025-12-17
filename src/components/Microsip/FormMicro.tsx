@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, CheckCircle, Shield, Zap } from "lucide-react";
 import MicrosipFooter from "./MicrosipFooter";
 import NavBar from "./NavbarMicro";
+import { loadSession, clearSession } from "./utils/auth";
+
 
 export default function FormMicro() {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
-  const [scrollY, setScrollY] = useState(0);
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [username, setUsername] = useState("");
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [userRole, setUserRole] = useState(null);
+    const [scrollY, setScrollY] = useState(0);
+
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -15,6 +21,39 @@ export default function FormMicro() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+    useEffect(() => {
+    const session = loadSession();
+
+    if (session?.user) {
+        setIsAuthenticated(true);
+        setUsername(session.user.usuario);
+    }
+    }, []);
+
+    const handleAdminClick = () => {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'fixed top-20 right-4 z-[9999] bg-orange-500 text-white px-6 py-4 rounded-xl shadow-2xl animate-slide-in-right';
+      messageDiv.innerHTML = `
+        <div class="flex items-center gap-3">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p class="font-medium">¡Sesión activa!</p>
+            <p class="text-sm">Usa los paneles en la sección de Precios</p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(messageDiv);
+      setTimeout(() => messageDiv.remove(), 3000);
+    };
+
+    const handleLogout = () => {
+    clearSession();
+    setIsAuthenticated(false);
+    setUsername("");
+    };
 
   return (
     <>
@@ -35,11 +74,13 @@ export default function FormMicro() {
         <NavBar
           isAuthenticated={isAuthenticated}
           username={username}
-          onLoginClick={() => {}}
-          onLogoutClick={() => {}}
-          onOpenAdmin={() => {}}
-          onOpenVpsAdmin={() => {}}
-          onOpenHourlyAdmin={() => {}}
+          userRole={userRole}
+          onLoginClick={() => setShowLoginModal(true)}
+          onLogoutClick={handleLogout}
+          onOpenAdmin={handleAdminClick}
+          onOpenVpsAdmin={handleAdminClick}
+          onOpenHourlyAdmin={handleAdminClick}
+          onOpenUsersAdmin={handleAdminClick}
         />
       </div>
 

@@ -38,7 +38,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-20">
             
             {/* Logo */}
-            <a href="#inicio" className="group">
+            <a href="/Landing" className="group">
               <img
                 src="/bmktW.png"
                 alt="BMKT Logo"
