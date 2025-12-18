@@ -16,9 +16,11 @@ import { uploadAnyFile } from "../middleware/uploadDocuments.js";
 
 const router = Router();
 
+// 🔥 MUY IMPORTANTE: Las rutas públicas (sin middleware) VAN PRIMERO
 router.get("/public/:token", previewDocumentoPublico);
 router.get("/download/:token", descargarDocumento);
 
+// Rutas protegidas
 router.get("/", authRequired, getDocumentos);
 router.get("/:id/preview", authRequired, previewDocumento);
 router.get("/:id/public-preview", authRequired, generarPreviewPublico);
