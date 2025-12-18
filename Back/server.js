@@ -24,7 +24,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// 🔥 MIDDLEWARE DE DEBUG - VER TODAS LAS PETICIONES
 app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.url}`);
   next();
@@ -33,9 +32,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-console.log('🔥 Registrando rutas de documentos...');
 app.use("/api/documentos", documentosRoutes);
-console.log('✅ Rutas de documentos registradas');
 
 app.use("/api/usuarios", usersRoutes);
 app.use("/api", authRoutes);
@@ -50,7 +47,6 @@ app.get("/", (req, res) => {
   res.send("API funcionando :3");
 });
 
-// 🔥 CATCH-ALL PARA VER QUÉ RUTAS NO SE ENCUENTRAN
 app.use((req, res) => {
   console.log('❌ RUTA NO ENCONTRADA:', req.method, req.url);
   res.status(404).json({ 

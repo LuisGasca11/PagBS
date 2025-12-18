@@ -50,7 +50,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-1">
               
               <a
-                href="#inicio"
+                href="/Landing"
                 className="
                   relative px-5 py-2 text-white/90 font-medium 
                   transition-all duration-300 rounded-lg

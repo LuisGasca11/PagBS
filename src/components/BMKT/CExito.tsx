@@ -39,7 +39,7 @@ const projects = [
     internalLink: "/BmktPa",
     title: "FYTTSUITE",
     tagline: "",
-    media: "/FyttsaVid.mp4",
+    media: "/FondoWebPro.mp4",
     mediaType: "video",
     accent: "from-gray-700 to-gray-900",
     size: "col-span-1 md:col-span-2"

@@ -154,7 +154,6 @@ export const previewDocumentoPublico = async (req, res) => {
 
     if (!fs.existsSync(filePath)) {
       console.error('❌ ARCHIVO NO ENCONTRADO:', filePath);
-      console.log('=========================================================');
       return res.status(404).json({ 
         error: "Archivo no encontrado",
         debug: {
@@ -177,7 +176,6 @@ export const previewDocumentoPublico = async (req, res) => {
     res.sendFile(path.resolve(filePath));
   } catch (err) {
     console.error("❌ ERROR PREVIEW PÚBLICO:", err);
-    console.log('=========================================================');
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -221,10 +219,6 @@ export const generarUrlDescarga = async (req, res) => {
       apiUrl = `http://localhost:${process.env.PORT || 3019}`;
     }
 
-    console.log('📥 Generando URL de descarga');
-    console.log('🌐 API URL base:', apiUrl);
-    console.log('📄 ID del documento:', id);
-
     if (!previewSecret) {
       console.error('❌ DOC_PREVIEW_SECRET no configurado');
       return res
@@ -242,8 +236,6 @@ export const generarUrlDescarga = async (req, res) => {
       return res.status(404).json({ error: "Documento no encontrado" });
     }
 
-    console.log('📄 Archivo encontrado:', rows[0].nombre_original);
-
     const token = jwt.sign(
       {
         id_documento: id,
@@ -254,9 +246,7 @@ export const generarUrlDescarga = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // 🔥 CONSTRUIR LA URL CORRECTAMENTE (sin duplicar /api/documentos)
-const finalUrl = `${apiUrl}/api/documentos/download?token=${encodeURIComponent(token)}`;
-    console.log('🎯 URL de descarga final:', finalUrl);
+    const finalUrl = `${apiUrl}/api/documentos/download?token=${encodeURIComponent(token)}`;
 
     res.json({
       url: finalUrl,
