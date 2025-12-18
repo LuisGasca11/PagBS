@@ -208,30 +208,25 @@ export const subirDocumento = async (req, res) => {
   }
 };
 
-/**
- * GENERAR URL DE DESCARGA (con JWT temporal)
- */
-/**
- * GENERAR URL DE DESCARGA (con JWT temporal)
- */
 export const generarUrlDescarga = async (req, res) => {
   try {
     const { id } = req.params;
 
     const previewSecret = process.env.DOC_PREVIEW_SECRET;
     
-    // 🔥 MISMO PATRÓN QUE EL PREVIEW
     let apiUrl;
     if (process.env.NODE_ENV === 'production') {
       apiUrl = 'https://blck-sheep.com';
     } else {
-      apiUrl = process.env.API_PUBLIC_URL || `http://localhost:${process.env.PORT || 3019}`;
+      apiUrl = `http://localhost:${process.env.PORT || 3019}`;
     }
 
     console.log('📥 Generando URL de descarga');
-    console.log('🌐 API URL:', apiUrl);
+    console.log('🌐 API URL base:', apiUrl);
+    console.log('📄 ID del documento:', id);
 
     if (!previewSecret) {
+      console.error('❌ DOC_PREVIEW_SECRET no configurado');
       return res
         .status(500)
         .json({ error: "Configuración incompleta del servidor" });
@@ -243,8 +238,11 @@ export const generarUrlDescarga = async (req, res) => {
     );
 
     if (!rows.length) {
+      console.error('❌ Documento no encontrado');
       return res.status(404).json({ error: "Documento no encontrado" });
     }
+
+    console.log('📄 Archivo encontrado:', rows[0].nombre_original);
 
     const token = jwt.sign(
       {
@@ -253,11 +251,12 @@ export const generarUrlDescarga = async (req, res) => {
         nombre: rows[0].nombre_original,
       },
       previewSecret,
-      { expiresIn: "1h" } // 🔥 Aumentar de 5m a 1h
+      { expiresIn: "1h" }
     );
 
-    const finalUrl = `${apiUrl}/api/documentos/download/${token}`;
-    console.log('🎯 URL de descarga generada:', finalUrl);
+    // 🔥 CONSTRUIR LA URL CORRECTAMENTE (sin duplicar /api/documentos)
+const finalUrl = `${apiUrl}/api/documentos/download?token=${encodeURIComponent(token)}`;
+    console.log('🎯 URL de descarga final:', finalUrl);
 
     res.json({
       url: finalUrl,
@@ -268,40 +267,38 @@ export const generarUrlDescarga = async (req, res) => {
   }
 };
 
-
-/**
- * DESCARGAR DOCUMENTO (con JWT en URL)
- */
-/**
- * DESCARGAR DOCUMENTO (con JWT en URL)
- */
 export const descargarDocumento = async (req, res) => {
+  console.log('🔽 DESCARGA - Iniciando...');
+  console.log('Query:', req.query);
+  console.log('Params:', req.params);
+  console.log('URL completa:', req.url);
+  
   try {
-    const { token } = req.params;
+    const { token } = req.query;
 
-    console.log('📥 Solicitud de descarga recibida');
-    console.log('🔐 Token (primeros 30 chars):', token.substring(0, 30) + '...');
+    if (!token) {
+      console.error('❌ Token no proporcionado');
+      return res.status(400).json({ error: "Token requerido" });
+    }
+
+    console.log('🔑 Token recibido (primeros 50 chars):', token.substring(0, 50) + '...');
 
     const previewSecret = process.env.DOC_PREVIEW_SECRET;
 
     if (!previewSecret) {
       console.error('❌ DOC_PREVIEW_SECRET no configurado');
-      return res
-        .status(500)
-        .json({ error: "Configuración incompleta del servidor" });
+      return res.status(500).json({ error: "Configuración del servidor incompleta" });
     }
 
     let payload;
     try {
       payload = jwt.verify(token, previewSecret);
-      console.log('✅ Token válido');
-      console.log('📄 Documento:', payload.nombre);
+      console.log('✅ Token verificado:', payload);
     } catch (jwtErr) {
       console.error('❌ Error verificando token:', jwtErr.message);
       return res.status(401).json({ error: "Token inválido o expirado" });
     }
 
-    // 🔥 USAR process.cwd() IGUAL QUE EN EL PREVIEW
     const filePath = path.join(
       process.cwd(),
       "uploads",
@@ -309,32 +306,26 @@ export const descargarDocumento = async (req, res) => {
       payload.ruta
     );
 
-    console.log('🔍 Buscando archivo en:', filePath);
+    console.log('📂 Buscando archivo en:', filePath);
 
     if (!fs.existsSync(filePath)) {
-      console.error('❌ Archivo no encontrado');
+      console.error('❌ Archivo no existe');
       return res.status(404).json({ error: "Archivo no encontrado" });
     }
 
-    const stats = fs.statSync(filePath);
-    console.log('✅ Archivo encontrado, tamaño:', (stats.size / 1024).toFixed(2), 'KB');
-    console.log('📤 Iniciando descarga...');
-
+    console.log('✅ Archivo encontrado, iniciando descarga...');
     res.download(filePath, payload.nombre, (err) => {
       if (err) {
-        console.error('❌ Error durante la descarga:', err);
+        console.error('❌ Error durante descarga:', err);
       } else {
-        console.log('✅ Descarga completada');
+        console.log('✅ Descarga completada exitosamente');
       }
     });
   } catch (err) {
-    console.error("❌ ERROR DESCARGAR DOCUMENTO:", err.message);
-    return res
-      .status(500)
-      .json({ error: "Error interno del servidor" });
+    console.error('❌ ERROR GENERAL:', err);
+    res.status(500).json({ error: "Error interno" });
   }
 };
-
 
 /**
  * ELIMINAR DOCUMENTO (solo admin)

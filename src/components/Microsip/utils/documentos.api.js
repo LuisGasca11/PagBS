@@ -56,8 +56,23 @@ export async function downloadDocumento(id, token) {
     }
 
     const data = await res.json();
-    window.open(data.url, "_blank");
+    
+    // 🔥 Alternativa: Descargar usando fetch y crear un blob
+    const downloadRes = await fetch(data.url);
+    if (!downloadRes.ok) throw new Error("Error descargando archivo");
+    
+    const blob = await downloadRes.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'documento.pdf'; // Idealmente obtén el nombre del backend
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(blobUrl);
+    
   } catch (err) {
+    console.error('Error completo:', err);
     throw err;
   }
 }
