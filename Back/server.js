@@ -1,6 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// 🔥 AGREGAR ESTO PARA VERIFICAR
+console.log('🔧 Configuración inicial:');
+console.log('  - NODE_ENV:', process.env.NODE_ENV);
+console.log('  - PORT:', process.env.PORT);
+console.log('  - API_PUBLIC_URL:', process.env.API_PUBLIC_URL);
+console.log('  - DB_HOST:', process.env.DB_HOST);
+console.log('  - DOC_PREVIEW_SECRET:', process.env.DOC_PREVIEW_SECRET ? '✓ Configurado' : '✗ NO configurado');
+
 import express from "express";
 import cors from "cors";
 import path from "path";

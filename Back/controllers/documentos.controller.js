@@ -69,9 +69,16 @@ export const generarPreviewPublico = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validar variables de entorno
     const previewSecret = process.env.DOC_PREVIEW_SECRET;
-    const apiUrl = process.env.API_PUBLIC_URL || `http://localhost:${process.env.PORT || 3019}`;
+    
+    // 🔥 HARDCODED TEMPORAL
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://blck-sheep.com'  // Hardcoded para producción
+      : process.env.API_PUBLIC_URL || `http://localhost:${process.env.PORT || 3019}`;
+
+    console.log('🌐 apiUrl:', apiUrl);
+    
+    // ... resto del código
 
     if (!previewSecret) {
       console.error("❌ DOC_PREVIEW_SECRET no está definido en .env");
@@ -96,11 +103,14 @@ export const generarPreviewPublico = async (req, res) => {
         mime: rows[0].tipo_mime,
       },
       previewSecret,
-      { expiresIn: "10m" }
+      { expiresIn: "1h" }
     );
 
+    const finalUrl = `${apiUrl}/api/documentos/public/${token}`;
+    console.log('✅ URL generada:', finalUrl);
+
     res.json({
-      url: `${apiUrl}/api/documentos/public/${token}`,
+      url: finalUrl,
     });
   } catch (err) {
     console.error("ERROR PREVIEW PUBLICO:", err);
@@ -108,12 +118,7 @@ export const generarPreviewPublico = async (req, res) => {
   }
 };
 
-/**
- * PREVIEW PÚBLICO (sin autenticación, con token JWT)
- */
-/**
- * PREVIEW PÚBLICO (sin autenticación, con token JWT)
- */
+
 export const previewDocumentoPublico = async (req, res) => {
   try {
     const { token } = req.params;
