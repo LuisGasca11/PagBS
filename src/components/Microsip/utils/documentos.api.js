@@ -1,13 +1,8 @@
-// Detectar si estamos en desarrollo o producción
 const isDev = import.meta.env.DEV;
 
-// En desarrollo usa el proxy (/api), en producción usa la URL completa
 const API_BASE = isDev 
-  ? '/api/documentos'  // Usa el proxy de Vite en dev
+  ? '/api/documentos'  
   : `${import.meta.env.VITE_API_URL || window.location.origin}/api/documentos`;
-
-console.log('🔍 Environment:', isDev ? 'development' : 'production');
-console.log('📡 API_BASE:', API_BASE);
 
 export async function getDocumentos(token) {
   const res = await fetch(API_BASE, {
@@ -72,7 +67,6 @@ export function previewDocumento(id, token) {
 }
 
 export async function getPublicPreviewUrl(id, token) {
-  console.log('🔍 Solicitando preview para documento:', id);
   
   const res = await fetch(`${API_BASE}/${id}/public-preview`, {
     headers: {
@@ -86,6 +80,5 @@ export async function getPublicPreviewUrl(id, token) {
   }
 
   const data = await res.json();
-  console.log('✅ URL de preview generada:', data.url);
   return data.url;
 }
