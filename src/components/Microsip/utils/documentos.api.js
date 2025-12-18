@@ -72,6 +72,8 @@ export function previewDocumento(id, token) {
 }
 
 export async function getPublicPreviewUrl(id, token) {
+  console.log('🔍 Solicitando preview para documento:', id);
+  
   const res = await fetch(`${API_BASE}/${id}/public-preview`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -79,9 +81,11 @@ export async function getPublicPreviewUrl(id, token) {
   });
 
   if (!res.ok) {
+    console.error('❌ Error en preview:', res.status, res.statusText);
     throw new Error("Error generando preview público");
   }
 
   const data = await res.json();
+  console.log('✅ URL de preview generada:', data.url);
   return data.url;
 }

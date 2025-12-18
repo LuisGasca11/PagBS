@@ -189,34 +189,48 @@ export default function AdminDocuments({ token, isAdmin, onClose }) {
       </div>
 
       {/* Modal de Preview */}
-      {previewUrl && (
-        <div
-          className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setPreviewUrl(null)}
-        >
-          <div
-            className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+      {/* Modal de Preview */}
+{previewUrl && (
+  <div
+    className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4"
+    onClick={() => setPreviewUrl(null)}
+  >
+    <div
+      className="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        <h2 className="text-lg font-semibold text-gray-900">Vista Previa</h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => window.open(previewUrl, '_blank')}
+            className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           >
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold text-gray-900">Vista Previa</h2>
-              <button
-                onClick={() => setPreviewUrl(null)}
-                className="px-4 py-2 text-sm bg-black hover:bg-gray-200 rounded-lg transition-colors"
-              >
-                Cerrar
-              </button>
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <iframe
-                src={previewUrl}
-                className="w-full h-full border-0"
-                title="Document Preview"
-              />
-            </div>
-          </div>
+            Abrir en nueva pestaña
+          </button>
+          <button
+            onClick={() => setPreviewUrl(null)}
+            className="px-4 py-2 text-sm bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+          >
+            Cerrar
+          </button>
         </div>
-      )}
+      </div>
+      <div className="flex-1 overflow-hidden relative">
+        <iframe
+          src={previewUrl}
+          className="w-full h-full border-0"
+          title="Document Preview"
+          onError={(e) => {
+            console.error('❌ Error cargando iframe:', e);
+            toast.error('Error cargando vista previa. Abriendo en nueva pestaña...');
+            window.open(previewUrl, '_blank');
+          }}
+        />
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 }

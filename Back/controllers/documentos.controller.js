@@ -111,6 +111,9 @@ export const generarPreviewPublico = async (req, res) => {
 /**
  * PREVIEW PÚBLICO (sin autenticación, con token JWT)
  */
+/**
+ * PREVIEW PÚBLICO (sin autenticación, con token JWT)
+ */
 export const previewDocumentoPublico = async (req, res) => {
   try {
     const { token } = req.params;
@@ -132,8 +135,12 @@ export const previewDocumentoPublico = async (req, res) => {
       return res.status(404).json({ error: "Archivo no encontrado" });
     }
 
-    res.setHeader("Content-Type", payload.mime || "application/octet-stream");
+    // 🔥 AGREGAR ESTOS HEADERS PARA CORS Y IFRAME
+    res.setHeader("Content-Type", payload.mime || "application/pdf");
     res.setHeader("Content-Disposition", "inline");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("X-Frame-Options", "SAMEORIGIN"); // Permite iframes del mismo origen
+    res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://blck-sheep.com");
     
     res.sendFile(path.resolve(filePath));
   } catch (err) {
