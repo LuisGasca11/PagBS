@@ -3,25 +3,21 @@ dotenv.config();
 
 import pool from "./db.js";
 
-/**
- * Script para corregir URLs de producción
- * Ejecutar en producción: node fix_urls_production.js
- */
-
 async function fixUrls() {
   try {
     console.log("🔧 Corrigiendo URLs de fotos en producción...");
 
-    // Reemplazar localhost URLs con solo el nombre de archivo
+    // Limpiar URLs completas, dejando solo el nombre del archivo
     const result = await pool.query(`
       UPDATE usuarios
-      SET foto = SUBSTRING(foto FROM POSITION('perfil-' IN foto))
-      WHERE foto LIKE '%localhost%'
+      SET foto = SUBSTRING_INDEX(foto, '/', -1)
+      WHERE foto IS NOT NULL 
+        AND foto != ''
+        AND (foto LIKE 'http%' OR foto LIKE '/content/%')
     `);
 
     console.log(`✅ ${result.rowCount} URLs corregidas`);
 
-    // Verificar cambios
     const { rows } = await pool.query(`
       SELECT id_usuario, usuario, foto FROM usuarios WHERE foto IS NOT NULL AND foto != '' LIMIT 5
     `);

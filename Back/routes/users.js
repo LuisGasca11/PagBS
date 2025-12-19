@@ -36,8 +36,8 @@ const upload = multer({
 });
 
 function getPublicUrl(filename) {
-  const baseUrl = process.env.API_PUBLIC_URL || "https://blck-sheep.com";
-  return `${baseUrl}/content/perfiles/${filename}`;
+  // Return only the filename so it can be served from /content/perfiles/ route
+  return filename;
 }
 
 // 🔍 DEBUG: Ver qué fotos hay en BD (SIN autenticación para testing)
@@ -52,7 +52,10 @@ router.get("/debug/fotos", async (_req, res) => {
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
     SELECT id_usuario, usuario, rol, activo, nombre, correo, 
-           COALESCE(REPLACE(foto, '/uploads/', '/content/'), '') AS foto, 
+           CASE 
+             WHEN foto IS NOT NULL AND foto != '' THEN CONCAT('/content/perfiles/', SUBSTRING_INDEX(foto, '/', -1))
+             ELSE ''
+           END AS foto, 
            fecha_creacion
     FROM usuarios
     ORDER BY id_usuario
@@ -97,6 +100,7 @@ router.post(
       }
 
       const fotoUrl = getPublicUrl(req.file.filename);
+      const photoPath = `/content/perfiles/${req.file.filename}`;
 
       await pool.query(
         `UPDATE usuarios
@@ -107,7 +111,7 @@ router.post(
 
       console.log("✅ Foto actualizada en BD:", fotoUrl);
 
-      res.json({ ok: true, foto: fotoUrl });
+      res.json({ ok: true, foto: photoPath });
     } catch (err) {
       console.error("❌ UPLOAD FOTO ERROR:", err);
       res.status(500).json({ error: "Error al subir la foto" });

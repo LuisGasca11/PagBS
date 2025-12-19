@@ -156,12 +156,10 @@ export default function NavBar({
     setShowAdminMenu(false);
     setShowMobileMenu(false);
     
-    if (isAdmin) {
-      if (onOpenDocuments) {
-        onOpenDocuments(); 
-      } else {
-        window.location.href = "/documentos";
-      }
+    if (onOpenDocuments) {
+      onOpenDocuments(); 
+    } else {
+      window.location.href = "/documentos";
     }
   };
 
@@ -253,7 +251,7 @@ export default function NavBar({
                 );
               })}
               
-              {isAuthenticated && isAdmin && (
+              {isAuthenticated && (
                 <a
                   href="#"
                   onClick={(e) => {
@@ -557,6 +555,20 @@ export default function NavBar({
                             </p>
                           </div>
                         )}
+                      </>
+                    )}
+
+                    {isAuthenticated && (
+                      <>
+                        <button
+                          onClick={() => {
+                            handleDocumentosClick();
+                            setShowMobileMenu(false);
+                          }}
+                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                        >
+                          <span className="font-medium text-sm sm:text-base">Documentos</span>
+                        </button>
                       </>
                     )}
 
