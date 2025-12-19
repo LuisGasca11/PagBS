@@ -114,7 +114,6 @@ export default function UsersPanel() {
       return;
     }
 
-    // Si estamos EDITANDO, subir directamente al servidor
     if (editingId) {
       setUploadingPhoto(true);
 
@@ -150,7 +149,6 @@ export default function UsersPanel() {
         setUploadingPhoto(false);
       }
     } else {
-      // Si estamos CREANDO, convertir a base64 para preview
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64 = reader.result as string;

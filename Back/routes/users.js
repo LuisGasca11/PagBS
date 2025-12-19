@@ -35,6 +35,15 @@ const upload = multer({
   },
 });
 
+function getPublicUrl(filename) {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const baseUrl = isProduction 
+    ? (process.env.API_PUBLIC_URL || 'https://blck-sheep.com')
+    : `http://localhost:${process.env.PORT || 3019}`;
+  
+  return `${baseUrl}/uploads/perfiles/${filename}`;
+}
+
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
     SELECT id_usuario, usuario, rol, activo, nombre, correo, foto, fecha_creacion
@@ -64,20 +73,23 @@ router.post(
         return res.status(400).json({ error: "No se proporcionó imagen" });
       }
 
-      const publicBase = process.env.API_PUBLIC_URL;
+      console.log("📸 Archivo recibido:", req.file.filename);
 
       const { rows } = await pool.query(
         "SELECT foto FROM usuarios WHERE id_usuario = $1",
         [targetUserId]
       );
 
-      if (rows[0]?.foto?.startsWith(publicBase)) {
-        const relativePath = rows[0].foto.replace(publicBase, "");
-        const oldPath = path.join(process.cwd(), relativePath);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      if (rows[0]?.foto) {
+        const oldFilename = path.basename(rows[0].foto);
+        const oldPath = path.join(process.cwd(), uploadDir, oldFilename);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+          console.log("🗑️ Foto anterior eliminada:", oldFilename);
+        }
       }
 
-      const fotoUrl = `${publicBase}/uploads/perfiles/${req.file.filename}`;
+      const fotoUrl = getPublicUrl(req.file.filename);
 
       await pool.query(
         `UPDATE usuarios
@@ -86,9 +98,11 @@ router.post(
         [fotoUrl, targetUserId]
       );
 
+      console.log("✅ Foto actualizada en BD:", fotoUrl);
+
       res.json({ ok: true, foto: fotoUrl });
     } catch (err) {
-      console.error("UPLOAD FOTO:", err);
+      console.error("❌ UPLOAD FOTO ERROR:", err);
       res.status(500).json({ error: "Error al subir la foto" });
     }
   }
@@ -121,11 +135,9 @@ router.post("/", authRequired, adminOnly, async (req, res) => {
         
         fs.writeFileSync(filepath, buffer);
         
-        // URL de producción
-        const publicBase = process.env.API_PUBLIC_URL || "https://blck-sheep.com";
-        fotoUrl = `${publicBase}/uploads/perfiles/${filename}`;
+        fotoUrl = getPublicUrl(filename);
         
-        console.log("✅ Foto guardada:", fotoUrl);
+        console.log("✅ Foto guardada (base64):", fotoUrl);
       } catch (err) {
         console.error("❌ Error al procesar base64:", err);
       }
@@ -185,9 +197,13 @@ router.delete("/:id", authRequired, adminOnly, async (req, res) => {
     [req.params.id]
   );
 
-  if (rows[0]?.foto?.startsWith("/uploads/perfiles/")) {
-    const photoPath = path.join(process.cwd(), rows[0].foto);
-    if (fs.existsSync(photoPath)) fs.unlinkSync(photoPath);
+  if (rows[0]?.foto) {
+    const filename = path.basename(rows[0].foto);
+    const photoPath = path.join(process.cwd(), uploadDir, filename);
+    if (fs.existsSync(photoPath)) {
+      fs.unlinkSync(photoPath);
+      console.log("🗑️ Foto eliminada:", filename);
+    }
   }
 
   await pool.query("DELETE FROM usuarios WHERE id_usuario = $1", [req.params.id]);
