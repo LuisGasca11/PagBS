@@ -121,7 +121,8 @@ router.post("/", authRequired, adminOnly, async (req, res) => {
         
         fs.writeFileSync(filepath, buffer);
         
-        const publicBase = process.env.API_PUBLIC_URL || "http://localhost:5174";
+        // URL de producción
+        const publicBase = process.env.API_PUBLIC_URL || "https://blck-sheep.com";
         fotoUrl = `${publicBase}/uploads/perfiles/${filename}`;
         
         console.log("✅ Foto guardada:", fotoUrl);
