@@ -37,13 +37,15 @@ const upload = multer({
 
 function getPublicUrl(filename) {
   const baseUrl = process.env.API_PUBLIC_URL || "https://blck-sheep.com";
-  return `${baseUrl}/uploads/perfiles/${filename}`;
+  return `${baseUrl}/content/perfiles/${filename}`;
 }
 
 
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
-    SELECT id_usuario, usuario, rol, activo, nombre, correo, foto, fecha_creacion
+    SELECT id_usuario, usuario, rol, activo, nombre, correo, 
+           COALESCE(REPLACE(foto, '/uploads/', '/content/'), '') AS foto, 
+           fecha_creacion
     FROM usuarios
     ORDER BY id_usuario
   `);

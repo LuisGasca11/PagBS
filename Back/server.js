@@ -41,7 +41,7 @@ app.use("/api", preciosHoraRoutes);
 app.use("/api/vps", vpsRoutes);
 app.use("/api/generate-pdf", pdfRoutes);
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/content', express.static(path.join(process.cwd(), 'uploads')));
 
 app.get("/", (req, res) => {
   res.send("API funcionando :3");
