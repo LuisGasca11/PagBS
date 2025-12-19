@@ -40,6 +40,14 @@ function getPublicUrl(filename) {
   return `${baseUrl}/content/perfiles/${filename}`;
 }
 
+// 🔍 DEBUG: Ver qué fotos hay en BD (SIN autenticación para testing)
+router.get("/debug/fotos", async (_req, res) => {
+  const { rows } = await pool.query(`
+    SELECT id_usuario, usuario, foto FROM usuarios WHERE foto IS NOT NULL AND foto != ''
+  `);
+  console.log("📸 Fotos encontradas:", rows);
+  res.json(rows);
+});
 
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
@@ -212,29 +220,104 @@ router.delete("/:id", authRequired, adminOnly, async (req, res) => {
 // 📸 SERVIR FOTOS VÍA API (evita bloqueos de adblocker)
 router.get("/:id/photo", authRequired, async (req, res) => {
   try {
+    console.log(`📸 Buscando foto para usuario ${req.params.id}`);
+    
     const { rows } = await pool.query(
       "SELECT foto FROM usuarios WHERE id_usuario = $1",
       [req.params.id]
     );
 
+    if (!rows.length) {
+      console.log(`❌ Usuario no encontrado: ${req.params.id}`);
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
     if (!rows[0]?.foto) {
-      return res.status(404).json({ error: "No hay foto" });
+      console.log(`⚠️ Usuario sin foto: ${req.params.id}`);
+      return res.status(404).json({ error: "Usuario no tiene foto" });
     }
 
     const fotoUrl = rows[0].foto;
-    const filename = path.basename(fotoUrl);
-    const filePath = path.join(process.cwd(), uploadDir, filename);
+    console.log(`🔗 URL en BD: ${fotoUrl}`);
 
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "Archivo no encontrado" });
+    // Si es una URL http/https completa, hacer proxy o redirect
+    if (fotoUrl.startsWith('http')) {
+      // En producción, ignorar URLs con localhost y servir el archivo
+      if (fotoUrl.includes('localhost')) {
+        const filename = path.basename(fotoUrl);
+        const filePath = path.join(uploadDir, filename);
+        
+        console.log(`🔧 URL de localhost detectada, sirviendo desde disk: ${filePath}`);
+        
+        if (fs.existsSync(filePath)) {
+          const ext = path.extname(filename).toLowerCase();
+          const mimeTypes = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.webp': 'image/webp'
+          };
+          const contentType = mimeTypes[ext] || 'image/png';
+          
+          res.setHeader("Cache-Control", "public, max-age=86400");
+          res.setHeader("Content-Type", contentType);
+          return res.sendFile(path.resolve(filePath));
+        }
+      }
+      
+      // Para URLs externas, hacer redirect
+      const filename = path.basename(fotoUrl);
+      const filePath = path.join(uploadDir, filename);
+      
+      console.log(`🔗 URL externa: ${fotoUrl}`);
+      
+      if (fs.existsSync(filePath)) {
+        const ext = path.extname(filename).toLowerCase();
+        const mimeTypes = {
+          '.jpg': 'image/jpeg',
+          '.jpeg': 'image/jpeg',
+          '.png': 'image/png',
+          '.gif': 'image/gif',
+          '.webp': 'image/webp'
+        };
+        const contentType = mimeTypes[ext] || 'image/png';
+        
+        res.setHeader("Cache-Control", "public, max-age=86400");
+        res.setHeader("Content-Type", contentType);
+        return res.sendFile(path.resolve(filePath));
+      } else {
+        return res.redirect(fotoUrl);
+      }
     }
 
+    // Si no es URL, asumir que es solo el nombre del archivo
+    const filePath = path.join(uploadDir, fotoUrl);
+    console.log(`🔍 Buscando: ${filePath}`);
+
+    if (!fs.existsSync(filePath)) {
+      console.log(`❌ Archivo no existe: ${filePath}`);
+      return res.status(404).json({ error: "Archivo no encontrado", path: filePath });
+    }
+
+    console.log(`✅ Sirviendo: ${fotoUrl}`);
+    
+    const ext = path.extname(fotoUrl).toLowerCase();
+    const mimeTypes = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp'
+    };
+    const contentType = mimeTypes[ext] || 'image/png';
+
     res.setHeader("Cache-Control", "public, max-age=86400");
-    res.setHeader("Content-Type", "image/png");
-    res.sendFile(filePath);
+    res.setHeader("Content-Type", contentType);
+    res.sendFile(path.resolve(filePath));
   } catch (err) {
     console.error("❌ ERROR GET PHOTO:", err);
-    res.status(500).json({ error: "Error al obtener foto" });
+    res.status(500).json({ error: "Error al obtener foto", details: err.message });
   }
 });
 
