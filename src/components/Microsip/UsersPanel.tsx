@@ -324,7 +324,7 @@ export default function UsersPanel() {
                 {photoPreview || form.foto ? (
                   <div className="relative group">
                     <img
-                      src={photoPreview || form.foto}
+                      src={`/api/usuarios/${editingId}/photo`}
                       alt="Preview"
                       className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg"
                     />
@@ -528,7 +528,7 @@ export default function UsersPanel() {
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <img
-                        src={u.foto || "https://via.placeholder.com/80"}
+                        src={`/api/usuarios/${u.id_usuario}/photo`}
                         alt={u.usuario}
                         className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 shadow"
                       />

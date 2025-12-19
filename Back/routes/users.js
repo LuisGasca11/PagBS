@@ -209,4 +209,33 @@ router.delete("/:id", authRequired, adminOnly, async (req, res) => {
   res.json({ ok: true });
 });
 
+// 📸 SERVIR FOTOS VÍA API (evita bloqueos de adblocker)
+router.get("/:id/photo", authRequired, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      "SELECT foto FROM usuarios WHERE id_usuario = $1",
+      [req.params.id]
+    );
+
+    if (!rows[0]?.foto) {
+      return res.status(404).json({ error: "No hay foto" });
+    }
+
+    const fotoUrl = rows[0].foto;
+    const filename = path.basename(fotoUrl);
+    const filePath = path.join(process.cwd(), uploadDir, filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Archivo no encontrado" });
+    }
+
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.setHeader("Content-Type", "image/png");
+    res.sendFile(filePath);
+  } catch (err) {
+    console.error("❌ ERROR GET PHOTO:", err);
+    res.status(500).json({ error: "Error al obtener foto" });
+  }
+});
+
 export default router;
