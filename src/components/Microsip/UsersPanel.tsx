@@ -28,6 +28,9 @@ interface Session {
   token: string;
 }
 
+// Configuración de API URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3019';
+
 function SuccessNotification({ message, onClose }: { message: string; onClose: () => void }) {
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
@@ -86,7 +89,7 @@ export default function UsersPanel() {
 
     const { token } = JSON.parse(sessionData);
 
-    const res = await fetch("/api/usuarios", {
+    const res = await fetch(`${API_URL}/api/usuarios`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -122,7 +125,7 @@ export default function UsersPanel() {
         const formData = new FormData();
         formData.append("foto", file);
 
-        const res = await fetch(`/api/usuarios/${editingId}/upload-foto`, {
+        const res = await fetch(`${API_URL}/api/usuarios/${editingId}/upload-foto`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -131,10 +134,13 @@ export default function UsersPanel() {
         });
 
         if (!res.ok) {
-          throw new Error("Error al subir la foto");
+          const errorData = await res.json();
+          throw new Error(errorData.error || "Error al subir la foto");
         }
 
         const data = await res.json();
+
+        console.log("✅ Foto subida exitosamente:", data.foto);
 
         setForm({ ...form, foto: data.foto });
         setPhotoPreview(data.foto);
@@ -143,8 +149,8 @@ export default function UsersPanel() {
       
         showSuccessMessage("Foto subida correctamente");
       } catch (error) {
-        console.error("Error:", error);
-        alert("Error al subir la foto");
+        console.error("❌ Error al subir foto:", error);
+        alert(error instanceof Error ? error.message : "Error al subir la foto");
       } finally {
         setUploadingPhoto(false);
       }
@@ -177,7 +183,7 @@ export default function UsersPanel() {
     const { token } = JSON.parse(localStorage.getItem("session")!);
 
     const method = editingId ? "PUT" : "POST";
-    const url = editingId ? `/api/usuarios/${editingId}` : "/api/usuarios";
+    const url = editingId ? `${API_URL}/api/usuarios/${editingId}` : `${API_URL}/api/usuarios`;
 
     const body = editingId && !form.password
       ? { 
@@ -191,7 +197,7 @@ export default function UsersPanel() {
       : form;
 
     try {
-      await fetch(url, {
+      const res = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -199,6 +205,11 @@ export default function UsersPanel() {
         },
         body: JSON.stringify(body),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error al guardar usuario");
+      }
 
       setForm({ 
         usuario: "", 
@@ -220,8 +231,8 @@ export default function UsersPanel() {
       
       await loadUsers();
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error al guardar el usuario");
+      console.error("❌ Error al guardar usuario:", error);
+      alert(error instanceof Error ? error.message : "Error al guardar el usuario");
     } finally {
       setLoading(false);
     }
@@ -233,16 +244,21 @@ export default function UsersPanel() {
     const { token } = JSON.parse(localStorage.getItem("session")!);
 
     try {
-      await fetch(`/api/usuarios/${id}`, {
+      const res = await fetch(`${API_URL}/api/usuarios/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error al eliminar usuario");
+      }
+
       showSuccessMessage("Usuario eliminado correctamente");
       await loadUsers();
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error al eliminar el usuario");
+      console.error("❌ Error al eliminar usuario:", error);
+      alert(error instanceof Error ? error.message : "Error al eliminar el usuario");
     }
   };
 
@@ -327,6 +343,10 @@ export default function UsersPanel() {
                       src={photoPreview || form.foto}
                       alt="Preview"
                       className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg"
+                      onError={(e) => {
+                        console.error("❌ Error al cargar imagen:", photoPreview || form.foto);
+                        e.currentTarget.src = "https://via.placeholder.com/128";
+                      }}
                     />
                     <button
                       type="button"
@@ -531,6 +551,10 @@ export default function UsersPanel() {
                         src={u.foto || "https://via.placeholder.com/80"}
                         alt={u.usuario}
                         className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 shadow"
+                        onError={(e) => {
+                          console.error("❌ Error al cargar foto en tabla:", u.foto);
+                          e.currentTarget.src = "https://via.placeholder.com/80";
+                        }}
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

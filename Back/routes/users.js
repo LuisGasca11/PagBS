@@ -36,13 +36,10 @@ const upload = multer({
 });
 
 function getPublicUrl(filename) {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const baseUrl = isProduction 
-    ? (process.env.API_PUBLIC_URL || 'https://blck-sheep.com')
-    : `http://localhost:${process.env.PORT || 3019}`;
-  
+  const baseUrl = process.env.API_PUBLIC_URL || "https://blck-sheep.com";
   return `${baseUrl}/uploads/perfiles/${filename}`;
 }
+
 
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
