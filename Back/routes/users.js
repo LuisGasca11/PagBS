@@ -95,19 +95,55 @@ router.post(
 );
 
 router.post("/", authRequired, adminOnly, async (req, res) => {
-  const { usuario, password, rol = "user", activo = true, nombre, correo, foto } = req.body;
+  try {
+    const { usuario, password, rol = "user", activo = true, nombre, correo, foto } = req.body;
 
-  const hash = await bcrypt.hash(password, 10);
+    const hash = await bcrypt.hash(password, 10);
 
-  await pool.query(
-    `INSERT INTO usuarios (usuario, password_hash, rol, activo, nombre, correo, foto)
-     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-    [usuario, hash, rol, activo, nombre, correo, foto || null]
-  );
+    let fotoUrl = null;
+    
+    if (foto && foto.startsWith('data:image')) {
+      try {
+        const matches = foto.match(/^data:image\/(\w+);base64,(.+)$/);
+        if (!matches) throw new Error("Formato base64 inválido");
 
-  res.json({ ok: true });
+        const ext = matches[1]; 
+        const base64Data = matches[2];
+        
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        const filename = `perfil-${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`;
+        const filepath = path.join(uploadDir, filename);
+        
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        fs.writeFileSync(filepath, buffer);
+        
+        const publicBase = process.env.API_PUBLIC_URL || "http://localhost:5174";
+        fotoUrl = `${publicBase}/uploads/perfiles/${filename}`;
+        
+        console.log("✅ Foto guardada:", fotoUrl);
+      } catch (err) {
+        console.error("❌ Error al procesar base64:", err);
+      }
+    } else if (foto) {
+      fotoUrl = foto;
+    }
+
+    await pool.query(
+      `INSERT INTO usuarios (usuario, password_hash, rol, activo, nombre, correo, foto)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [usuario, hash, rol, activo, nombre, correo, fotoUrl]
+    );
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    res.status(500).json({ error: "Error al crear usuario" });
+  }
 });
-
 
 router.put("/:id", authRequired, adminOnly, async (req, res) => {
   const { id } = req.params;

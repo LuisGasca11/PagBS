@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom'
 
 const Body = () => {
   return (
@@ -35,14 +36,21 @@ const Body = () => {
           Control absoluto, decisiones basadas en datos y escalabilidad sin límites bajo el estándar Black-Sheep.
         </p>
 
-        <div className="mt-12 flex flex-col sm:flex-row gap-5">
-          <button className="px-10 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-black text-sm uppercase tracking-widest transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.15)]">
-            Explorar Sistema
-          </button>
-          <button className="px-10 py-4 bg-transparent text-white border border-white/20 hover:bg-white/5 rounded-full font-bold text-sm uppercase tracking-widest backdrop-blur-md transition-all">
-            Solicitar Demo
-          </button>
-        </div>
+      <div className="mt-12 flex flex-col sm:flex-row gap-5">
+  <Link 
+    to=""
+    className="inline-flex items-center justify-center px-10 py-4 bg-white text-black hover:bg-gray-200 rounded-full font-black text-sm uppercase tracking-widest transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95"
+  >
+    Explorar Sistema
+  </Link>
+  
+  <Link 
+    to="/form"
+    className="inline-flex items-center justify-center px-10 py-4 bg-transparent text-white border border-white/20 hover:bg-white/5 rounded-full font-bold text-sm uppercase tracking-widest backdrop-blur-md transition-all hover:border-white/30 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95"
+  >
+    Solicitar Demo
+  </Link>
+</div>
       </div>
 
       <div className="absolute bottom-[-150px] md:bottom-[-300px] lg:bottom-[-400px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-5xl px-6">

@@ -192,7 +192,7 @@ export default function Landing() {
 
         <div className="w-full h-px bg-gradient-to-r from-[#00C8FF] via-[#FF5AE0] to-[#D014FF] opacity-60 my-12 md:my-16 lg:my-24 rounded-full"></div>
 
-        <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6">
+        <section className="w-full bg-white py-12 sm:py-16 md:py-20 lg:py-36 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto space-y-16 lg:space-y-24">
 
             <div
@@ -306,7 +306,7 @@ export default function Landing() {
         <div className="w-full h-[2px] bg-gradient-to-r from-[#00C8FF] via-[#FF5AE0] to-[#D014FF] opacity-60 my-12 md:my-16 lg:my-24 rounded-full"></div>
         <section
           ref={section7Ref}
-          className="w-full bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20 md:py-24 px-4 sm:px-6"
+          className="w-full bg-white py-16 sm:py-20 md:py-24 px-4 sm:px-6"
         >
           <div className="max-w-7xl mx-auto">
             <div className={`text-center mb-16 transition-all duration-1000 ${section7InView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>

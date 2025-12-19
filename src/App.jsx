@@ -11,7 +11,7 @@ import { CTASection } from './components/CTA-Section/cta-section';
 import { LargeTestimonial } from './components/Testimonials/LargeTestimonial';
 import { ContactSection } from './components/Form/FormKR';
 import { FAQSection } from './components/FAQ/faqdata';
-import { FooterSection } from './components/Footer/FooterV0';
+import FooterSection from './components/Footer/FooterV0';
 
 //BMKT
 import BmktPage from './components/BMKT/BmktPage';

@@ -180,10 +180,16 @@ export default function NavBar({
     setShowMobileMenu(false); 
   };
 
-  // Función mejorada para manejar el click de login
   const handleLoginClick = () => {
     setShowMobileMenu(false);
     onLoginClick && onLoginClick();
+  };
+
+  // Función para obtener el texto del rol
+  const getRoleText = () => {
+    if (userRole === 'admin') return 'Administrador';
+    if (userRole === 'user') return 'Usuario';
+    return userRole || 'Usuario';
   };
 
   return (
@@ -312,10 +318,7 @@ export default function NavBar({
                   {showAdminMenu && (
                     <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border-2 border-gray-100 flex flex-col py-2 animate-slideDown">
                       <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-xs text-gray-500 font-medium">ADMINISTRACIÓN</p>
-                        <p className={`text-xs mt-1 ${isPrices ? "text-green-600" : "text-orange-500"}`}>
-                          {isPrices ? "✅ Disponible aquí" : "⚠️ Solo en /Prices"}
-                        </p>
+                        <p className="text-xs text-gray-500 font-medium uppercase">{getRoleText()}</p>
                       </div>
 
                       {isAdmin && (
@@ -488,14 +491,9 @@ export default function NavBar({
                       <div className="min-w-0 flex-1">
                         <p className="text-xs text-gray-500 font-medium">Usuario</p>
                         <p className="font-semibold text-gray-800 truncate">{username}</p>
-                        {isAdmin && (
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-xs text-orange-600 font-medium">Administrador</p>
-                            <span className={`text-xs px-1.5 py-0.5 rounded ${isPrices ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-600"}`}>
-                              {isPrices ? "✅ Paneles activos" : "⚠️ Ve a Precios"}
-                            </span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-xs text-orange-600 font-medium">{getRoleText()}</p>
+                        </div>
                       </div>
                     </div>
 
