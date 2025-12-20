@@ -57,6 +57,9 @@ function SuccessNotification({ message, onClose }: { message: string; onClose: (
 // Placeholder SVG inline para evitar errores de red
 const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e5e7eb' width='80' height='80'/%3E%3Ctext fill='%239ca3af' font-size='24' font-family='Arial' x='50%25' y='50%25' text-anchor='middle' dy='.35em'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E";
 
+// Configuración de la base URL de la API
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 export default function UsersPanel() {
   const [users, setUsers] = useState<Usuario[]>([]);
   const [form, setForm] = useState<UserForm>({ 
@@ -90,7 +93,7 @@ export default function UsersPanel() {
     const { token } = JSON.parse(sessionData);
 
     try {
-      const res = await fetch("/api/usuarios", {
+      const res = await fetch(`${API_BASE_URL}/api/usuarios`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -101,7 +104,7 @@ export default function UsersPanel() {
       // Agregar URLs de fotos con timestamp para evitar cache
       const usersWithPhotoUrls = data.map((u: Usuario) => ({
         ...u,
-        photoUrl: u.foto ? `/api/usuarios/${u.id_usuario}/photo?t=${Date.now()}` : null
+        photoUrl: u.foto ? `${API_BASE_URL}/api/usuarios/${u.id_usuario}/photo?t=${Date.now()}` : null
       }));
       
       setUsers(usersWithPhotoUrls);
@@ -137,7 +140,7 @@ export default function UsersPanel() {
         const formData = new FormData();
         formData.append("foto", file);
 
-        const res = await fetch(`/api/usuarios/${editingId}/upload-foto`, {
+        const res = await fetch(`${API_BASE_URL}/api/usuarios/${editingId}/upload-foto`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -193,7 +196,7 @@ export default function UsersPanel() {
     const { token } = JSON.parse(localStorage.getItem("session")!);
 
     const method = editingId ? "PUT" : "POST";
-    const url = editingId ? `/api/usuarios/${editingId}` : "/api/usuarios";
+    const url = editingId ? `${API_BASE_URL}/api/usuarios/${editingId}` : `${API_BASE_URL}/api/usuarios`;
 
     const body = editingId && !form.password
       ? { 
@@ -248,7 +251,7 @@ export default function UsersPanel() {
     const { token } = JSON.parse(localStorage.getItem("session")!);
 
     try {
-      await fetch(`/api/usuarios/${id}`, {
+      await fetch(`${API_BASE_URL}/api/usuarios/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
