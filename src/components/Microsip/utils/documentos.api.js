@@ -43,6 +43,7 @@ export async function deleteDocumento(id, token) {
 
 export async function downloadDocumento(id, token) {
   try {
+    // 1. Primero generamos la URL firmada
     const url = `${API_BASE}/${id}/download-url`;
     
     const res = await fetch(url, {
@@ -57,21 +58,18 @@ export async function downloadDocumento(id, token) {
 
     const data = await res.json();
     
-    const downloadRes = await fetch(data.url);
-    if (!downloadRes.ok) throw new Error("Error descargando archivo");
-    
-    const blob = await downloadRes.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = 'documento.pdf'; 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(blobUrl);
+    // 2. En lugar de hacer fetch, abrimos directamente la URL
+    // Esto evita problemas de CORS y permite que el navegador maneje la descarga
+    const link = document.createElement('a');
+    link.href = data.url;
+    link.setAttribute('download', ''); // Forzar descarga
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     
   } catch (err) {
-    console.error('Error completo:', err);
+    console.error('Error en descarga:', err);
     throw err;
   }
 }
@@ -81,7 +79,6 @@ export function previewDocumento(id, token) {
 }
 
 export async function getPublicPreviewUrl(id, token) {
-  
   const res = await fetch(`${API_BASE}/${id}/public-preview`, {
     headers: {
       Authorization: `Bearer ${token}`,

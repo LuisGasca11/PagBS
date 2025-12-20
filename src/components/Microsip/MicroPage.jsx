@@ -130,8 +130,9 @@ const MicroPage = () => {
     };
 
     const handleOpenDocuments = () => {
-        if (userRole === 'admin') {
-            window.location.href = "/Prices?tab=documentos";
+        if (userRole === 'admin' || userRole === 'user') {
+            sessionStorage.setItem('openDocumentsModal', 'true');
+            window.location.href = "/Prices";
         }
     };
 

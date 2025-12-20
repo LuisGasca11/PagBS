@@ -260,8 +260,6 @@ export const generarUrlDescarga = async (req, res) => {
 export const descargarDocumento = async (req, res) => {
   console.log('🔽 DESCARGA - Iniciando...');
   console.log('Query:', req.query);
-  console.log('Params:', req.params);
-  console.log('URL completa:', req.url);
   
   try {
     const { token } = req.query;
@@ -303,17 +301,27 @@ export const descargarDocumento = async (req, res) => {
       return res.status(404).json({ error: "Archivo no encontrado" });
     }
 
+    // Agregar headers CORS explícitamente
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
     console.log('✅ Archivo encontrado, iniciando descarga...');
     res.download(filePath, payload.nombre, (err) => {
       if (err) {
         console.error('❌ Error durante descarga:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Error descargando archivo" });
+        }
       } else {
         console.log('✅ Descarga completada exitosamente');
       }
     });
   } catch (err) {
     console.error('❌ ERROR GENERAL:', err);
-    res.status(500).json({ error: "Error interno" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Error interno" });
+    }
   }
 };
 

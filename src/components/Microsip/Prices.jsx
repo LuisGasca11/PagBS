@@ -91,6 +91,12 @@ export default function MicrosipPricing() {
             setUserRole(sessionData.user.rol);
         }
 
+        // Check if we need to open the documents modal
+        if (sessionStorage.getItem('openDocumentsModal') === 'true') {
+            sessionStorage.removeItem('openDocumentsModal');
+            setTimeout(() => setShowAdminDocumentsPanel(true), 300);
+        }
+
         return () => (document.title = "Black-Sheep");
     }, []);
 
@@ -183,7 +189,7 @@ export default function MicrosipPricing() {
     };
 
     const handleOpenDocuments = () => {
-        if (userRole === "admin") {
+        if (userRole === "admin" || userRole === "user") {
             setShowAdminDocumentsPanel(true);
         }
     };
@@ -548,7 +554,7 @@ export default function MicrosipPricing() {
                     </div>
                 )}
 
-                {showAdminDocumentsPanel && userRole === "admin" && (
+                {showAdminDocumentsPanel && (userRole === "admin" || userRole === "user") && (
                     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                         <div className="bg-white rounded-lg p-4 sm:p-6 max-w-6xl w-full max-h-[90vh] overflow-y-auto animate-modal-in">
                             <AdminDocuments
