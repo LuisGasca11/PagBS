@@ -183,7 +183,6 @@ export default function NavBar({
     onLoginClick && onLoginClick();
   };
 
-  // Función para obtener el texto del rol
   const getRoleText = () => {
     if (userRole === 'admin') return 'Administrador';
     if (userRole === 'user') return 'Usuario';
@@ -212,13 +211,14 @@ export default function NavBar({
         ${scrollY > 80 ? "bg-white/95 shadow-lg border-gray-200" : "bg-white/50"}
       `}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-3.5">
-          <div className="flex justify-between items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
+          <div className="flex justify-between items-center gap-2 sm:gap-4">
             
-            <div className="flex-shrink-0">
-            </div>
+            {/* Logo Space - Responsive left padding */}
+            <div className="flex-shrink-0 w-12 sm:w-14 md:w-16 lg:w-20"></div>
 
-            <div className="hidden lg:flex justify-center gap-1 xl:gap-2">
+            {/* Center Navigation Links - Hidden on mobile */}
+            <div className="hidden lg:flex justify-center gap-1 xl:gap-2 flex-1">
               {links.map((link, i) => {
                 const isActive = currentPath === link.href;
                 return (
@@ -283,7 +283,8 @@ export default function NavBar({
               )}
             </div>
 
-            <div className="hidden lg:flex items-center relative">
+            {/* Right Section - Auth/User Menu - Hidden on mobile */}
+            <div className="hidden lg:flex items-center relative flex-shrink-0">
               {!isAuthenticated ? (
                 <button
                   onClick={handleLoginClick}
@@ -402,10 +403,10 @@ export default function NavBar({
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Positioned at far right */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 focus:outline-none hover:scale-110 active:scale-95"
+              className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 focus:outline-none hover:scale-110 active:scale-95 ml-auto"
             >
               {showMobileMenu ? (
                 <X className="w-5 h-5 text-gray-700" />
@@ -463,6 +464,28 @@ export default function NavBar({
                     </a>
                   );
                 })}
+                
+                {/* Documentos Link - Mobile */}
+                {isAuthenticated && (
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDocumentosClick();
+                    }}
+                    className={`
+                      group relative px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg
+                      transition-all duration-300 overflow-hidden
+                      flex items-center gap-3
+                      ${currentPath === "/documentos" || currentPath.includes("documentos")
+                        ? "text-orange-600 bg-orange-50 border border-orange-200" 
+                        : "text-gray-700 hover:text-orange-600 hover:bg-orange-50/50 hover:border-orange-100 border border-transparent"
+                      }
+                    `}
+                  >
+                    <span className="relative z-10 whitespace-nowrap">Documentos</span>
+                  </a>
+                )}
               </div>
 
               {/* Mobile Auth Section */}
@@ -558,26 +581,12 @@ export default function NavBar({
                       </>
                     )}
 
-                    {isAuthenticated && (
-                      <>
-                        <button
-                          onClick={() => {
-                            handleDocumentosClick();
-                            setShowMobileMenu(false);
-                          }}
-                          className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
-                        >
-                          <span className="font-medium text-sm sm:text-base">Documentos</span>
-                        </button>
-                      </>
-                    )}
-
                     <div className="border-t border-gray-200 my-2"></div>
 
                     <button
                       onClick={() => {
-                        handleLogout();
                         setShowMobileMenu(false);
+                        setTimeout(() => handleLogout(), 100);
                       }}
                       className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-red-600 hover:bg-red-50 rounded-xl transition-all group"
                     >

@@ -227,7 +227,7 @@ const MicroPage = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                         
                         <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
-                            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl py-10 text-black font-extrabold leading-tight">
+                            <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl py-10 text-black font-extrabold leading-tight">
                                 <span className="text-orange-500 inline-block animate-slide-in-left-1">Maximiza</span><br />
                                 <span className="inline-block animate-slide-in-left-2">el potencial</span>
                             </h1>

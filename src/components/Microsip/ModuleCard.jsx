@@ -33,7 +33,6 @@ export default function ModuleCard({
     setSelectedPlan(selectedPlanFromParent || null);
   }, [selectedPlanFromParent]);
 
-  // Calcular posición del dropdown
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -51,44 +50,31 @@ export default function ModuleCard({
     }
   }, [isOpen]);
 
-  // Cerrar con click fuera
   useEffect(() => {
     if (!isOpen) return;
-
     const handleClickOutside = (e) => {
       const clickedButton = buttonRef.current?.contains(e.target);
       const clickedDropdown = dropdownRef.current?.contains(e.target);
-
-      if (!clickedButton && !clickedDropdown) {
-        setIsOpen(false);
-      }
+      if (!clickedButton && !clickedDropdown) setIsOpen(false);
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // Cerrar con ESC
   useEffect(() => {
     if (!isOpen) return;
-
     const handleEscape = (e) => {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-      }
+      if (e.key === "Escape") setIsOpen(false);
     };
-
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
-  // Verificar si todos los planes tienen precio 0
   const allPlansDisabled = planKeys.every(key => !prices[key]?.costo || prices[key]?.costo <= 0);
 
   const handleSelect = (key) => {
     const costo = prices[key]?.costo;
     if (!costo || costo <= 0) return;
-
     setSelectedPlan(key);
     setIsOpen(false);
     onSelect(name, key, costo);
@@ -102,14 +88,11 @@ export default function ModuleCard({
   const dropdown = isOpen
     ? ReactDOM.createPortal(
         <>
-          {/* Backdrop */}
           <div 
             className="fixed inset-0 z-[99998]"
             style={{ background: 'transparent' }}
             onClick={() => setIsOpen(false)}
           />
-          
-          {/* Dropdown */}
           <div
             ref={dropdownRef}
             style={dropdownStyle}
@@ -126,8 +109,8 @@ export default function ModuleCard({
                     onClick={() => handleSelect(key)}
                     disabled={isDisabled}
                     className={`
-                      w-full px-4 py-3 text-left rounded-lg transition-all duration-200
-                      flex items-center justify-between group
+                      w-full px-3 sm:px-4 py-2 sm:py-3 text-left rounded-lg transition-all duration-200
+                      flex items-center justify-between group text-sm sm:text-base
                       ${isDisabled
                         ? "bg-gray-50 text-gray-400 cursor-not-allowed"
                         : isCurrentPlan
@@ -136,18 +119,18 @@ export default function ModuleCard({
                       }
                     `}
                   >
-                    <div className="flex items-center gap-3 flex-1">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                       {isCurrentPlan && !isDisabled && (
-                        <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
-                          <Check className="w-3 h-3 text-white" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                         </div>
                       )}
-                      <div className="flex-1">
-                        <div className="font-medium">{planLabels[key]}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{planLabels[key]}</div>
                       </div>
                     </div>
                     
-                    <span className={`font-bold text-sm ${
+                    <span className={`font-bold text-xs sm:text-sm ml-2 flex-shrink-0 ${
                       isDisabled ? "text-gray-400" : 
                       isCurrentPlan ? "text-orange-600" : 
                       "text-gray-600 group-hover:text-orange-600"
@@ -167,7 +150,7 @@ export default function ModuleCard({
   return (
     <div
       className={`
-        relative border-2 rounded-xl p-5 transition-all duration-300
+        relative border-2 rounded-xl p-3 sm:p-5 transition-all duration-300
         ${allPlansDisabled
           ? "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
           : isSelected
@@ -176,23 +159,21 @@ export default function ModuleCard({
         }
       `}
     >
-      {/* Badge de no disponible */}
       {allPlansDisabled && (
-        <div className="absolute -top-2 -right-2 px-3 py-1 bg-gray-400 text-white text-xs font-bold rounded-full shadow-lg">
+        <div className="absolute -top-2 -right-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-400 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg">
           No disponible
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between mb-3 sm:mb-4 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           <div className={`
-            p-2 rounded-lg transition-all duration-300
+            p-1.5 sm:p-2 rounded-lg transition-all duration-300 flex-shrink-0
             ${allPlansDisabled ? "bg-gray-100 opacity-50" : isSelected ? "bg-white shadow-md" : "bg-gray-50"}
           `}>
-            {icon}
+            {React.cloneElement(icon, { className: "w-4 h-4 sm:w-5 sm:h-5" })}
           </div>
-          <span className={`font-semibold text-base ${
+          <span className={`font-semibold text-sm sm:text-base truncate ${
             allPlansDisabled ? "text-gray-400" : "text-gray-800"
           }`}>
             {name}
@@ -200,22 +181,22 @@ export default function ModuleCard({
         </div>
 
         {isSelected ? (
-          <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 bg-white rounded-lg shadow-sm">
-              <span className="font-bold text-orange-600 text-lg">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <div className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white rounded-lg shadow-sm">
+              <span className="font-bold text-orange-600 text-sm sm:text-lg whitespace-nowrap">
                 ${prices[selectedPlan]?.costo || 0}
               </span>
             </div>
             <button
               onClick={handleDeselect}
-              className="p-1.5 rounded-lg bg-white hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
+              className="p-1 sm:p-1.5 rounded-lg bg-white hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all duration-200 shadow-sm hover:shadow-md"
               title="Deseleccionar módulo"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         ) : (
-          <span className={`text-sm font-medium ${
+          <span className={`text-xs sm:text-sm font-medium flex-shrink-0 ${
             allPlansDisabled ? "text-gray-400" : "text-gray-400"
           }`}>
             {allPlansDisabled ? "No disponible" : "Sin seleccionar"}
@@ -223,15 +204,14 @@ export default function ModuleCard({
         )}
       </div>
 
-      {/* Selector */}
       <div className="relative">
         <button
           ref={buttonRef}
           onClick={() => !allPlansDisabled && setIsOpen(!isOpen)}
           disabled={allPlansDisabled}
           className={`
-            w-full border-2 rounded-xl px-4 py-3 flex items-center justify-between 
-            transition-all duration-300 group
+            w-full border-2 rounded-xl px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between 
+            transition-all duration-300 group text-sm sm:text-base
             ${allPlansDisabled
               ? "border-gray-200 bg-gray-100 cursor-not-allowed"
               : isOpen
@@ -242,7 +222,7 @@ export default function ModuleCard({
             }
           `}
         >
-          <span className={`font-medium ${
+          <span className={`font-medium truncate pr-2 ${
             allPlansDisabled ? "text-gray-400" :
             selectedPlan ? "text-gray-800" : "text-gray-500"
           }`}>
@@ -254,7 +234,7 @@ export default function ModuleCard({
             }
           </span>
           <ChevronDown
-            className={`w-5 h-5 transition-all duration-300 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 transition-all duration-300 flex-shrink-0 ${
               allPlansDisabled ? "text-gray-300" :
               isOpen 
                 ? "rotate-180 text-orange-500" 
@@ -262,13 +242,11 @@ export default function ModuleCard({
             }`}
           />
         </button>
-
         {dropdown}
       </div>
 
-      {/* Badge de seleccionado */}
       {isSelected && !allPlansDisabled && (
-        <div className="absolute -top-2 -right-2 px-3 py-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg">
+        <div className="absolute -top-2 -right-2 px-2 sm:px-3 py-0.5 sm:py-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg">
           Seleccionado
         </div>
       )}

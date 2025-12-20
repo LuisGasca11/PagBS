@@ -91,7 +91,6 @@ export default function MicrosipPricing() {
             setUserRole(sessionData.user.rol);
         }
 
-        // Check if we need to open the documents modal
         if (sessionStorage.getItem('openDocumentsModal') === 'true') {
             sessionStorage.removeItem('openDocumentsModal');
             setTimeout(() => setShowAdminDocumentsPanel(true), 300);
@@ -242,15 +241,15 @@ export default function MicrosipPricing() {
                 <div className="relative w-full">
                     <a
                         href="/MicroPage"
-                        className={`fixed top-3 sm:top-4 left-3 sm:left-4 z-[60] transition-all duration-300 
+                        className={`fixed top-3 sm:top-4 left-3 sm:left-4 z-[70] transition-all duration-300 
                             ${scrollY > 80 ? "scale-75 translate-y-[-10px]" : "scale-100"}
                         `}
                     >
                         <img
                             src="/msppart.webp"
                             alt="logo"
-                            className="h-10 sm:h-12 object-contain"
-                        />
+                            className="h-10 sm:h-12 object-contain z-50"
+                        /> 
                     </a>
 
                     <NavBar
