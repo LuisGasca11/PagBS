@@ -54,6 +54,9 @@ function SuccessNotification({ message, onClose }: { message: string; onClose: (
   );
 }
 
+// Placeholder SVG inline para evitar errores de red
+const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%23e5e7eb' width='80' height='80'/%3E%3Ctext fill='%239ca3af' font-size='24' font-family='Arial' x='50%25' y='50%25' text-anchor='middle' dy='.35em'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E";
+
 export default function UsersPanel() {
   const [users, setUsers] = useState<Usuario[]>([]);
   const [form, setForm] = useState<UserForm>({ 
@@ -86,13 +89,25 @@ export default function UsersPanel() {
 
     const { token } = JSON.parse(sessionData);
 
-    const res = await fetch("/api/usuarios", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await fetch("/api/usuarios", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!res.ok) return console.error("No autorizado");
+      if (!res.ok) return console.error("No autorizado");
 
-    setUsers(await res.json());
+      const data = await res.json();
+      
+      // Agregar URLs de fotos con timestamp para evitar cache
+      const usersWithPhotoUrls = data.map((u: Usuario) => ({
+        ...u,
+        photoUrl: u.foto ? `/api/usuarios/${u.id_usuario}/photo?t=${Date.now()}` : null
+      }));
+      
+      setUsers(usersWithPhotoUrls);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error);
+    }
   };
 
   const showSuccessMessage = (message: string) => {
@@ -136,8 +151,8 @@ export default function UsersPanel() {
 
         const data = await res.json();
 
-        setForm({ ...form, foto: data.foto });
-        setPhotoPreview(data.foto);
+        // Actualizar preview con timestamp para forzar recarga
+        setPhotoPreview(`${data.foto}?t=${Date.now()}`);
 
         await loadUsers();
       
@@ -149,6 +164,7 @@ export default function UsersPanel() {
         setUploadingPhoto(false);
       }
     } else {
+      // Para nuevo usuario, convertir a base64
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64 = reader.result as string;
@@ -186,7 +202,6 @@ export default function UsersPanel() {
           activo: form.activo,
           nombre: form.nombre,
           correo: form.correo,
-          ...(form.foto && { foto: form.foto }),
         }
       : form;
 
@@ -246,7 +261,7 @@ export default function UsersPanel() {
     }
   };
 
-  const startEdit = (user: Usuario) => {
+  const startEdit = (user: Usuario & { photoUrl?: string }) => {
     setEditingId(user.id_usuario);
     setForm({
       usuario: user.usuario,
@@ -255,9 +270,10 @@ export default function UsersPanel() {
       activo: user.activo,
       nombre: user.nombre || "",
       correo: user.correo || "",
-      foto: user.foto || ""
+      foto: ""
     });
-    setPhotoPreview(user.foto || "");
+    // Usar la URL dinámica si existe
+    setPhotoPreview(user.photoUrl || "");
   };
 
   const cancelEdit = () => {
@@ -321,15 +337,15 @@ export default function UsersPanel() {
               </label>
               
               <div className="relative">
-                {photoPreview || form.foto ? (
+                {photoPreview ? (
                   <div className="relative group">
                     <img
-                      src={photoPreview || form.foto}
+                      src={photoPreview}
                       alt="Preview"
                       className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg"
                       onError={(e) => {
-                        console.error("Error loading photo:", e);
-                        (e.target as HTMLImageElement).src = "https://via.placeholder.com/128";
+                        console.error("Error loading preview:", e);
+                        (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
                       }}
                     />
                     <button
@@ -525,19 +541,19 @@ export default function UsersPanel() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {users.map((u) => (
+                {users.map((u: Usuario & { photoUrl?: string }) => (
                   <tr
                     key={u.id_usuario}
                     className="hover:bg-orange-50 transition-colors duration-150"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <img
-                        src={u.foto || "https://via.placeholder.com/80"}
+                        src={u.photoUrl || PLACEHOLDER_IMAGE}
                         alt={u.usuario}
                         className="w-16 h-16 rounded-full object-cover border-2 border-gray-200 shadow"
                         onError={(e) => {
-                          console.error(`Error loading photo for user ${u.id_usuario}:`, e);
-                          (e.target as HTMLImageElement).src = "https://via.placeholder.com/80";
+                          console.error(`Error loading photo for user ${u.id_usuario}`);
+                          (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE;
                         }}
                       />
                     </td>

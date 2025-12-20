@@ -35,12 +35,7 @@ const upload = multer({
   },
 });
 
-function getPublicUrl(filename) {
-  // Return only the filename so it can be served from /content/perfiles/ route
-  return filename;
-}
-
-// 🔍 DEBUG: Ver qué fotos hay en BD (SIN autenticación para testing)
+// 🔍 DEBUG: Ver qué fotos hay en BD
 router.get("/debug/fotos", async (_req, res) => {
   const { rows } = await pool.query(`
     SELECT id_usuario, usuario, foto FROM usuarios WHERE foto IS NOT NULL AND foto != ''
@@ -49,20 +44,17 @@ router.get("/debug/fotos", async (_req, res) => {
   res.json(rows);
 });
 
+// GET: Listar usuarios - NO modificar las URLs aquí
 router.get("/", authRequired, adminOnly, async (_req, res) => {
   const { rows } = await pool.query(`
-    SELECT id_usuario, usuario, rol, activo, nombre, correo, 
-           CASE 
-             WHEN foto IS NOT NULL AND foto != '' THEN CONCAT('/content/perfiles/', SUBSTRING_INDEX(foto, '/', -1))
-             ELSE ''
-           END AS foto, 
-           fecha_creacion
+    SELECT id_usuario, usuario, rol, activo, nombre, correo, foto, fecha_creacion
     FROM usuarios
     ORDER BY id_usuario
   `);
   res.json(rows);
 });
 
+// POST: Subir foto de perfil para usuario existente
 router.post(
   "/:id/upload-foto",
   authRequired,
@@ -71,7 +63,7 @@ router.post(
     try {
       const targetUserId = Number(req.params.id);
 
-      // seguridad:
+      // Seguridad: admin o el mismo usuario
       if (
         req.user.rol !== "admin" &&
         targetUserId !== req.user.id_usuario
@@ -85,6 +77,7 @@ router.post(
 
       console.log("📸 Archivo recibido:", req.file.filename);
 
+      // Eliminar foto anterior si existe
       const { rows } = await pool.query(
         "SELECT foto FROM usuarios WHERE id_usuario = $1",
         [targetUserId]
@@ -99,19 +92,17 @@ router.post(
         }
       }
 
-      const fotoUrl = getPublicUrl(req.file.filename);
-      const photoPath = `/content/perfiles/${req.file.filename}`;
-
+      // Guardar solo el nombre del archivo en BD
       await pool.query(
         `UPDATE usuarios
          SET foto = $1, fecha_actualizacion = now()
          WHERE id_usuario = $2`,
-        [fotoUrl, targetUserId]
+        [req.file.filename, targetUserId]
       );
 
-      console.log("✅ Foto actualizada en BD:", fotoUrl);
+      console.log("✅ Foto actualizada en BD:", req.file.filename);
 
-      res.json({ ok: true, foto: photoPath });
+      res.json({ ok: true, foto: `/api/usuarios/${targetUserId}/photo` });
     } catch (err) {
       console.error("❌ UPLOAD FOTO ERROR:", err);
       res.status(500).json({ error: "Error al subir la foto" });
@@ -119,14 +110,16 @@ router.post(
   }
 );
 
+// POST: Crear nuevo usuario
 router.post("/", authRequired, adminOnly, async (req, res) => {
   try {
     const { usuario, password, rol = "user", activo = true, nombre, correo, foto } = req.body;
 
     const hash = await bcrypt.hash(password, 10);
 
-    let fotoUrl = null;
+    let fotoFilename = null;
     
+    // Procesar foto base64 si viene
     if (foto && foto.startsWith('data:image')) {
       try {
         const matches = foto.match(/^data:image\/(\w+);base64,(.+)$/);
@@ -146,20 +139,18 @@ router.post("/", authRequired, adminOnly, async (req, res) => {
         
         fs.writeFileSync(filepath, buffer);
         
-        fotoUrl = getPublicUrl(filename);
+        fotoFilename = filename;
         
-        console.log("✅ Foto guardada (base64):", fotoUrl);
+        console.log("✅ Foto guardada (base64):", fotoFilename);
       } catch (err) {
         console.error("❌ Error al procesar base64:", err);
       }
-    } else if (foto) {
-      fotoUrl = foto;
     }
 
     await pool.query(
       `INSERT INTO usuarios (usuario, password_hash, rol, activo, nombre, correo, foto)
        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-      [usuario, hash, rol, activo, nombre, correo, fotoUrl]
+      [usuario, hash, rol, activo, nombre, correo, fotoFilename]
     );
 
     res.json({ ok: true });
@@ -169,6 +160,7 @@ router.post("/", authRequired, adminOnly, async (req, res) => {
   }
 });
 
+// PUT: Actualizar usuario
 router.put("/:id", authRequired, adminOnly, async (req, res) => {
   const { id } = req.params;
   const { usuario, password, activo, rol, nombre, correo, foto } = req.body;
@@ -198,6 +190,7 @@ router.put("/:id", authRequired, adminOnly, async (req, res) => {
   res.json({ ok: true });
 });
 
+// DELETE: Eliminar usuario
 router.delete("/:id", authRequired, adminOnly, async (req, res) => {
   if (Number(req.params.id) === req.user.id_usuario) {
     return res.status(400).json({ message: "No puedes borrar tu propio usuario" });
@@ -221,10 +214,10 @@ router.delete("/:id", authRequired, adminOnly, async (req, res) => {
   res.json({ ok: true });
 });
 
-// 📸 SERVIR FOTOS VÍA API (evita bloqueos de adblocker)
-router.get("/:id/photo", authRequired, async (req, res) => {
+// GET: Servir foto de usuario específico (SIN autenticación para que <img> funcione)
+router.get("/:id/photo", async (req, res) => {
   try {
-    console.log(`📸 Buscando foto para usuario ${req.params.id}`);
+    console.log(`📸 Solicitando foto para usuario ${req.params.id}`);
     
     const { rows } = await pool.query(
       "SELECT foto FROM usuarios WHERE id_usuario = $1",
@@ -233,80 +226,30 @@ router.get("/:id/photo", authRequired, async (req, res) => {
 
     if (!rows.length) {
       console.log(`❌ Usuario no encontrado: ${req.params.id}`);
-      return res.status(404).json({ error: "Usuario no encontrado" });
+      return res.status(404).send("Usuario no encontrado");
     }
 
-    if (!rows[0]?.foto) {
+    const fotoFilename = rows[0]?.foto;
+    
+    if (!fotoFilename) {
       console.log(`⚠️ Usuario sin foto: ${req.params.id}`);
-      return res.status(404).json({ error: "Usuario no tiene foto" });
+      return res.status(404).send("Usuario no tiene foto");
     }
 
-    const fotoUrl = rows[0].foto;
-    console.log(`🔗 URL en BD: ${fotoUrl}`);
+    console.log(`🔗 Foto en BD: ${fotoFilename}`);
 
-    // Si es una URL http/https completa, hacer proxy o redirect
-    if (fotoUrl.startsWith('http')) {
-      // En producción, ignorar URLs con localhost y servir el archivo
-      if (fotoUrl.includes('localhost')) {
-        const filename = path.basename(fotoUrl);
-        const filePath = path.join(uploadDir, filename);
-        
-        console.log(`🔧 URL de localhost detectada, sirviendo desde disk: ${filePath}`);
-        
-        if (fs.existsSync(filePath)) {
-          const ext = path.extname(filename).toLowerCase();
-          const mimeTypes = {
-            '.jpg': 'image/jpeg',
-            '.jpeg': 'image/jpeg',
-            '.png': 'image/png',
-            '.gif': 'image/gif',
-            '.webp': 'image/webp'
-          };
-          const contentType = mimeTypes[ext] || 'image/png';
-          
-          res.setHeader("Cache-Control", "public, max-age=86400");
-          res.setHeader("Content-Type", contentType);
-          return res.sendFile(path.resolve(filePath));
-        }
-      }
-      
-      // Para URLs externas, hacer redirect
-      const filename = path.basename(fotoUrl);
-      const filePath = path.join(uploadDir, filename);
-      
-      console.log(`🔗 URL externa: ${fotoUrl}`);
-      
-      if (fs.existsSync(filePath)) {
-        const ext = path.extname(filename).toLowerCase();
-        const mimeTypes = {
-          '.jpg': 'image/jpeg',
-          '.jpeg': 'image/jpeg',
-          '.png': 'image/png',
-          '.gif': 'image/gif',
-          '.webp': 'image/webp'
-        };
-        const contentType = mimeTypes[ext] || 'image/png';
-        
-        res.setHeader("Cache-Control", "public, max-age=86400");
-        res.setHeader("Content-Type", contentType);
-        return res.sendFile(path.resolve(filePath));
-      } else {
-        return res.redirect(fotoUrl);
-      }
-    }
-
-    // Si no es URL, asumir que es solo el nombre del archivo
-    const filePath = path.join(uploadDir, fotoUrl);
-    console.log(`🔍 Buscando: ${filePath}`);
+    // El filename en BD debe ser solo el nombre del archivo
+    const filePath = path.join(process.cwd(), uploadDir, fotoFilename);
+    console.log(`🔍 Ruta completa: ${filePath}`);
 
     if (!fs.existsSync(filePath)) {
-      console.log(`❌ Archivo no existe: ${filePath}`);
-      return res.status(404).json({ error: "Archivo no encontrado", path: filePath });
+      console.log(`❌ Archivo no existe en disco`);
+      return res.status(404).send("Archivo no encontrado");
     }
 
-    console.log(`✅ Sirviendo: ${fotoUrl}`);
+    console.log(`✅ Sirviendo foto: ${fotoFilename}`);
     
-    const ext = path.extname(fotoUrl).toLowerCase();
+    const ext = path.extname(fotoFilename).toLowerCase();
     const mimeTypes = {
       '.jpg': 'image/jpeg',
       '.jpeg': 'image/jpeg',
@@ -314,14 +257,14 @@ router.get("/:id/photo", authRequired, async (req, res) => {
       '.gif': 'image/gif',
       '.webp': 'image/webp'
     };
-    const contentType = mimeTypes[ext] || 'image/png';
+    const contentType = mimeTypes[ext] || 'image/jpeg';
 
     res.setHeader("Cache-Control", "public, max-age=86400");
     res.setHeader("Content-Type", contentType);
     res.sendFile(path.resolve(filePath));
   } catch (err) {
     console.error("❌ ERROR GET PHOTO:", err);
-    res.status(500).json({ error: "Error al obtener foto", details: err.message });
+    res.status(500).send("Error al obtener foto");
   }
 });
 
