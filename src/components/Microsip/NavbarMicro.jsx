@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LogIn, LogOut, User, Settings, ChevronDown, X, Menu } from "lucide-react";
+import { LogIn, LogOut, User, Settings, ChevronDown, X, Menu, UserCircle } from "lucide-react";
 
 export default function NavBar({
   links = [
@@ -10,6 +10,7 @@ export default function NavBar({
   isAuthenticated,
   username,
   userRole,
+  userId,
   onLoginClick,
   onLogoutClick,
   onOpenAdmin,
@@ -17,6 +18,7 @@ export default function NavBar({
   onOpenHourlyAdmin,
   onOpenUsersAdmin,
   onOpenDocuments,
+  onOpenProfile,
 }) {
   const [scrollY, setScrollY] = useState(0);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
@@ -163,6 +165,12 @@ export default function NavBar({
     }
   };
 
+  const handleProfileClick = () => {
+    setShowAdminMenu(false);
+    setShowMobileMenu(false);
+    onOpenProfile && onOpenProfile();
+  };
+
   const handleLogout = () => {
     setLoggingOut(true);
     setShowAdminMenu(false);
@@ -214,10 +222,8 @@ export default function NavBar({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-3.5">
           <div className="flex justify-between items-center gap-2 sm:gap-4">
             
-            {/* Logo Space - Responsive left padding */}
             <div className="flex-shrink-0 w-12 sm:w-14 md:w-16 lg:w-20"></div>
 
-            {/* Center Navigation Links - Hidden on mobile */}
             <div className="hidden lg:flex justify-center gap-1 xl:gap-2 flex-1">
               {links.map((link, i) => {
                 const isActive = currentPath === link.href;
@@ -283,7 +289,6 @@ export default function NavBar({
               )}
             </div>
 
-            {/* Right Section - Auth/User Menu - Hidden on mobile */}
             <div className="hidden lg:flex items-center relative flex-shrink-0">
               {!isAuthenticated ? (
                 <button
@@ -320,8 +325,18 @@ export default function NavBar({
                         <p className="text-xs text-gray-500 font-medium uppercase">{getRoleText()}</p>
                       </div>
 
+                      {/* OPCIÓN MI PERFIL - SIEMPRE VISIBLE */}
+                      <button
+                        onClick={handleProfileClick}
+                        className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
+                      >
+                        <UserCircle className="w-4 h-4 group-hover:scale-110" />
+                        <span className="font-medium">Mi Perfil</span>
+                      </button>
+
                       {isAdmin && (
                         <>
+                          <div className="border-t border-gray-100 my-1"></div>
                           <button
                             onClick={handleUsersClick}
                             className={`px-4 py-2.5 text-sm flex gap-3 items-center transition-all duration-150 group
@@ -385,11 +400,10 @@ export default function NavBar({
                               <span className="ml-auto text-xs text-gray-400">🔒</span>
                             )}
                           </button>
-                          
-                          <div className="border-t border-gray-100 my-1"></div>
                         </>
                       )}
 
+                      <div className="border-t border-gray-100 my-1"></div>
                       <button
                         onClick={handleLogout}
                         className="px-4 py-2.5 text-sm flex gap-3 items-center text-red-600 hover:bg-red-50 transition-all duration-150 group"
@@ -403,7 +417,6 @@ export default function NavBar({
               )}
             </div>
 
-            {/* Mobile Menu Button - Positioned at far right */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 focus:outline-none hover:scale-110 active:scale-95 ml-auto"
@@ -418,7 +431,6 @@ export default function NavBar({
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <div
@@ -438,7 +450,6 @@ export default function NavBar({
 
               <div className="h-12 sm:h-16"></div>
 
-              {/* Mobile Links */}
               <div className="flex flex-col gap-2">
                 {links.map((link, i) => {
                   const isActive = currentPath === link.href;
@@ -465,7 +476,6 @@ export default function NavBar({
                   );
                 })}
                 
-                {/* Documentos Link - Mobile */}
                 {isAuthenticated && (
                   <a
                     href="#"
@@ -488,7 +498,6 @@ export default function NavBar({
                 )}
               </div>
 
-              {/* Mobile Auth Section */}
               <div className="border-t border-gray-200 pt-4 sm:pt-6 mt-4 sm:mt-6">
                 {!isAuthenticated ? (
                   <button
@@ -504,7 +513,6 @@ export default function NavBar({
                   </button>
                 ) : (
                   <div className="flex flex-col gap-2 sm:gap-3">
-                    {/* User Info */}
                     <div className="flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl sm:rounded-2xl border border-orange-200 shadow-sm">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md flex-shrink-0">
                         <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -517,6 +525,15 @@ export default function NavBar({
                         </div>
                       </div>
                     </div>
+
+                    {/* OPCIÓN MI PERFIL - MOBILE */}
+                    <button
+                      onClick={handleProfileClick}
+                      className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"
+                    >
+                      <UserCircle className="w-5 h-5 transition-transform group-hover:scale-110 flex-shrink-0" /> 
+                      <span className="font-medium text-sm sm:text-base">Mi Perfil</span>
+                    </button>
 
                     {isAdmin && (
                       <>

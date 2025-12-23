@@ -24,6 +24,7 @@ import SessionWarning from "./SessionWarning";
 import MicrosipFooter from "./MicrosipFooter";
 import DownloadPresentation from "./DownloadPresentation";
 import DownloadPDF from "./DownloadPDF";
+import UserProfileModal from "./UserProfile";
 
 export default function MicrosipPricing() {
     const [paymentFrequency, setPaymentFrequency] = useState("Mensual");
@@ -59,6 +60,8 @@ export default function MicrosipPricing() {
     const [vpsPlans, setVpsPlans] = useState([]);
     const [userRole, setUserRole] = useState(null);
     const [tabKey, setTabKey] = useState(0);
+    const [showProfileModal, setShowProfileModal] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
@@ -89,6 +92,7 @@ export default function MicrosipPricing() {
             setIsAuthenticated(true);
             setUsername(sessionData.user.usuario);
             setUserRole(sessionData.user.rol);
+            setCurrentUserId(sessionData.user.id_usuario);
         }
 
         if (sessionStorage.getItem('openDocumentsModal') === 'true') {
@@ -98,6 +102,10 @@ export default function MicrosipPricing() {
 
         return () => (document.title = "Black-Sheep");
     }, []);
+
+    const handleOpenProfile = () => {
+        setShowProfileModal(true);
+    };
 
     useEffect(() => {
         if (!isAuthenticated) return;
@@ -256,6 +264,7 @@ export default function MicrosipPricing() {
                         isAuthenticated={isAuthenticated}
                         username={username}
                         userRole={userRole}
+                        userId={currentUserId}
                         onLoginClick={() => setShowLoginModal(true)}
                         onLogoutClick={handleLogout}
                         onOpenAdmin={handleOpenAdmin}
@@ -263,6 +272,7 @@ export default function MicrosipPricing() {
                         onOpenHourlyAdmin={handleOpenHourlyAdmin}
                         onOpenUsersAdmin={handleOpenUsersAdmin}
                         onOpenDocuments={handleOpenDocuments}
+                        onOpenProfile={handleOpenProfile}
                     />
                 </div>
 
@@ -563,6 +573,14 @@ export default function MicrosipPricing() {
                             />
                         </div>
                     </div>
+                )}
+
+                {showProfileModal && isAuthenticated && currentUserId && (
+                    <UserProfileModal
+                        onClose={() => setShowProfileModal(false)}
+                        userId={currentUserId}
+                        token={loadSession()?.token}
+                    />
                 )}
 
                 {/* Animación de logout */}
