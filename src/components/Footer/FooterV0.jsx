@@ -46,7 +46,7 @@ const FooterSection = ({
             <div className="flex flex-col gap-3 items-center text-center w-full">
               {showPartnerLinks && (
                 <a
-                  href="/Landing#inicio"
+                  href="#inicio"
                   className="
                     relative
                     text-white/80 text-sm md:text-[14px] font-medium
@@ -70,7 +70,7 @@ const FooterSection = ({
 
               {showLearnMoreLinks && (
                 <a
-                  href="/CExito"
+                  href="#proyects"
                   className="
                     relative
                     text-white/80 text-sm md:text-[14px] font-medium
@@ -94,7 +94,7 @@ const FooterSection = ({
 
               {showPartnerLinks && (
                 <a
-                  href="/FormMicro"
+                  href="#equipo"
                   className="
                   relative
                   text-white/80 text-sm md:text-[14px] font-medium
