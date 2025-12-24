@@ -1,512 +1,279 @@
-import React, { useState, useRef } from 'react';
-import PptxGenJS from 'pptxgenjs';
-import { saveAs } from 'file-saver';
+import { useState } from "react";
+import { mapTotalsToPresentation } from "./utils/mapTotalsToPresentation";
+import modulesList from "./utils/modulesList";
 
-interface DownloadPresentationProps {
-  moduleSelections: any;
-  totals: any;
-  paymentFrequency: string;
-}
-
-interface CompanyData {
-  razonSocial: string;
-  representanteLegal: string;
-  email: string;
-  logo: File | null;
-  useDefaultLogo: boolean;
-}
-
-export default function DownloadPresentation({ 
-  moduleSelections, 
-  totals, 
-  paymentFrequency ,
-  userCount
-}: DownloadPresentationProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [companyData, setCompanyData] = useState<CompanyData>({
-    razonSocial: '',
-    representanteLegal: '',
-    email: '',
-    logo: null,
-    useDefaultLogo: false
+export default function DownloadPresentation({
+  moduleSelections,
+  totals,
+  paymentFrequency,
+  selectedVps = [],
+  hourRentals = [],
+  userCount = 0
+}) {
+  const [logoBase64, setLogoBase64] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [formData, setFormData] = useState({
+    titulo: "Propuesta Comercial 2025",
+    contexto: "",
+    objetivo: "",
+    diagnostico: "",
+    resultado: ""
   });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
-    if (name === 'logo' && files && files[0]) {
-      setCompanyData(prev => ({
-        ...prev,
-        logo: files[0],
-        useDefaultLogo: false
-      }));
-    } else {
-      setCompanyData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result.split(",")[1];
+      setLogoBase64(base64);
+      setLogoPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCompanyData(prev => ({
-      ...prev,
-      useDefaultLogo: e.target.checked,
-      logo: e.target.checked ? null : prev.logo
-    }));
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const convertImageToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const createBaseTemplate = async (logoData: string, companyData: CompanyData) => {
-    const pptx = new PptxGenJS();
-
-    pptx.layout = 'LAYOUT_WIDE';
-    pptx.defineSlideMaster({
-      title: 'MASTER_SLIDE',
-      background: { color: 'FFFFFF' },
-      objects: [
-        {
-          rect: { x: 0, y: 0, w: '100%', h: 0.8, fill: { color: 'F59E0B' } }
-        },
-        {
-          image: { 
-            x: 0.3, 
-            y: 0.1, 
-            w: 1.5, 
-            h: 0.6, 
-            data: logoData 
-          }
-        },
-        {
-          rect: { x: 0, y: 6.8, w: '100%', h: 0.4, fill: { color: '1F2937' } }
-        },
-        {
-          text: { 
-            text: 'black_sheep - Cotización Microsip', 
-            options: { 
-              x: 0.3, 
-              y: 6.9, 
-              w: 8, 
-              h: 0.2, 
-              fontSize: 10, 
-              color: 'FFFFFF',
-              align: 'left'
-            } 
-          }
-        },
-        {
-          text: { 
-            text: `Generado: ${new Date().toLocaleDateString()}`, 
-            options: { 
-              x: 7, 
-              y: 6.9, 
-              w: 2, 
-              h: 0.2, 
-              fontSize: 10, 
-              color: 'FFFFFF',
-              align: 'right'
-            } 
-          }
-        }
-      ]
-    });
-
-    const coverSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
-    
-    coverSlide.addText('COTIZACIÓN MICROSIP', {
-      x: 1,
-      y: 2,
-      w: 8,
-      h: 1,
-      fontSize: 32,
-      bold: true,
-      color: '1F2937',
-      align: 'center'
-    });
-
-    coverSlide.addText(`Razón Social: ${companyData.razonSocial}`, {
-      x: 1,
-      y: 3.2,
-      w: 8,
-      h: 0.5,
-      fontSize: 16,
-      bold: true,
-      color: '4B5563',
-      align: 'center'
-    });
-
-    coverSlide.addText(`Representante Legal: ${companyData.representanteLegal}`, {
-      x: 1,
-      y: 3.8,
-      w: 8,
-      h: 0.5,
-      fontSize: 14,
-      color: '4B5563',
-      align: 'center'
-    });
-
-    coverSlide.addText(`Correo: ${companyData.email}`, {
-      x: 1,
-      y: 4.4,
-      w: 8,
-      h: 0.5,
-      fontSize: 14,
-      color: '4B5563',
-      align: 'center'
-    });
-
-    const modulesSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
-    
-    modulesSlide.addText('MÓDULOS SELECCIONADOS', {
-      x: 0.5,
-      y: 1,
-      w: 9,
-      h: 0.6,
-      fontSize: 24,
-      bold: true,
-      color: '1F2937'
-    });
-
-    const moduleRows = [
-      ['Módulo', 'Plan', 'Precio'],
-    ];
-
-    Object.entries(moduleSelections).forEach(([moduleName, selection]: [string, any]) => {
-        moduleRows.push([
-        moduleName,
-        selection.plan.toUpperCase(),
-        `$${selection.price}`
-      ]);
-    });
-
-    modulesSlide.addTable(moduleRows, {
-      x: 0.5,
-      y: 1.8,
-      w: 8.5,
-      colW: [5, 2, 1.5],
-      border: { pt: 1, color: 'E5E7EB' },
-      fill: { color: 'F8FAFC' },
-      color: '1F2937',
-      fontSize: 12,
-      align: 'left',
-      valign: 'middle'
-    });
-
-
-const costsSlide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-
-// Título
-costsSlide.addText("RESUMEN DE COSTOS", {
-  x: 0.5,
-  y: 0.6,
-  fontSize: 26,
-  bold: true,
-  color: "1F2937",
-});
-
-const mxnRows = [
-  ["Concepto", "Monto (MXN)"],
-  ["Subtotal módulos", `$${totals.subtotalModulos.toLocaleString("es-MX")}`],
-];
-
-if (totals.discountAmount > 0) {
-  mxnRows.push([
-    "Descuento aplicado",
-    `-$${totals.discountAmount.toLocaleString("es-MX")}`,
-  ]);
-}
-
-mxnRows.push([
-  "TOTAL MXN",
-  `$${totals.totalMXN.toLocaleString("es-MX")}`,
-]);
-
-costsSlide.addText("Costos en MXN", {
-  x: 0.5,
-  y: 1.4,
-  fontSize: 20,
-  bold: true,
-  color: "F59E0B",
-});
-
-costsSlide.addTable(mxnRows, {
-  x: 0.5,
-  y: 1.9,
-  w: 4,
-  colW: [2.3, 1.7],
-  border: { pt: 1, color: "E5E7EB" },
-  fill: { color: "F8FAFC" },
-  fontSize: 12,
-  color: "1F2937",
-});
-
-
-const usdRows = [
-  ["Concepto", "Monto (USD)"],
-  [`Usuarios en la nube (${userCount})`, `$${totals.totalUSD}`],
-  ["TOTAL USD", `$${totals.totalUSD}`],
-];
-
-costsSlide.addText("Costos en USD", {
-  x: 5.1,
-  y: 1.4,
-  fontSize: 20,
-  bold: true,
-  color: "3B82F6",
-});
-
-costsSlide.addTable(usdRows, {
-  x: 5.1,
-  y: 1.9,
-  w: 4,
-  colW: [2.3, 1.7],
-  border: { pt: 1, color: "E5E7EB" },
-  fill: { color: "EFF6FF" }, // azul muy claro
-  fontSize: 12,
-  color: "1F2937",
-});
-
-
-    const contactSlide = pptx.addSlide({ masterName: 'MASTER_SLIDE' });
-    
-    contactSlide.addText('PRÓXIMOS PASOS', {
-      x: 0.5,
-      y: 1,
-      w: 9,
-      h: 0.6,
-      fontSize: 24,
-      bold: true,
-      color: '1F2937'
-    });
-
-    const steps = [
-      '1. Revisión de la cotización',
-      '2. Confirmación de módulos seleccionados',
-      '3. Firma del contrato de servicios',
-      '4. Implementación y capacitación',
-      '5. Soporte continuo y actualizaciones'
-    ];
-
-    let yPosition = 1.8;
-    steps.forEach(step => {
-      contactSlide.addText(step, {
-        x: 0.8,
-        y: yPosition,
-        w: 8,
-        h: 0.4,
-        fontSize: 14,
-        color: '374151',
-        bullet: { type: 'number' }
-      });
-      yPosition += 0.5;
-    });
-
-    contactSlide.addText('Para más información contacta a:', {
-      x: 0.5,
-      y: 4.5,
-      w: 8,
-      h: 0.4,
-      fontSize: 16,
-      bold: true,
-      color: 'F59E0B'
-    });
-
-    contactSlide.addText('black_sheep\ncorreo@blacksheep.com\n+52 123 456 7890', {
-      x: 0.5,
-      y: 5,
-      w: 8,
-      h: 1,
-      fontSize: 14,
-      color: '4B5563'
-    });
-
-    return pptx;
-  };
-
-  const generatePresentation = async () => {
-    if (!companyData.razonSocial || !companyData.representanteLegal || !companyData.email) {
-      alert('Por favor complete todos los campos obligatorios');
-      return;
-    }
-
-    setIsGenerating(true);
+  const handleDownload = async () => {
+    setLoading(true);
 
     try {
-      let logoData = '';
-      if (companyData.logo && !companyData.useDefaultLogo) {
-        logoData = await convertImageToBase64(companyData.logo);
-      } else {
-        logoData = await loadDefaultLogo();
+      const mappedData = mapTotalsToPresentation({
+        moduleSelections,
+        modulesList,
+        selectedVps,
+        hourRentals,
+        totals,
+        paymentFrequency,
+        userCount
+      });
+
+      // Preparar diagnóstico como array
+      const diagnosticoArray = formData.diagnostico
+        .split("\n")
+        .filter(line => line.trim())
+        .map(line => `• ${line.trim()}`);
+
+      const payload = {
+        titulo: formData.titulo,
+        fecha: new Date().toLocaleDateString("es-MX", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        }),
+        contexto: formData.contexto,
+        objetivo: formData.objetivo,
+        diagnostico: diagnosticoArray,
+        resultado: formData.resultado,
+        modulos: mappedData.modulos,
+        servicios: mappedData.servicios,
+        implementacion: mappedData.implementacion,
+        subtotal: mappedData.subtotal,
+        total: mappedData.total,
+        frecuencia: mappedData.frecuencia,
+        logoBase64: logoBase64 || null  
+      };
+
+      console.log("📤 Enviando datos:", payload);
+
+      const res = await fetch("http://localhost:3019/api/presentation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error al generar presentación");
       }
 
-      const pptx = await createBaseTemplate(logoData, companyData);
-
-      const blob = await pptx.writeFile({
-        fileName: `Cotización_Microsip_${companyData.razonSocial.replace(/\s+/g, '_')}.pptx`
-      });
+      const data = await res.json();
       
-      saveAs(blob, `Cotización_Microsip_${companyData.razonSocial.replace(/\s+/g, '_')}.pptx`);
+      window.open(`http://localhost:3019${data.url}`, "_blank");
       
-      setIsModalOpen(false);
-      setCompanyData({
-        razonSocial: '',
-        representanteLegal: '',
-        email: '',
-        logo: null,
-        useDefaultLogo: false
-      });
+      if (data.hasLogo) {
+        alert("✅ Presentación generada con logo del cliente incluido!");
+      } else {
+        alert(`✅ ${data.message || "Presentación generada"}\n\n💡 Puedes agregar el logo manualmente si lo deseas.`);
+      }
 
-      alert('Presentación generada y descargada exitosamente');
-
-    } catch (error) {
-      console.error('Error generando presentación:', error);
-      alert('Error al generar la presentación');
+    } catch (err) {
+      console.error("❌ Error:", err);
+      alert(`Error: ${err.message}`);
     } finally {
-      setIsGenerating(false);
+      setLoading(false);
     }
   };
-
-  const loadDefaultLogo = async (): Promise<string> => {
-    try {
-      const response = await fetch('/BS_Hori.png');
-      if (!response.ok) throw new Error('Logo no encontrado');
-      
-      const blob = await response.blob();
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.readAsDataURL(blob);
-      });
-    } catch (error) {
-      console.error('Error cargando logo por defecto:', error);
-      return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjUwIiB2aWV3Qm94PSIwIDAgMjAwIDUwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjRjU5MzI2Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmJsYWNrX3NoZWVwPC90ZXh0Pgo8L3N2Zz4=';
-    }
-  };
-
-  const modules = []; 
 
   return (
-    <>
-      <div className="flex justify-center mt-10">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="
-            px-8 py-4
-            bg-black
-            text-white
-            font-semibold 
-            rounded-xl 
-            shadow-md 
-            hover:bg-gray-400
-            hover:shadow-lg 
-            active:scale-95
-            transition-all 
-            duration-200
-          "
-        >
-          Descargar Presentación
-        </button>
+    <div className="space-y-6">
+      <div className="grid gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-white mb-2">
+            Título de la Propuesta
+          </label>
+          <input
+            type="text"
+            value={formData.titulo}
+            onChange={(e) => handleInputChange("titulo", e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="Propuesta Comercial 2025"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white mb-2">
+            Contexto del Cliente
+          </label>
+          <textarea
+            value={formData.contexto}
+            onChange={(e) => handleInputChange("contexto", e.target.value)}
+            rows={3}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="Describe la situación actual del cliente..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white mb-2">
+            Objetivo de la Propuesta
+          </label>
+          <textarea
+            value={formData.objetivo}
+            onChange={(e) => handleInputChange("objetivo", e.target.value)}
+            rows={2}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="¿Qué se busca lograr con esta implementación?"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white mb-2">
+            Diagnóstico (un punto por línea)
+          </label>
+          <textarea
+            value={formData.diagnostico}
+            onChange={(e) => handleInputChange("diagnostico", e.target.value)}
+            rows={4}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="Sistema actual desactualizado&#10;Falta de integración entre áreas&#10;Procesos manuales lentos"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-white mb-2">
+            Resultado Esperado
+          </label>
+          <textarea
+            value={formData.resultado}
+            onChange={(e) => handleInputChange("resultado", e.target.value)}
+            rows={2}
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
+            placeholder="Optimización de procesos, reducción de tiempos..."
+          />
+        </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold text-black mb-6">
-                Personalizar Presentación
-              </h2>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Razón Social *
-                  </label>
-                  <input
-                    type="text"
-                    name="razonSocial"
-                    value={companyData.razonSocial}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
-                    placeholder="Ingrese la razón social"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Representante Legal *
-                  </label>
-                  <input
-                    type="text"
-                    name="representanteLegal"
-                    value={companyData.representanteLegal}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
-                    placeholder="Ingrese el representante legal"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Correo Electrónico *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={companyData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black placeholder-gray-500"
-                    placeholder="correo@empresa.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    Logo de la Empresa (Opcional)
-                  </label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    name="logo"
-                    accept="image/*"
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black file:text-black"
-                  />
-                  <p className="text-xs text-black mt-1">
-                    Si no sube un logo, se usará el logo de black_sheep
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-8">
+      <div className="border-2 border-dashed border-white rounded-lg p-6 bg-white/5">
+        <label className="block text-sm font-semibold text-white mb-3">
+          Logo del Cliente (Opcional - se insertará automáticamente)
+        </label>
+        
+        <div className="space-y-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            className="block w-full text-sm text-white
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-lg file:border-0
+              file:text-sm file:font-semibold
+              file:bg-white file:text-orange-500
+              hover:file:bg-gray-100
+              file:cursor-pointer cursor-pointer"
+          />
+          
+          {logoPreview && (
+            <div className="bg-white rounded-lg p-4 flex items-center gap-4">
+              <img
+                src={logoPreview}
+                alt="Logo preview"
+                className="h-24 w-24 object-contain"
+              />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-700">✅ Logo cargado</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Se insertará automáticamente en la portada
+                </p>
                 <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-black rounded-lg hover:bg-gray-50 transition-colors"
-                  disabled={isGenerating}
+                  onClick={() => {
+                    setLogoBase64(null);
+                    setLogoPreview(null);
+                  }}
+                  className="mt-2 text-xs text-red-600 hover:text-red-700 font-medium"
                 >
-                  Cancelar
-                </button>
-                <button
-                  onClick={generatePresentation}
-                  disabled={isGenerating}
-                  className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed"
-                >
-                  {isGenerating ? 'Generando...' : 'Descargar PPTX'}
+                  Eliminar
                 </button>
               </div>
             </div>
-          </div>
+          )}
+          
+          {!logoPreview && (
+            <div className="flex items-start gap-2 text-sm text-white/80">
+              <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p>
+                Si subes un logo, se insertará automáticamente en la portada. 
+                Si no subes logo, podrás agregarlo manualmente después.
+              </p>
+            </div>
+          )}
         </div>
-      )}
-    </>
+      </div>
+
+      <button
+        onClick={handleDownload}
+        disabled={loading}
+        className={`w-full font-bold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 transform
+          ${loading
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-white text-orange-500 hover:bg-gray-100 hover:scale-105 hover:shadow-xl"
+          }`}
+      >
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            Generando presentación...
+          </span>
+        ) : (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+            </svg>
+            Descargar Presentación PPTX
+          </span>
+        )}
+      </button>
+    </div>
   );
 }
