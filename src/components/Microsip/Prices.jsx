@@ -100,6 +100,31 @@ export default function MicrosipPricing() {
             setTimeout(() => setShowAdminDocumentsPanel(true), 300);
         }
 
+        if (sessionStorage.getItem('openAdminPricingModal') === 'true') {
+            sessionStorage.removeItem('openAdminPricingModal');
+            setTimeout(() => setShowAdminPanel(true), 300);
+        }
+
+        if (sessionStorage.getItem('openAdminVpsModal') === 'true') {
+            sessionStorage.removeItem('openAdminVpsModal');
+            setTimeout(() => setShowAdminVpsPanel(true), 300);
+        }
+
+        if (sessionStorage.getItem('openAdminHourlyModal') === 'true') {
+            sessionStorage.removeItem('openAdminHourlyModal');
+            setTimeout(() => setShowAdminHourlyPanel(true), 300);
+        }
+
+        if (sessionStorage.getItem('openAdminUsersModal') === 'true') {
+            sessionStorage.removeItem('openAdminUsersModal');
+            setTimeout(() => setShowAdminUsersPanel(true), 300);
+        }
+
+        if (sessionStorage.getItem('openProfileModal') === 'true') {
+            sessionStorage.removeItem('openProfileModal');
+            setTimeout(() => setShowProfileModal(true), 300);
+        }
+
         return () => (document.title = "Black-Sheep");
     }, []);
 
