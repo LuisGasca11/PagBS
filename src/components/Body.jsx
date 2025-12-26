@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom'
+import { ContainerScroll } from "./ui/container-scroll-animation";
 
 const Body = () => {
   return (
@@ -54,21 +55,21 @@ const Body = () => {
       </div>
 
       <div className="absolute bottom-[-150px] md:bottom-[-300px] lg:bottom-[-400px] left-1/2 transform -translate-x-1/2 z-30 w-full max-w-5xl px-6">
-        <div className="relative group">
-          <div className="absolute -inset-1 bg-white opacity-[0.05] rounded-3xl blur-2xl group-hover:opacity-[0.1] transition duration-700"></div>
-          
-          <div className="relative border border-white/10 rounded-2xl p-2.5">
-            <img 
-              alt="Black Sheep Dashboard" 
-              loading="lazy" 
-              className="w-full h-auto rounded-xl hover:grayscale-0 transition-all duration-700 border border-white/5"
-              src="/code.jpeg"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          </div>
-        </div>
+        <ContainerScroll
+          titleComponent={<></>}
+        >
+          <img
+            src="/code.jpeg"
+            alt="Black Sheep Dashboard"
+            height={720}
+            width={1400}
+            className="mx-auto rounded-2xl object-cover h-full object-left-top border border-white/10"
+            draggable={false}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
+        </ContainerScroll>
       </div>
     </section>
   );

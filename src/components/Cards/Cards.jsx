@@ -68,15 +68,30 @@ const Carousel = () => {
   }, [isAutoPlaying]);
 
   return (
-    <section id="proyects" className="py-12 md:py-16 lg:py-20 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <section id="proyects" className="py-16 md:py-24 lg:py-32 relative z-10 overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-[20%] left-[10%] w-96 h-96 bg-white/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[20%] right-[10%] w-80 h-80 bg-white/3 blur-[100px] rounded-full" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-8 md:mb-12 lg:mb-14">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 md:mb-4">
-            NUESTROS <span className="text-white">PRODUCTOS</span>
+        <div className="text-center mb-16 md:mb-20">
+          <div className="inline-block mb-4">
+            <span className="text-sm font-bold tracking-[0.3em] text-gray-400 uppercase">
+              
+            </span>
+          </div>
+          
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
+            NUESTROS{" "}
+            <span className="bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent">
+              PRODUCTOS
+            </span>
           </h2>
 
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-5xl mx-auto leading-relaxed px-2">
+          <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed font-medium">
             Desarrollamos plataformas inteligentes para la gestión de proyectos,
             personal, inventarios, almacenes, e-commerce y señalización digital.
             También somos partner oficial de Microsip ERP, integrando y
@@ -92,29 +107,16 @@ const Carousel = () => {
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
           {/* Fila Superior */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 mb-4 sm:mb-5 md:mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-6 md:mb-8">
             {topRow.map((card) => (
               <Card key={card.id} card={card} />
             ))}
           </div>
 
           {/* Fila Inferior */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {bottomRow.map((card) => (
               <Card key={card.id} card={card} />
-            ))}
-          </div>
-
-          <div className="flex justify-center mt-6 md:mt-8 space-x-3">
-            {[0, 1].map((index) => (
-              <button
-                key={index}
-                className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition duration-300 ${
-                  index === 0
-                    ? "bg-white scale-125"
-                    : "bg-gray-600 hover:bg-gray-500"
-                }`}
-              />
             ))}
           </div>
         </div>
@@ -135,18 +137,19 @@ const Card = ({ card }) => {
   };
 
   const CardContent = () => (
-    <div className="relative h-full flex flex-col items-center justify-center p-4 sm:p-5 md:p-6">
-      <div className={`relative mb-4 sm:mb-5 md:mb-6 ${
-        card.imageSize || "w-40 h-40 sm:w-35 sm:h-35 md:w-36 md:h-36 lg:w-40 lg:h-40"
-      }`}>
+    <div className="relative h-full flex flex-col items-center justify-center p-6 md:p-8 group">
+      {/* Hover Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+      
+      <div className={`relative mb-6 transition-transform duration-500 ${
+        isHovered ? 'scale-110' : 'scale-100'
+      } ${card.imageSize || "w-44 h-44 sm:w-48 sm:h-48 md:w-52 md:h-52"}`}>
         <img
           src={card.image}
           alt={card.title}
-          className={`object-contain rounded-lg ${card.height || "h-full w-full"}`}
+          className={`object-contain ${card.height || "h-full w-full"} transition-all duration-500`}
           style={{
-            transition: "transform 500ms ease-out, filter 500ms ease-out",
-            transform: isHovered ? "scale(1.1)" : "scale(1)",
-            filter: isHovered ? "brightness(1.1)" : "brightness(1)",
+            filter: isHovered ? "brightness(1.2) drop-shadow(0 0 20px rgba(255,255,255,0.3))" : "brightness(1)",
           }}
           onError={(e) => {
             e.target.style.display = "none";
@@ -178,22 +181,28 @@ const Card = ({ card }) => {
         </div>
       </div>
 
-      {/* Title */}
-      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4 text-center">
+      {/* Title with Underline Effect */}
+      <h3 className="text-2xl sm:text-3xl font-black text-white mb-2 text-center tracking-tight">
         {card.title}
       </h3>
+      
+      <div className={`h-1 bg-white rounded-full transition-all duration-500 ${
+        isHovered ? 'w-16' : 'w-8'
+      }`} />
 
       {/* CTA Text */}
       {card.cta && (
         <div
-          className={`transition-all duration-300 ${
-            isHovered ? "opacity-100 translate-y-0" : "opacity-80 translate-y-1"
+          className={`mt-4 transition-all duration-300 ${
+            isHovered ? "opacity-100 translate-y-0" : "opacity-70 translate-y-1"
           }`}
         >
-          <span className="text-white font-semibold text-xs sm:text-sm inline-flex items-center">
+          <span className="text-white font-bold text-sm inline-flex items-center gap-2">
             {card.cta}
             <svg
-              className="w-3 h-3 sm:w-4 sm:h-4 ml-2 transition-transform duration-300"
+              className={`w-4 h-4 transition-transform duration-300 ${
+                isHovered ? 'translate-x-1' : 'translate-x-0'
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -208,28 +217,25 @@ const Card = ({ card }) => {
           </span>
         </div>
       )}
-
-      <div
-        className={`absolute inset-0 bg-gradient-to-br from-white/5 to-white/2 rounded-2xl transition-all duration-300 pointer-events-none ${
-          isHovered ? "opacity-100" : "opacity-0"
-        }`}
-      ></div>
     </div>
   );
 
   const cardContainerClasses = `
-    relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden 
-    bg-gradient-to-br from-white/10 to-white/5 
-    backdrop-blur-md border
-    transition-all duration-500
-    ${isHovered ? "transform scale-105 shadow-xl" : "shadow-lg"}
-    border-white/20 hover:border-white/40
+    relative w-full h-full rounded-2xl overflow-hidden 
+    bg-gradient-to-br from-white/5 to-transparent
+    backdrop-blur-sm border border-white/10
+    transition-all duration-500 ease-out
+    ${isHovered 
+      ? "transform scale-[1.02] shadow-[0_0_40px_rgba(255,255,255,0.15)] border-white/30" 
+      : "shadow-[0_0_20px_rgba(0,0,0,0.3)]"
+    }
+    hover:bg-gradient-to-br hover:from-white/10 hover:to-transparent
   `;
 
   if (isExternalLink(card.link)) {
     return (
       <div
-        className="h-72 sm:h-80 md:h-88 lg:h-96 group relative z-10"
+        className="h-80 sm:h-[400px] md:h-[420px] lg:h-[440px] group relative z-10"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -249,7 +255,7 @@ const Card = ({ card }) => {
 
   return (
     <div
-      className="h-72 sm:h-80 md:h-88 lg:h-96 group relative z-10"
+      className="h-80 sm:h-[400px] md:h-[420px] lg:h-[440px] group relative z-10"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
