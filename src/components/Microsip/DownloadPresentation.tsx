@@ -2,6 +2,10 @@ import { useState } from "react";
 import { mapTotalsToPresentation } from "./utils/mapTotalsToPresentation";
 import modulesList from "./utils/modulesList";
 
+const API_URL = import.meta.env.PROD 
+  ? 'https://blck-sheep.com/Prices' 
+  : 'http://localhost:3019';
+
 export default function DownloadPresentation({
   moduleSelections,
   totals,
@@ -80,7 +84,7 @@ export default function DownloadPresentation({
 
       console.log("📤 Enviando datos:", payload);
 
-      const res = await fetch("http://localhost:3019/api/presentation", {
+      const res = await fetch(`${API_URL}/api/presentation`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -93,7 +97,7 @@ export default function DownloadPresentation({
 
       const data = await res.json();
       
-      window.open(`http://localhost:3019${data.url}`, "_blank");
+      window.open(`${API_URL}${data.url}`, "_blank");
       
       if (data.hasLogo) {
         alert("✅ Presentación generada con logo del cliente incluido!");
