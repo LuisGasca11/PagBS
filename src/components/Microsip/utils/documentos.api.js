@@ -8,7 +8,7 @@ export async function getDocumentos(token) {
   const res = await fetch(API_BASE, {
     headers: {
       Authorization: `Bearer ${token}`,
-    },
+    },  
   });
   if (!res.ok) throw new Error("Error cargando documentos");
   return res.json();
@@ -43,7 +43,6 @@ export async function deleteDocumento(id, token) {
 
 export async function downloadDocumento(id, token) {
   try {
-    // 1. Primero generamos la URL firmada
     const url = `${API_BASE}/${id}/download-url`;
     
     const res = await fetch(url, {
@@ -58,11 +57,9 @@ export async function downloadDocumento(id, token) {
 
     const data = await res.json();
     
-    // 2. En lugar de hacer fetch, abrimos directamente la URL
-    // Esto evita problemas de CORS y permite que el navegador maneje la descarga
     const link = document.createElement('a');
     link.href = data.url;
-    link.setAttribute('download', ''); // Forzar descarga
+    link.setAttribute('download', ''); 
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();

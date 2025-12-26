@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export function useExchangeRate() {
-  const [exchangeRate, setExchangeRate] = useState(20.5); // Valor por defecto
+  const [exchangeRate, setExchangeRate] = useState(20.5);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);

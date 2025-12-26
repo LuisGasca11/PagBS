@@ -9,8 +9,6 @@ export function mapTotalsToPresentation({
   isCloudUsers = true,
   exchangeRate = 17.0 
 }) {
-  console.log("🔍 mapTotalsToPresentation - INICIANDO");
-
   const extractNumber = (value) => {
     if (value === undefined || value === null || value === "") return 0;
     if (typeof value === 'number') return value;
