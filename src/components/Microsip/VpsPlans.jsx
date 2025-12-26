@@ -12,6 +12,10 @@ export default function VpsPlans({
   const [plans, setPlans] = useState([]);
   const [showConditions, setShowConditions] = useState(false);
 
+   const handleLocalUserSelection = (isLocal) => {
+    setIsCloudUsers(!isLocal); // Si es local, entonces NO es nube
+  };
+
   const formatUSD = (num) =>
     new Intl.NumberFormat("en-US", { 
       style: "currency", 

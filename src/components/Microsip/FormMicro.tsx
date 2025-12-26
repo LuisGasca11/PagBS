@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, CheckCircle, Shield, Zap } from "lucide-react";
 import MicrosipFooter from "./MicrosipFooter";
+import emailjs from '@emailjs/browser';
 import NavBar from "./NavbarMicro";
 import LoginModal from './LoginModal';
 import { loadSession, clearSession } from "./utils/auth";
-
 
 export default function FormMicro() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,6 +14,49 @@ export default function FormMicro() {
     const [userRole, setUserRole] = useState(null);
     const [scrollY, setScrollY] = useState(0);
     const [showLogoutAnimation, setShowLogoutAnimation] = useState(false);
+
+    const [isSending, setIsSending] = useState(false);
+    const [formData, setFormData] = useState({
+        nombre: '',
+        correo: '',
+        empresa: '',
+        movil: '',
+        mensaje: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSending(true);
+
+        const templateParams = {
+            from_name: formData.nombre,
+            reply_to: formData.correo,
+            company: formData.empresa,
+            phone: formData.movil,
+            message: formData.mensaje,
+        };
+
+        try {
+            await emailjs.send(
+                'service_65gee8h', 
+                'template_t5yu8ff', 
+                templateParams,
+                '7Yw68iSr5StWrSfIT' 
+            );
+
+            alert("¡Mensaje enviado con éxito! Nos contactaremos pronto.");
+            setFormData({ nombre: '', correo: '', empresa: '', movil: '', mensaje: '' });
+        } catch (error) {
+            console.error("Error al enviar:", error);
+            alert("Hubo un error al enviar el mensaje. Por favor intenta de nuevo.");
+        } finally {
+            setIsSending(false);
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => setScrollY(window.scrollY);
@@ -38,7 +81,7 @@ export default function FormMicro() {
         setUserRole(user.rol);
         setShowLoginModal(false);
         setShowLoginSuccess(true);
-        
+
         setTimeout(() => {
             setShowLoginSuccess(false);
         }, 2000);
@@ -122,7 +165,6 @@ export default function FormMicro() {
                 />
             </div>
 
-            {/* Modal de Login */}
             {showLoginModal && (
                 <LoginModal
                     onClose={() => setShowLoginModal(false)}
@@ -130,14 +172,12 @@ export default function FormMicro() {
                 />
             )}
 
-            {/* Mensaje de éxito de login */}
             {showLoginSuccess && (
                 <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-xl text-sm z-50 animate-bounce-in">
                     ¡Bienvenido, {username}!
                 </div>
             )}
 
-            {/* Animación de logout */}
             {showLogoutAnimation && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fadeIn">
                     <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl animate-scaleIn mx-4">
@@ -153,13 +193,11 @@ export default function FormMicro() {
                 </div>
             )}
 
-            {/* CONTENIDO */}
-            <section id="contact-section" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            <section id="contact-section" className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden mt-5">
                 <div className="absolute inset-0 bg-white" />
 
                 <div className="max-w-4xl mx-auto relative z-10">
 
-                    {/* TITULO */}
                     <div className="text-center animate-fade-up">
                         <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-black">
                             ¿Listo para transformar tu almacén?
@@ -170,80 +208,91 @@ export default function FormMicro() {
                         </p>
                     </div>
 
-                    {/* FORM CARD */}
-                    <div 
-                        className="
-                        max-w-2xl mx-auto bg-white rounded-2xl p-8 shadow-lg
-                        border border-[oklch(0.75_0.21_55)]
-                        animate-fade-up
-                        " 
+                    <form
+                        onSubmit={handleSubmit}
+                        className="max-w-2xl mx-auto bg-white rounded-2xl p-8 shadow-lg border border-[oklch(0.75_0.21_55)] animate-fade-up"
                         style={{ animationDelay: "0.15s" }}
                     >
-
-                        {/* FORM GRID */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
                             <div className="space-y-2 animate-fade-in text-black" style={{ animationDelay: "0.2s" }}>
                                 <label className="text-sm font-bold ">NOMBRE</label>
-                                <input type="text" placeholder="Tu nombre"
-                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300
-                                focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
+                                <input
+                                    type="text"
+                                    name="nombre" 
+                                    value={formData.nombre}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Tu nombre"
+                                    className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
                                 />
                             </div>
 
                             <div className="space-y-2 animate-fade-in text-black" style={{ animationDelay: "0.3s" }}>
                                 <label className="text-sm font-bold">CORREO</label>
-                                <input type="email" placeholder="tu@empresa.com"
-                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300
-                                focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
+                                <input
+                                    type="email"
+                                    name="correo"
+                                    value={formData.correo}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="tu@empresa.com"
+                                    className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
                                 />
                             </div>
 
                             <div className="space-y-2 animate-fade-in text-black" style={{ animationDelay: "0.4s" }}>
                                 <label className="text-sm font-bold">EMPRESA</label>
-                                <input type="text" placeholder="Nombre de tu empresa"
-                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300
-                                focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
+                                <input
+                                    type="text"
+                                    name="empresa"
+                                    value={formData.empresa}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Nombre de tu empresa"
+                                    className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
                                 />
                             </div>
 
                             <div className="space-y-2 animate-fade-in text-black" style={{ animationDelay: "0.5s" }}>
                                 <label className="text-sm font-bold">MÓVIL</label>
-                                <input type="tel" placeholder="+52 55 1234 5678"
-                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300
-                                focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
+                                <input
+                                    type="tel"
+                                    name="movil"
+                                    value={formData.movil}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="+52 55 1234 5678"
+                                    className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black"
                                 />
                             </div>
-
                         </div>
 
                         <div className="space-y-2 mb-6 animate-fade-in" style={{ animationDelay: "0.6s" }}>
                             <label className="text-sm font-bold text-black justify-center items-center">¿QUÉ TE INTERESA MÁS?</label>
-                            <textarea rows={3} placeholder="Cuéntanos..."
-                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300
-                                focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black resize-none"
+                            <textarea
+                                name="mensaje"
+                                value={formData.mensaje}
+                                onChange={handleChange}
+                                rows={3}
+                                placeholder="Cuéntanos..."
+                                className="w-full px-4 py-3 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-300 focus:border-orange-500 text-black resize-none"
                             />
                         </div>
 
                         <button
-                            className="
-                                w-full bg-orange-500 hover:bg-orange-600 text-white 
-                                font-bold py-4 text-lg rounded-xl transition-all mb-4 
-                                flex items-center justify-center gap-2
-                                hover:animate-bounce-soft
-                            "
+                            type="submit"
+                            disabled={isSending}
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 text-lg rounded-xl transition-all mb-4 flex items-center justify-center gap-2 disabled:opacity-50"
                         >
-                            Solicitar Demo Gratuita
-                            <ArrowRight className="h-5 w-5" />
+                            {isSending ? "Enviando..." : "Solicitar Demo Gratuita"}
+                            {!isSending && <ArrowRight className="h-5 w-5" />}
                         </button>
 
                         <p className="text-sm text-center text-gray-600 animate-fade-in" style={{ animationDelay: "0.7s" }}>
                             Al enviar este formulario, aceptas ser contactado por un especialista de black_sheep®.
                         </p>
+                    </form>
 
-                    </div>
-
-                    {/* BENEFICIOS */}
                     <div className="flex flex-wrap justify-center items-center gap-10 mt-12 font-bold text-black">
 
                         <div className="flex items-center gap-2 animate-fade-up" style={{ animationDelay: "0.8s" }}>
@@ -260,75 +309,10 @@ export default function FormMicro() {
                             <Zap className="h-5 w-5 text-orange-500" />
                             Respuesta en 24h
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
-
             <MicrosipFooter />
-
-            <style>{`
-                @keyframes bounce-in {
-                    0% { opacity: 0; transform: scale(0.5); }
-                    70% { opacity: 1; transform: scale(1.1); }
-                    100% { transform: scale(1); }
-                }
-                .animate-bounce-in {
-                    animation: bounce-in 0.4s ease-out;
-                }
-
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                .animate-fadeIn {
-                    animation: fadeIn 0.3s ease-out;
-                }
-
-                @keyframes scaleIn {
-                    from { 
-                        opacity: 0; 
-                        transform: scale(0.95) translateY(-10px);
-                    }
-                    to { 
-                        opacity: 1; 
-                        transform: scale(1) translateY(0);
-                    }
-                }
-                .animate-scaleIn {
-                    animation: scaleIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-
-                @keyframes slide-in-right {
-                    from {
-                        opacity: 0;
-                        transform: translateX(30px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-                .animate-slide-in-right {
-                    animation: slide-in-right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                }
-
-                @keyframes fade-out-up {
-                    from {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                    to {
-                        opacity: 0;
-                        transform: translateY(-20px);
-                    }
-                }
-                .animate-fade-out-up {
-                    animation: fade-out-up 0.3s ease-out forwards;
-                }
-            `}</style>
         </>
     );
 }

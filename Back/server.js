@@ -17,9 +17,6 @@ import presentationRoutes from "./routes/presentation.js";
 
 const app = express();
 
-/* =====================================================
-   CORS — CONFIGURACIÓN CORRECTA
-===================================================== */
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
@@ -31,7 +28,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // permitir herramientas como curl / postman
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -46,26 +42,16 @@ app.use(
   })
 );
 
-// 🔥 ESTO ES CLAVE
 app.options("*", cors());
 
-/* =====================================================
-   BODY PARSERS
-===================================================== */
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true, limit: "20mb" }));
 
-/* =====================================================
-   LOGGER
-===================================================== */
 app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.url}`);
   next();
 });
 
-/* =====================================================
-   RUTAS
-===================================================== */
 app.use("/api/documentos", documentosRoutes);
 app.use("/api/usuarios", usersRoutes);
 app.use("/api", authRoutes);
@@ -75,9 +61,6 @@ app.use("/api/vps", vpsRoutes);
 app.use("/api/generate-pdf", pdfRoutes);
 app.use("/api", presentationRoutes);
 
-/* =====================================================
-   ESTÁTICOS
-===================================================== */
 app.use(
   "/generated",
   express.static(path.join(process.cwd(), "public/generated"))
@@ -88,16 +71,10 @@ app.use(
   express.static(path.join(process.cwd(), "uploads"))
 );
 
-/* =====================================================
-   HEALTHCHECK
-===================================================== */
 app.get("/", (req, res) => {
   res.send("API funcionando 🚀");
 });
 
-/* =====================================================
-   404
-===================================================== */
 app.use((req, res) => {
   res.status(404).json({
     error: "Ruta no encontrada",
@@ -106,9 +83,6 @@ app.use((req, res) => {
   });
 });
 
-/* =====================================================
-   START
-===================================================== */
 const PORT = process.env.PORT || 3019;
 
 app.listen(PORT, () => {
