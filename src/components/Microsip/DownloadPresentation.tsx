@@ -2,10 +2,6 @@ import { useState } from "react";
 import { mapTotalsToPresentation } from "./utils/mapTotalsToPresentation";
 import modulesList from "./utils/modulesList";
 
-const API_URL = import.meta.env.PROD 
-  ? 'https://blck-sheep.com/Prices' 
-  : 'http://localhost:3019';
-
 export default function DownloadPresentation({
   moduleSelections,
   totals,
@@ -58,22 +54,13 @@ export default function DownloadPresentation({
         logoBase64
       };
 
-      const res = await fetch(`${API_URL}/api/presentation`, {
+      const res = await fetch("http://localhost:3019/api/presentation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
 
       const data = await res.json();
-      
-      window.open(`${API_URL}${data.url}`, "_blank");
-      
-      if (data.hasLogo) {
-        alert("✅ Presentación generada con logo del cliente incluido!");
-      } else {
-        alert(`✅ ${data.message || "Presentación generada"}\n\n💡 Puedes agregar el logo manualmente si lo deseas.`);
-      }
-
       const link = document.createElement('a');
       link.href = `http://localhost:3019${data.url}`;
       link.download = data.fileName || 'propuesta.pptx';
@@ -152,7 +139,9 @@ export default function DownloadPresentation({
         </div>
       </div>
 
+      {/* SECCIÓN DE LOGO Y BOTÓN */}
       <div className="flex flex-col sm:flex-row gap-4">
+        {/* Dropzone Mini */}
         <div className="relative flex-1 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl p-4 flex items-center gap-4 group hover:bg-white/30 transition-all">
           <input
             type="file"
@@ -181,6 +170,7 @@ export default function DownloadPresentation({
           )}
         </div>
 
+        {/* Botón de Descarga */}
         <button
           onClick={handleDownload}
           disabled={loading}
