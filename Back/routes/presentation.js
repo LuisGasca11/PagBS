@@ -5,11 +5,16 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import sharp from "sharp";
+import pool from "../db.js";
+import { authRequired, adminOnly } from "../middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = express.Router();
+
+const API_URL = process.env.API_PUBLIC_URL || 'http://localhost:3019';
 
 function findImageByAltText(zip, searchText) {
   const slideFiles = zip.file(/ppt\/slides\/slide\d+\.xml/);
@@ -17,11 +22,9 @@ function findImageByAltText(zip, searchText) {
   let targetSlideFile = null;
 
   for (const file of slideFiles) {
-    // Usamos .asText() en lugar de .async("string")
-    const content = file.asText(); 
-    
+    const content = file.asText();
+
     if (content.includes(searchText)) {
-      // Buscamos el r:id de la imagen que tiene ese texto alternativo (descr)
       const match = content.match(new RegExp(`<p:nvPicPr>.*?descr="${searchText}".*?<a:blip r:embed="(rId\\d+)"`, 's'));
       if (match) {
         targetImageRid = match[1];
@@ -33,10 +36,9 @@ function findImageByAltText(zip, searchText) {
 
   if (!targetImageRid || !targetSlideFile) return null;
 
-  // Buscamos en el archivo .rels de esa slide para ver a qué archivo de media apunta
   const relsPath = targetSlideFile.replace("slides/", "slides/_rels/") + ".rels";
   const relsFile = zip.file(relsPath);
-  
+
   if (!relsFile) return null;
 
   const relsContent = relsFile.asText();
@@ -50,8 +52,15 @@ function getBase64Data(base64String) {
   return base64String.replace(/^data:image\/\w+;base64,/, "");
 }
 
-router.post("/presentation", async (req, res) => {
+router.post("/presentation", authRequired, async (req, res) => {
   try {
+    const { rows: userRows } = await pool.query(
+      "SELECT nombre FROM usuarios WHERE id_usuario = $1",
+      [req.user.id_usuario]
+    );
+    
+    const nombreReal = userRows[0]?.nombre || "Consultor Independiente";
+
     const {
       titulo, fecha, contexto, objetivo, diagnostico, resultado,
       modulos, servicios, implementacion,
@@ -137,6 +146,7 @@ router.post("/presentation", async (req, res) => {
       modulos: modulosData,
       servicios: serviciosData,
       implementacion: implementacionData,
+      nombre_firma: nombreReal,
 
       subtotal_modulos: formatCurrency(subtotal_modulos),
       subtotal_vps: formatCurrency(subtotal_vps),
@@ -165,13 +175,21 @@ router.post("/presentation", async (req, res) => {
     if (logoBase64) {
       try {
         const logoData = getBase64Data(logoBase64);
-        const imgBuffer = Buffer.from(logoData, "base64");
+        let imgBuffer = Buffer.from(logoData, "base64");
+
+        imgBuffer = await sharp(imgBuffer)
+          .resize(300, 150, {
+            fit: 'contain',
+            background: { r: 0, g: 0, b: 0, alpha: 0 }
+          })
+          .png()
+          .toBuffer();
 
         const targetPath = findImageByAltText(zip, "LOGO_CLIENTE");
 
         if (targetPath) {
           zip.file(targetPath, imgBuffer);
-          console.log(`✅ Logo reemplazado dinámicamente en: ${targetPath}`);
+          console.log(`✅ Logo reemplazado y redimensionado en: ${targetPath}`);
         } else {
           const fallback = zip.file(/ppt\/media\/image1\./)[0];
           if (fallback) {
@@ -180,10 +198,9 @@ router.post("/presentation", async (req, res) => {
           }
         }
       } catch (imgErr) {
-        console.error("❌ Error en reemplazo dinámico:", imgErr);
+        console.error("❌ Error en procesamiento de imagen:", imgErr);
       }
     }
-
 
     const buffer = doc.getZip().generate({
       type: "nodebuffer",
@@ -198,6 +215,7 @@ router.post("/presentation", async (req, res) => {
     res.json({
       success: true,
       url: `/generated/${fileName}`,
+      downloadUrl: `${API_URL}/generated/${fileName}`,
       fileName,
       hasLogo: !!logoBase64
     });

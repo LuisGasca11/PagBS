@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { mapTotalsToPresentation } from "./utils/mapTotalsToPresentation";
 import modulesList from "./utils/modulesList";
+import { loadSession } from "./utils/auth";
+
+// ✅ Variable de entorno al inicio
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3019';
 
 export default function DownloadPresentation({
   moduleSelections,
@@ -15,7 +19,7 @@ export default function DownloadPresentation({
   const [loading, setLoading] = useState(false);
   const [logoPreview, setLogoPreview] = useState(null);
   const [formData, setFormData] = useState({
-    titulo: "Propuesta Comercial 2025",
+    titulo: "Propuesta Comercial",
     contexto: "",
     objetivo: "",
     diagnostico: "",
@@ -40,6 +44,14 @@ export default function DownloadPresentation({
   const handleDownload = async () => {
     setLoading(true);
     try {
+      const session = loadSession();
+
+      if (!session || !session.token) {
+        throw new Error("No hay sesión activa. Por favor inicia sesión.");
+      }
+
+      const token = session.token;
+
       const mappedData = mapTotalsToPresentation({
         moduleSelections, modulesList, selectedVps, hourRentals,
         totals, paymentFrequency, userCount, isCloudUsers,
@@ -49,23 +61,48 @@ export default function DownloadPresentation({
       const payload = {
         ...formData,
         diagnostico: formData.diagnostico.split("\n").filter(l => l.trim()).map(l => `• ${l.trim()}`),
-        fecha: new Date().toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" }),
+        fecha: new Date().toLocaleDateString("es-MX", { 
+          year: "numeric", 
+          month: "long", 
+          day: "numeric" 
+        }),
         ...mappedData,
         logoBase64
       };
 
-      const res = await fetch("http://localhost:3019/api/presentation", {
+      // ✅ Usar API_URL dinámico
+      const res = await fetch(`${API_URL}/api/presentation`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || errorData.message || "Error al generar el archivo");
+      }
+
       const data = await res.json();
-      const link = document.createElement('a');
-      link.href = `http://localhost:3019${data.url}`;
-      link.download = data.fileName || 'propuesta.pptx';
-      link.click();
+
+      // ✅ Usar downloadUrl del backend
+      if (data.success && data.downloadUrl) {
+        const link = document.createElement('a');
+        link.href = data.downloadUrl;
+        link.setAttribute('download', data.fileName || 'propuesta.pptx');
+        link.target = '_blank'; // Importante para CORS
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(link);
+        }, 100);
+      }
+      
     } catch (err) {
+      console.error("Error en descarga:", err);
       alert(`Error: ${err.message}`);
     } finally {
       setLoading(false);
