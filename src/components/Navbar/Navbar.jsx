@@ -118,7 +118,14 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-16">
 
             <div className="flex-shrink-0 flex items-center space-x-3 z-10">
-              <Link to="/">
+              <Link 
+                to="/" 
+                onClick={() => {
+                  if (location.pathname === '/') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+              >
                 <div className="w-40 h-10 flex items-center">
                   <img src="/BSwhite 1.png" className="w-full object-contain" alt="Black Sheep Logo" />
                 </div>
@@ -128,7 +135,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center justify-center flex-1 gap-2 relative">
 
               <div
-                className="absolute bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-500"
+                className="absolute bottom-0 h-0.5 bg-white rounded-full transition-all duration-500"
                 style={highlightStyle}
               ></div>
 

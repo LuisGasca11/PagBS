@@ -32,13 +32,18 @@ const SyncE: React.FC = () => {
                 </a>
 
                 <NavBar
-                isAuthenticated={isAuthenticated}
-                username={username}
-                onLoginClick={() => {}}
-                onLogoutClick={() => {}}
-                onOpenAdmin={() => {}}
-                onOpenVpsAdmin={() => {}}
-                onOpenHourlyAdmin={() => {}}
+                    isAuthenticated={isAuthenticated}
+                    username={username}
+                    userRole={"guest"}
+                    userId={null}
+                    onLoginClick={() => {}}
+                    onLogoutClick={() => {}}
+                    onOpenAdmin={() => {}}
+                    onOpenVpsAdmin={() => {}}
+                    onOpenHourlyAdmin={() => {}}
+                    onOpenUsersAdmin={() => {}}
+                    onOpenDocuments={() => {}}
+                    onOpenProfile={() => {}}
                 />
             </div>
 

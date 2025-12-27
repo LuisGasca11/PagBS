@@ -43,11 +43,16 @@ export default function SatCompliance() {
         <NavBar
           isAuthenticated={isAuthenticated}
           username={username}
+          userRole={null}
+          userId={null}
           onLoginClick={() => {}}
           onLogoutClick={() => {}}
           onOpenAdmin={() => {}}
           onOpenVpsAdmin={() => {}}
           onOpenHourlyAdmin={() => {}}
+          onOpenUsersAdmin={() => {}}
+          onOpenDocuments={() => {}}
+          onOpenProfile={() => {}}
         />
       </div>
       
