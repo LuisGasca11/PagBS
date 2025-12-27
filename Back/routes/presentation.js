@@ -5,210 +5,162 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import JSZip from "jszip";
+import sharp from "sharp";
+import pool from "../db.js";
+import { authRequired, adminOnly } from "../middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = express.Router();
 
-// 🔥 FUNCIÓN: Insertar imagen en PPTX existente
-async function insertLogoIntoPPTX(pptxPath, logoBase64, outputPath) {
-  try {
-    console.log("📸 Insertando logo en PPTX existente...");
-    
-    // Leer el PPTX como ZIP
-    const content = fs.readFileSync(pptxPath);
-    const zip = await JSZip.loadAsync(content);
-    
-    // Convertir base64 a buffer
-    const logoBuffer = Buffer.from(logoBase64, 'base64');
-    
-    // Determinar extensión de la imagen
-    let extension = 'png';
-    let contentType = 'image/png';
-    
-    // Detectar tipo de imagen
-    const header = logoBase64.substring(0, 10);
-    if (header.startsWith('/9j/')) {
-      extension = 'jpeg';
-      contentType = 'image/jpeg';
-    } else if (header.startsWith('iVBOR')) {
-      extension = 'png';
-      contentType = 'image/png';
+const API_URL = process.env.API_PUBLIC_URL || 'http://localhost:3019';
+
+function findImageByAltText(zip, searchText) {
+  const slideFiles = zip.file(/ppt\/slides\/slide\d+\.xml/);
+  let targetImageRid = null;
+  let targetSlideFile = null;
+
+  for (const file of slideFiles) {
+    const content = file.asText();
+
+    if (content.includes(searchText)) {
+      const match = content.match(new RegExp(`<p:nvPicPr>.*?descr="${searchText}".*?<a:blip r:embed="(rId\\d+)"`, 's'));
+      if (match) {
+        targetImageRid = match[1];
+        targetSlideFile = file.name;
+        break;
+      }
     }
-    
-    // Agregar la imagen al ZIP en la carpeta media
-    const imageName = `logo_cliente.${extension}`;
-    zip.file(`ppt/media/${imageName}`, logoBuffer);
-    
-    console.log(`✅ Imagen agregada: ppt/media/${imageName}`);
-    
-    // Obtener el slide1.xml (primera diapositiva)
-    const slide1XML = await zip.file("ppt/slides/slide1.xml").async("string");
-    
-    // Necesitamos obtener el siguiente rId disponible
-    const rIdMatches = slide1XML.match(/r:id="rId(\d+)"/g) || [];
-    const rIds = rIdMatches.map(m => parseInt(m.match(/\d+/)[0]));
-    const nextRId = Math.max(0, ...rIds) + 1;
-    
-    console.log(`📌 Usando rId${nextRId} para la imagen`);
-    
-    // Agregar relación en slide1.xml.rels
-    const slide1RelsPath = "ppt/slides/_rels/slide1.xml.rels";
-    let slide1Rels = await zip.file(slide1RelsPath).async("string");
-    
-    // Insertar la nueva relación antes del cierre de </Relationships>
-    const newRel = `<Relationship Id="rId${nextRId}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/${imageName}"/>`;
-    slide1Rels = slide1Rels.replace('</Relationships>', `${newRel}</Relationships>`);
-    
-    zip.file(slide1RelsPath, slide1Rels);
-    console.log("✅ Relación agregada");
-    
-    // Agregar el elemento <p:pic> al slide1.xml
-    // Posición: x=6.5", y=0.5", ancho=2.5", alto=1.8"
-    // En EMUs: 1 pulgada = 914400 EMUs
-    const x = Math.round(6.5 * 914400);
-    const y = Math.round(0.5 * 914400);
-    const cx = Math.round(2.5 * 914400);
-    const cy = Math.round(1.8 * 914400);
-    
-    const picXML = `
-      <p:pic>
-        <p:nvPicPr>
-          <p:cNvPr id="99999" name="Logo Cliente"/>
-          <p:cNvPicPr/>
-          <p:nvPr/>
-        </p:nvPicPr>
-        <p:blipFill>
-          <a:blip r:embed="rId${nextRId}"/>
-          <a:stretch>
-            <a:fillRect/>
-          </a:stretch>
-        </p:blipFill>
-        <p:spPr>
-          <a:xfrm>
-            <a:off x="${x}" y="${y}"/>
-            <a:ext cx="${cx}" cy="${cy}"/>
-          </a:xfrm>
-          <a:prstGeom prst="rect">
-            <a:avLst/>
-          </a:prstGeom>
-        </p:spPr>
-      </p:pic>`;
-    
-    // Insertar antes del cierre de </p:spTree>
-    const modifiedSlide1 = slide1XML.replace('</p:spTree>', `${picXML}</p:spTree>`);
-    zip.file("ppt/slides/slide1.xml", modifiedSlide1);
-    
-    console.log("✅ Elemento de imagen insertado en slide1.xml");
-    
-    // Actualizar [Content_Types].xml para incluir el tipo de imagen
-    let contentTypes = await zip.file("[Content_Types].xml").async("string");
-    
-    if (!contentTypes.includes(`Extension="${extension}"`)) {
-      const newDefault = `<Default Extension="${extension}" ContentType="${contentType}"/>`;
-      contentTypes = contentTypes.replace('<Types ', `<Types>${newDefault}`);
-      zip.file("[Content_Types].xml", contentTypes);
-      console.log("✅ Content type actualizado");
-    }
-    
-    // Guardar el ZIP modificado
-    const newContent = await zip.generateAsync({
-      type: "nodebuffer",
-      compression: "DEFLATE"
-    });
-    
-    fs.writeFileSync(outputPath, newContent);
-    console.log("✅ PPTX con logo guardado");
-    
-    return true;
-  } catch (err) {
-    console.error("❌ Error insertando logo:", err);
-    throw err;
   }
+
+  if (!targetImageRid || !targetSlideFile) return null;
+
+  const relsPath = targetSlideFile.replace("slides/", "slides/_rels/") + ".rels";
+  const relsFile = zip.file(relsPath);
+
+  if (!relsFile) return null;
+
+  const relsContent = relsFile.asText();
+  const relMatch = relsContent.match(new RegExp(`Id="${targetImageRid}".*?Target="../media/(.*?)"`));
+
+  return relMatch ? `ppt/media/${relMatch[1]}` : null;
 }
 
-// 🔥 ENDPOINT PRINCIPAL
-router.post("/presentation", async (req, res) => {
+function getBase64Data(base64String) {
+  if (!base64String) return null;
+  return base64String.replace(/^data:image\/\w+;base64,/, "");
+}
+
+router.post("/presentation", authRequired, async (req, res) => {
   try {
+    const { rows: userRows } = await pool.query(
+      "SELECT nombre FROM usuarios WHERE id_usuario = $1",
+      [req.user.id_usuario]
+    );
+    
+    const nombreReal = userRows[0]?.nombre || "Consultor Independiente";
+
     const {
       titulo, fecha, contexto, objetivo, diagnostico, resultado,
-      modulos, servicios, implementacion, subtotal, total, frecuencia,
-      logoBase64
+      modulos, servicios, implementacion,
+      subtotal_modulos, subtotal_vps,
+      subtotal_sin_iva, iva_monto, total_con_iva,
+      frecuencia, logoBase64, nota_iva
     } = req.body;
 
-    console.log("📥 Generando presentación...", { 
-      hasLogo: !!logoBase64,
-      modulosCount: modulos?.length,
-      serviciosCount: servicios?.length,
-      implementacionCount: implementacion?.length
-    });
+    const templatePath = path.resolve(
+      __dirname,
+      "..",
+      "public",
+      "templates",
+      "PROPUESTA-COMERCIAL_2025.pptx"
+    );
 
-    const templatePath = path.resolve(__dirname, "..", "public", "templates", "PROPUESTA-COMERCIAL_2025.pptx");
     const outputDir = path.resolve(__dirname, "..", "public", "generated");
 
     if (!fs.existsSync(templatePath)) {
-      return res.status(404).json({
-        error: "Template no encontrado",
-        path: templatePath
-      });
+      return res.status(404).json({ error: "Template no encontrado" });
     }
 
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // 🔥 Preparar datos correctamente
-    const modulosData = (modulos || []).map(m => ({
-      nombre: m.nombre || "",
-      cantidad: String(m.cantidad || 0),
-      precio: m.precio || "$0.00",
-      total: m.total || "$0.00"
-    }));
+    const extractNumber = (value) => {
+      if (!value) return 0;
+      const num = parseFloat(String(value).replace(/[^0-9.-]+/g, ""));
+      return isNaN(num) ? 0 : num;
+    };
 
-    const serviciosData = (servicios || []).map(s => ({
-      nombre: s.nombre || "",
-      usuarios: String(s.usuarios || 0),
-      precio: s.precio || "$0.00",
-      total: s.total || "$0.00"
-    }));
+    const formatCurrency = (value) =>
+      `$${extractNumber(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 
-    const implementacionData = (implementacion || []).map(i => ({
-      concepto: i.concepto || "",
-      horas: String(i.horas || 0),
-      precio: i.precio || "$0.00",
-      total: i.total || "$0.00"
-    }));
+    const modulosData = Array.isArray(modulos)
+      ? modulos.map(m => ({
+        nombre: m.nombre || "Módulo",
+        cantidad: String(m.cantidad || 1),
+        precio: formatCurrency(m.precio),
+        total: formatCurrency(m.total)
+      }))
+      : [];
 
-    const diagnosticoArray = Array.isArray(diagnostico)
-      ? diagnostico.map(d => ({ texto: d }))
-      : (diagnostico ? [{ texto: diagnostico }] : []);
+    const serviciosData = Array.isArray(servicios)
+      ? servicios.map(s => ({
+        nombre: s.nombre || "Servicio",
+        usuarios: String(s.usuarios || 1),
+        precio: formatCurrency(s.precio),
+        total: formatCurrency(s.total)
+      }))
+      : [];
 
-    console.log("📊 Datos procesados:", {
-      modulos: modulosData,
-      servicios: serviciosData,
-      implementacion: implementacionData
-    });
+    const implementacionData = Array.isArray(implementacion)
+      ? implementacion.map(i => ({
+        concepto: i.concepto || "Servicio",
+        horas: String(i.horas || 0),
+        precio: formatCurrency(i.precio),
+        total: formatCurrency(i.total)
+      }))
+      : [];
+
+    const diagnosticoData = Array.isArray(diagnostico)
+      ? diagnostico.map(d => d.startsWith("•") ? d : `• ${d}`)
+      : [];
+
+    const subtotalSinIVA =
+      extractNumber(subtotal_sin_iva) ||
+      extractNumber(subtotal_modulos) +
+      extractNumber(subtotal_vps) +
+      implementacionData.reduce((s, i) => s + extractNumber(i.total), 0);
+
+    const iva = extractNumber(iva_monto) || subtotalSinIVA * 0.16;
+    const total = extractNumber(total_con_iva) || subtotalSinIVA + iva;
 
     const data = {
       titulo: titulo || "Propuesta Comercial Microsip 2025",
       fecha: fecha || new Date().toLocaleDateString("es-MX"),
-      contexto: contexto || "",
-      objetivo: objetivo || "",
-      diagnostico: diagnosticoArray,
-      resultado: resultado || "",
+      contexto,
+      objetivo,
+      diagnostico: diagnosticoData,
+      resultado,
       modulos: modulosData,
       servicios: serviciosData,
       implementacion: implementacionData,
-      subtotal: subtotal || "$0.00",
-      total: total || "$0.00",
-      frecuencia: frecuencia || "Mensual"
+      nombre_firma: nombreReal,
+
+      subtotal_modulos: formatCurrency(subtotal_modulos),
+      subtotal_vps: formatCurrency(subtotal_vps),
+      subtotal_sin_iva: formatCurrency(subtotalSinIVA),
+      iva_monto: formatCurrency(iva),
+      total_con_iva: formatCurrency(total),
+
+      subtotal: formatCurrency(subtotalSinIVA),
+      total: formatCurrency(total),
+
+      frecuencia: (frecuencia || "Mensual").toUpperCase(),
+      nota_iva: nota_iva || "* Al precio final se le agrega el 16% de IVA."
     };
 
-    console.log("📄 Procesando con Docxtemplater...");
-
-    // Generar con Docxtemplater
     const content = fs.readFileSync(templatePath, "binary");
     const zip = new PizZip(content);
 
@@ -220,75 +172,59 @@ router.post("/presentation", async (req, res) => {
 
     doc.render(data);
 
-    const buf = doc.getZip().generate({
+    if (logoBase64) {
+      try {
+        const logoData = getBase64Data(logoBase64);
+        let imgBuffer = Buffer.from(logoData, "base64");
+
+        imgBuffer = await sharp(imgBuffer)
+          .resize(300, 150, {
+            fit: 'contain',
+            background: { r: 0, g: 0, b: 0, alpha: 0 }
+          })
+          .png()
+          .toBuffer();
+
+        const targetPath = findImageByAltText(zip, "LOGO_CLIENTE");
+
+        if (targetPath) {
+          zip.file(targetPath, imgBuffer);
+          console.log(`✅ Logo reemplazado y redimensionado en: ${targetPath}`);
+        } else {
+          const fallback = zip.file(/ppt\/media\/image1\./)[0];
+          if (fallback) {
+            zip.file(fallback.name, imgBuffer);
+            console.log("⚠️ No se encontró Alt Text, usando fallback image1");
+          }
+        }
+      } catch (imgErr) {
+        console.error("❌ Error en procesamiento de imagen:", imgErr);
+      }
+    }
+
+    const buffer = doc.getZip().generate({
       type: "nodebuffer",
       compression: "DEFLATE"
     });
 
     const fileName = `propuesta-${Date.now()}.pptx`;
-    const tempPath = path.join(outputDir, `temp-${fileName}`);
     const finalPath = path.join(outputDir, fileName);
 
-    // Guardar temporalmente
-    fs.writeFileSync(tempPath, buf);
-    console.log("✅ PPTX base generado");
+    fs.writeFileSync(finalPath, buffer);
 
-    // 🔥 Si hay logo, insertarlo en el PPTX
-    if (logoBase64) {
-      try {
-        await insertLogoIntoPPTX(tempPath, logoBase64, finalPath);
-        fs.unlinkSync(tempPath); // Eliminar temporal
-        
-        console.log("✅ Logo insertado exitosamente");
-        
-        res.json({
-          success: true,
-          url: `/generated/${fileName}`,
-          fileName,
-          hasLogo: true,
-          message: "Presentación generada con logo incluido"
-        });
-      } catch (logoErr) {
-        console.error("⚠️ Error al insertar logo:", logoErr);
-        
-        // Si falla, usar el archivo sin logo
-        fs.renameSync(tempPath, finalPath);
-        
-        res.json({
-          success: true,
-          url: `/generated/${fileName}`,
-          fileName,
-          hasLogo: false,
-          message: "Presentación generada. Error al insertar logo automáticamente."
-        });
-      }
-    } else {
-      // Sin logo, renombrar archivo temporal
-      fs.renameSync(tempPath, finalPath);
-      
-      res.json({
-        success: true,
-        url: `/generated/${fileName}`,
-        fileName,
-        hasLogo: false,
-        message: "Presentación generada sin logo"
-      });
-    }
+    res.json({
+      success: true,
+      url: `/generated/${fileName}`,
+      downloadUrl: `${API_URL}/generated/${fileName}`,
+      fileName,
+      hasLogo: !!logoBase64
+    });
 
   } catch (err) {
     console.error("❌ Error generando PPTX:", err);
-    
-    if (err.properties && err.properties.errors) {
-      console.error("Errores de template:", err.properties.errors);
-      return res.status(500).json({
-        error: "Error en el template",
-        details: err.properties.errors
-      });
-    }
-
     res.status(500).json({
-      error: err.message,
-      stack: process.env.NODE_ENV === "development" ? err.stack : undefined
+      error: "Error al generar presentación",
+      message: err.message
     });
   }
 });

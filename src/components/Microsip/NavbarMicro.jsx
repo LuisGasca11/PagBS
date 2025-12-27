@@ -25,6 +25,8 @@ export default function NavBar({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [currentPath, setCurrentPath] = useState(typeof window !== 'undefined' ? window.location.pathname : '/');
+  const [profileImage, setProfileImage] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrollY(window.scrollY);
@@ -54,6 +56,26 @@ export default function NavBar({
       }
     };
   }, []);
+
+  // Cargar imagen de perfil
+  useEffect(() => {
+    if (isAuthenticated && userId) {
+      loadProfileImage();
+    } else {
+      setProfileImage(null);
+      setImageError(false);
+    }
+  }, [isAuthenticated, userId]);
+
+  const loadProfileImage = async () => {
+    try {
+      const imageUrl = `/api/usuarios/${userId}/photo?t=${Date.now()}`;
+      setProfileImage(imageUrl);
+      setImageError(false);
+    } catch (err) {
+      setImageError(true);
+    }
+  };
 
   useEffect(() => {
     if (showMobileMenu) {
@@ -155,6 +177,39 @@ export default function NavBar({
     if (userRole === 'admin') return 'Administrador';
     if (userRole === 'user') return 'Usuario';
     return userRole || 'Usuario';
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  const ProfileAvatar = ({ size = "default", className = "" }) => {
+    const sizeClasses = {
+      small: "w-7 h-7 xl:w-8 xl:h-8",
+      default: "w-10 h-10 sm:w-12 sm:h-12",
+      large: "w-24 h-24 sm:w-32 sm:h-32"
+    };
+
+    const iconSizes = {
+      small: "w-3.5 h-3.5 xl:w-4 xl:h-4",
+      default: "w-5 h-5 sm:w-6 sm:h-6",
+      large: "w-12 h-12 sm:w-16 sm:h-16"
+    };
+
+    return (
+      <div className={`${sizeClasses[size]} rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-inner overflow-hidden ${className}`}>
+        {profileImage && !imageError ? (
+          <img
+            src={profileImage}
+            alt="Perfil"
+            className="w-full h-full object-cover"
+            onError={handleImageError}
+          />
+        ) : (
+          <User className={`${iconSizes[size]} text-white`} />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -268,9 +323,7 @@ export default function NavBar({
                     onClick={() => setShowAdminMenu(!showAdminMenu)}
                     className="flex items-center gap-2 px-3 xl:px-4 py-2 xl:py-2.5 rounded-xl bg-white border-2 border-gray-200 shadow-sm hover:bg-gray-50 hover:border-orange-300 transition-all duration-200 hover:shadow-md active:scale-[0.98]"
                   >
-                    <div className="w-7 h-7 xl:w-8 xl:h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-inner">
-                      <User className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-white" />
-                    </div>
+                    <ProfileAvatar size="small" />
                     <span className="text-xs xl:text-sm font-semibold text-gray-700 max-w-[100px] truncate">{username}</span>
                     <ChevronDown
                       className={`w-4 h-4 transition-transform text-gray-600 ${
@@ -285,7 +338,6 @@ export default function NavBar({
                         <p className="text-xs text-gray-500 font-medium uppercase">{getRoleText()}</p>
                       </div>
 
-                      {/* OPCIÓN MI PERFIL - SIEMPRE VISIBLE */}
                       <button
                         onClick={handleProfileClick}
                         className="px-4 py-2.5 text-sm flex gap-3 items-center text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-all duration-150 group"
@@ -442,9 +494,7 @@ export default function NavBar({
                 ) : (
                   <div className="flex flex-col gap-2 sm:gap-3">
                     <div className="flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl sm:rounded-2xl border border-orange-200 shadow-sm">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md flex-shrink-0">
-                        <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                      </div>
+                      <ProfileAvatar size="default" className="flex-shrink-0" />
                       <div className="min-w-0 flex-1">
                         <p className="text-xs text-gray-500 font-medium">Usuario</p>
                         <p className="font-semibold text-gray-800 truncate">{username}</p>
@@ -454,7 +504,6 @@ export default function NavBar({
                       </div>
                     </div>
 
-                    {/* OPCIÓN MI PERFIL - MOBILE */}
                     <button
                       onClick={handleProfileClick}
                       className="w-full px-4 sm:px-5 py-2.5 sm:py-3 text-left flex gap-3 items-center text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all group"

@@ -62,6 +62,7 @@ export default function MicrosipPricing() {
     const [tabKey, setTabKey] = useState(0);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [isCloudUsers, setIsCloudUsers] = useState(true); // Nuevo state
 
     const { exchangeRate, loading: exchangeLoading, error: exchangeError, lastUpdate } = useExchangeRate();
 
@@ -159,6 +160,10 @@ export default function MicrosipPricing() {
         };
     }, [isAuthenticated]);
 
+    const handleLocalUserSelection = (isLocal) => {
+        setIsCloudUsers(!isLocal); // Si es local, entonces NO es nube
+    };
+
     const totals = calculateTotals({
         moduleSelections,
         hourRentals,
@@ -170,14 +175,13 @@ export default function MicrosipPricing() {
         selectedVps,
         exchangeRate
     });
-
     const handleLoginSuccess = (user) => {
         setIsAuthenticated(true);
         setUsername(user.usuario);
         setUserRole(user.rol);
         setShowLoginModal(false);
         setShowLoginSuccess(true);
-        
+
         setTimeout(() => {
             setShowLoginSuccess(false);
         }, 2000);
@@ -264,7 +268,7 @@ export default function MicrosipPricing() {
                         Actualizando tipo de cambio...
                     </div>
                 )}
-                
+
                 {showLoginSuccess && (
                     <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-xl text-sm z-50 animate-bounce-in">
                         ¡Bienvenido, {username}!
@@ -282,7 +286,7 @@ export default function MicrosipPricing() {
                             src="/msppart.webp"
                             alt="logo"
                             className="h-10 sm:h-12 object-contain z-50"
-                        /> 
+                        />
                     </a>
 
                     <NavBar
@@ -428,8 +432,8 @@ export default function MicrosipPricing() {
                                         setSelectedVps={setSelectedVps}
                                         userCount={userCount}
                                         setUserCount={setUserCount}
-                                        localUserSelected={localUserSelected}
-                                        setLocalUserSelected={setLocalUserSelected}
+                                        localUserSelected={!isCloudUsers} // Si NO es nube, entonces es local
+                                        setLocalUserSelected={handleLocalUserSelection} // Pasar función para actualizar
                                     />
                                     {(selectedVps.length > 0 || userCount > 0) && (
                                         <div className="flex justify-end mt-6">
@@ -508,6 +512,9 @@ export default function MicrosipPricing() {
                                             moduleSelections={moduleSelections}
                                             totals={totals}
                                             paymentFrequency={paymentFrequency}
+                                            userCount={userCount}
+                                            isCloudUsers={isCloudUsers} 
+                                            selectedVps={selectedVps}
                                         />
                                     </section>
 

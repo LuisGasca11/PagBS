@@ -101,9 +101,6 @@ export async function generarPropuestaPPTX(data) {
     { x: layout.x, y: 1.4, w: layout.w }
   );
 
-  /* ======================
-     SLIDE 9 - IMPLEMENTACIÓN
-  ====================== */
   const s9 = pptx.addSlide();
   s9.addText("IMPLEMENTACIÓN / HORAS", { x: layout.x, y: 0.6, ...font.section });
 
@@ -125,9 +122,6 @@ export async function generarPropuestaPPTX(data) {
     { x: layout.x, y: 1.4, w: layout.w }
   );
 
-  /* ======================
-     SLIDE 10 - RESUMEN
-  ====================== */
   const s10 = pptx.addSlide();
   s10.addText("RESUMEN ECONÓMICO", { x: layout.x, y: 1.2, ...font.section });
   s10.addText(`Subtotal (${data.frecuencia}): $${data.subtotal}`, {
